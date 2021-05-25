@@ -1,35 +1,27 @@
-Package: Covid19CanadaData
-Title: Download Canadian COVID-19 Data
-Version: 0.4.0
+Package: Covid19CanadaDataProcess
+Title: Process Canadian COVID-19 Data
+Version: 0.1.0
 Authors@R:
     person(given = "Jean-Paul R.",
            family = "Soucy",
            role = c("aut", "cre"),
            email = "jeanpaul.r.soucy@gmail.com",
            comment = c(ORCID = "0000-0002-8422-2326"))
-Description: This package is used to download Canadian COVID-19 data
-    from the following sources:
-    * Live versions of Canadian COVID-19 datasets available on the Internet
-    * The COVID-19 Canada Open Data Working Group daily dataset
-    (https://opencovid.ca/).
-    * Canadian COVID-19 Data Archive
-    (https://github.com/ccodwg/Covid19CanadaArchive).
+Description: This is a supplementary package to Covid19CanadaData (https://github.com/ccodwg/Covid19CanadaData)
+    used to process the ingested data into a common format.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    jsonlite,
-    utils,
-    methods,
-    rlang,
-    xml2,
-    rvest,
-    readxl,
-    magick,
-    tesseract,
-    curl,
-    readr,
-    stringr,
+    Covid19CanadaData,
     dplyr,
-    magrittr
+    magick,
+    magrittr,
+    methods,
+    readr,
+    rlang,
+    rvest,
+    stringr,
+    tesseract
+Remotes: ccodwg/Covid19CanadaData
 RoxygenNote: 7.1.1

@@ -2,10 +2,8 @@
 #'
 #' Process a dataset listed in datasets.json of Covid19CanadaArchive (https://github.com/ccodwg/Covid19CanadaArchive/blob/master/datasets.json)
 #' into a standardized format for a specific value provided by that dataset
-#' (e.g., cases, deaths, hospitalizations, etc.). If `ds` is provided, the
-#' function will read the dataset from a named list indexed by UUID. Otherwise,
-#' the active version of the dataset will be read using \code{\link{dl_dataset}}
-#' (if available).
+#' (e.g., cases, deaths, hospitalizations, etc.). The dataset must be provided
+#' via `ds` in the format returned by `dl_dataset` from `Covid19CanadaData`.
 #'
 #' The currently supported values are the following:
 #' \itemize{
@@ -42,7 +40,7 @@ process_dataset <- function(uuid,
                             ...) {
 
   # get datasets.json
-  ds_list <- get_dataset_list()
+  ds_list <- Covid19CanadaData::get_dataset_list()
 
   # check UUID
   if (uuid %in% ds_list$uuid) {
