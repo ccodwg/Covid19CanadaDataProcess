@@ -105,9 +105,11 @@ process_nu <- function(uuid, val, fmt, ds,
                 magick::image_crop(geometry = "100%x3%+0+122") %>%
                 magick::image_transparent("white", fuzz = 50) %>%
                 magick::image_background("white") %>%
-                # read data
+                # ocr text
                 tesseract::ocr() %>%
-                gsub("\n", "", .) %>%
+                # process text
+                gsub("\n|\\||\\[|\\]", "", .) %>%
+                gsub("\\s+", " ", .) %>%
                 stringr::str_split(" ", simplify = TRUE) %>%
                 `[`(c(1, 3)) %>%
                 readr::parse_number() %>%
@@ -133,9 +135,11 @@ process_nu <- function(uuid, val, fmt, ds,
                 magick::image_crop(geometry = "100%x3%+0+122") %>%
                 magick::image_transparent("white", fuzz = 50) %>%
                 magick::image_background("white") %>%
-                # read data
+                # ocr text
                 tesseract::ocr() %>%
-                gsub("\n", "", .) %>%
+                # process text
+                gsub("\n|\\||\\[|\\]", "", .) %>%
+                gsub("\\s+", " ", .) %>%
                 stringr::str_split(" ", simplify = TRUE) %>%
                 `[`(3) %>%
                 readr::parse_number() %>%
