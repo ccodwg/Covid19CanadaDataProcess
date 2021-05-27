@@ -117,18 +117,24 @@ process_mb <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    "159fb279-228a-4a6f-afdd-c543f201d88d" = {
+    "a57dc10d-7139-4164-9042-eb2242716585" = {
       switch(
         val,
         "vaccine_administration" = {
           switch(
             fmt,
-            "prov_cum_current" = {
+            "hr_cum_current" = {
               ds$features$attributes %>%
-                dplyr::slice_tail(n = 1) %>%
-                dplyr::select(.data$Cumulative_Total_Doses) %>%
-                dplyr::rename(value = .data$Cumulative_Total_Doses) %>%
-                helper_cum_current(loc = "prov", val, prov, date_current)
+                dplyr::select(
+                  .data$RHA,
+                  .data$Total_Doses_Administered
+                  ) %>%
+                dplyr::filter(.data$RHA != "All") %>%
+                dplyr::rename(
+                  sub_region_1 = .data$RHA,
+                  value = .data$Total_Doses_Administered
+                  ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )
@@ -136,11 +142,34 @@ process_mb <- function(uuid, val, fmt, ds,
         "vaccine_completion" = {
           switch(
             fmt,
+            "hr_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(
+                  .data$RHA,
+                  .data$Second_Doses_Administered
+                ) %>%
+                dplyr::filter(.data$RHA != "All") %>%
+                dplyr::rename(
+                  sub_region_1 = .data$RHA,
+                  value = .data$Second_Doses_Administered
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "7a5ef226-2244-47e0-b964-28c2dc06d5ae" = {
+      switch(
+        val,
+        "vaccine_administration" = {
+          switch(
+            fmt,
             "prov_cum_current" = {
               ds$features$attributes %>%
-                dplyr::slice_tail(n = 1) %>%
-                dplyr::select(.data$Cumulative_Second_Doses) %>%
-                dplyr::rename(value = .data$Cumulative_Second_Doses) %>%
+                dplyr::select(value = .data$Total_Doses_Administered) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
