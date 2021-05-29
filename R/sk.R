@@ -38,7 +38,8 @@ process_sk <- function(uuid, val, fmt, ds,
                 value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][2]) -
                   sum(dat$value)
             )
-            dat
+            dat %>%
+              helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )
@@ -67,7 +68,8 @@ process_sk <- function(uuid, val, fmt, ds,
                   value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][7]) -
                     sum(dat$value)
                 )
-              dat
+              dat %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )
@@ -96,7 +98,8 @@ process_sk <- function(uuid, val, fmt, ds,
                   value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][6]) -
                     sum(dat$value)
                 )
-              dat
+              dat %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )
@@ -131,7 +134,8 @@ process_sk <- function(uuid, val, fmt, ds,
                     value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][2]) -
                       sum(dat$value)
                   )
-                dat
+                dat %>%
+                  helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )
@@ -165,7 +169,8 @@ process_sk <- function(uuid, val, fmt, ds,
                   value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][4]) -
                     sum(dat$value)
                 )
-              dat
+              dat %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )
@@ -193,7 +198,8 @@ process_sk <- function(uuid, val, fmt, ds,
                   value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][3]) -
                     sum(dat$value)
                 )
-              dat
+              dat %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )

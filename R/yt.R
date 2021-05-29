@@ -29,7 +29,7 @@ process_yt <- function(uuid, val, fmt, ds,
                 data.frame(
                   value = .
                 ) %>%
-                helper_cum_current(loc = "prov", prov, val, date_current)
+                helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
           )
@@ -49,7 +49,7 @@ process_yt <- function(uuid, val, fmt, ds,
                 data.frame(
                   value = .
                 ) %>%
-                helper_cum_current(loc = "prov", prov, val, date_current)
+                helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
           )
@@ -69,7 +69,7 @@ process_yt <- function(uuid, val, fmt, ds,
                 data.frame(
                   value = .
                 ) %>%
-                helper_cum_current(loc = "prov", prov, val, date_current)
+                helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
           )
@@ -91,7 +91,7 @@ process_yt <- function(uuid, val, fmt, ds,
                   data.frame(
                     value = .
                   ) %>%
-                  helper_cum_current(loc = "prov", prov, val, date_current)
+                  helper_cum_current(loc = "prov", val, prov, date_current)
               } else if (testing_type == "n_people_tested") {
                 ds %>%
                   rvest::html_elements("table") %>%
@@ -104,7 +104,7 @@ process_yt <- function(uuid, val, fmt, ds,
                   data.frame(
                     value = .
                   ) %>%
-                  helper_cum_current(loc = "prov", prov, val, date_current)
+                  helper_cum_current(loc = "prov", val, prov, date_current)
               }
             },
             e_fmt()
@@ -125,7 +125,7 @@ process_yt <- function(uuid, val, fmt, ds,
                 data.frame(
                   value = .
                 ) %>%
-                helper_cum_current(loc = "prov", prov, val, date_current)
+                helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
           )
@@ -145,7 +145,7 @@ process_yt <- function(uuid, val, fmt, ds,
                 data.frame(
                   value = .
                 ) %>%
-                helper_cum_current(loc = "prov", prov, val, date_current)
+                helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
           )
