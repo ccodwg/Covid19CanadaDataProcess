@@ -108,34 +108,45 @@ process_sk <- function(uuid, val, fmt, ds,
       )
     },
     "9736bff9-4bd3-4c04-b9d9-87f60b3d5eb5" = {
+      match.arg(testing_type, c("n_tests_completed", "n_people_tested"), several.ok = FALSE)
       switch(
         val,
         "testing" = {
           switch(
             fmt,
             "hr_cum_current" = {
-              # get HR data
-                dat <- ds$tabs$tables[[1]]$body[[2]]$cells[1:13] %>%
-                  lapply(FUN = function(x) {
-                    x %>%
-                      dplyr::select(1) %>%
-                      dplyr::slice(c(1, 2))
-                  })
-                dat <- data.frame(matrix(unlist(dat), ncol = 2, byrow = TRUE)) %>%
-                  dplyr::rename(
-                    sub_region_1 = .data$X1,
-                    value = .data$X2
-                  ) %>%
-                  dplyr::mutate(value = as.integer(.data$value))
-                # append missing HR data (diff between SK total and sum of HRs)
-                dat <- dat %>%
-                  dplyr::add_row(
-                    sub_region_1 = "Not Reported",
-                    value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][2]) -
-                      sum(dat$value)
-                  )
-                dat %>%
-                  helper_cum_current(loc = "hr", val, prov, date_current)
+              if (testing_type == "n_tests_completed") {
+                # get HR data
+                dat <- ds$tabs$tables[[1]]$body[[2]]$cells[1:13]
+                # get SK total
+                sk_total <- as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][2])
+              } else if (testing_type == "n_people_tested") {
+                # get HR data
+                dat <- ds$tabs$tables[[3]]$body[[2]]$cells[1:13]
+                # get SK total
+                sk_total <- as.integer(ds$tabs$tables[[3]]$body[[2]]$cells[[14]][[1]][2])
+              }
+              dat <- dat %>%
+                lapply(FUN = function(x) {
+                  x %>%
+                    dplyr::select(1) %>%
+                    dplyr::slice(c(1, 2))
+                })
+              dat <- data.frame(matrix(unlist(dat), ncol = 2, byrow = TRUE)) %>%
+                dplyr::rename(
+                  sub_region_1 = .data$X1,
+                  value = .data$X2
+                ) %>%
+                dplyr::mutate(value = as.integer(.data$value))
+              # append missing HR data (diff between SK total and sum of HRs)
+              dat <- dat %>%
+                dplyr::add_row(
+                  sub_region_1 = "Not Reported",
+                  value = sk_total -
+                    sum(dat$value)
+                )
+              dat %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )
