@@ -145,7 +145,7 @@ process_ab <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("li") %>%
-                grep("Albertans fully immunized", ., value = TRUE) %>%
+                grep("fully immunized", ., value = TRUE) %>%
                 readr::parse_number() %>%
                 data.frame(
                   value = .
