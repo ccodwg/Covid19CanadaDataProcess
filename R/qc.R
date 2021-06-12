@@ -122,6 +122,21 @@ process_qc <- function(uuid, val, fmt, ds,
     "b78d46c8-9a56-4b75-94c5-4ace36e014f5" = {
       switch(
         val,
+        "recovered" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds[2, 5, drop = FALSE] %>% # select by position
+                dplyr::mutate(
+                  value = readr::parse_number(
+                    gsub(" ", "", .)
+                  )) %>%
+                dplyr::select(.data$value) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
         "testing" = {
           switch(
             fmt,
@@ -256,27 +271,6 @@ process_qc <- function(uuid, val, fmt, ds,
                   .data$value
                 ) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current)
-            },
-            e_fmt()
-          )
-        },
-        e_val()
-      )
-    },
-    "b78d46c8-9a56-4b75-94c5-4ace36e014f5" = {
-      switch(
-        val,
-        "recovered" = {
-          switch(
-            fmt,
-            "prov_cum_current" = {
-              ds[2, 5, drop = FALSE] %>% # select by position
-                dplyr::mutate(
-                  value = readr::parse_number(
-                    gsub(" ", "", .)
-                  )) %>%
-                dplyr::select(.data$value) %>%
-                helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
           )
