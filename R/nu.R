@@ -69,19 +69,39 @@ process_nu <- function(uuid, val, fmt, ds,
           )
         },
         "testing" = {
+          match.arg(testing_type, c("n_tests_completed", "n_people_tested"), several.ok = FALSE)
           switch(
             fmt,
             "prov_cum_current" = {
-              ds %>%
-                rvest::html_table(header = TRUE) %>%
-                `[[`(1) %>%
-                dplyr::select(.data$`Total tests`) %>%
-                as.character() %>%
-                readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
-                helper_cum_current(loc = "prov", val, prov, date_current)
+              if (testing_type == "n_tests_completed") {
+                ds %>%
+                  rvest::html_table(header = TRUE) %>%
+                  `[[`(1) %>%
+                  dplyr::select(.data$`Total tests`) %>%
+                  as.character() %>%
+                  readr::parse_number() %>%
+                  data.frame(
+                    value = .
+                  ) %>%
+                  helper_cum_current(loc = "prov", val, prov, date_current)
+              } else if (testing_type == "n_people_tested") {
+                ds %>%
+                  rvest::html_table(header = TRUE) %>%
+                  `[[`(3) %>%
+                  dplyr::select(
+                    .data$`Tests Positive`,
+                    .data$`Tests Negative`
+                    ) %>%
+                  dplyr::mutate(
+                    `Tests Positive` = readr::parse_number(
+                      as.character(.data$`Tests Positive`)), # in case someone adds a special character, e.g. "*"
+                    `Tests Negative` = readr::parse_number(
+                      as.character(.data$`Tests Negative`)),
+                    value = .data$`Tests Positive` + .data$`Tests Negative`
+                  ) %>%
+                  dplyr::select(.data$value) %>%
+                  helper_cum_current(loc = "prov", val, prov, date_current)
+              }
             },
             e_fmt()
           )
