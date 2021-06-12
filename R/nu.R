@@ -88,6 +88,7 @@ process_nu <- function(uuid, val, fmt, ds,
                 ds %>%
                   rvest::html_table(header = TRUE) %>%
                   `[[`(3) %>%
+                  dplyr::filter(.data$Community == "Total") %>%
                   dplyr::select(
                     .data$`Tests Positive`,
                     .data$`Tests Negative`
