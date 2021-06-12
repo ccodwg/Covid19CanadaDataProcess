@@ -191,6 +191,99 @@ process_qc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "939189e0-b7bb-4e8c-b71a-b0b9311b7233" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                # remove provincial total
+                dplyr::filter(
+                  .data[["R\u00E9gions.sociosanitaires"]] != "Total"
+                ) %>%
+                # clean RSS names
+                dplyr::mutate(
+                  "R\u00E9gions.sociosanitaires" = sub(
+                    "\\d{2} - ", "", .data[["R\u00E9gions.sociosanitaires"]]),
+
+                  "Total.des.cas.confirm\u00E9s.depuis.le.d\u00E9but.de.la.pand\u00E9mie" = readr::parse_number(
+                    gsub("\u00a0", "", .data[["Total.des.cas.confirm\u00E9s.depuis.le.d\u00E9but.de.la.pand\u00E9mie"]])) # note the unicode thousands separator
+                    ) %>%
+                dplyr::rename(
+                  sub_region_1 = .data[["R\u00E9gions.sociosanitaires"]], # unicode
+                  value = .data[["Total.des.cas.confirm\u00E9s.depuis.le.d\u00E9but.de.la.pand\u00E9mie"]]
+                  ) %>%
+                dplyr::select(
+                  .data$sub_region_1,
+                  .data$value
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "50d7d98b-d7d1-4e0c-a47d-5983565d17c7" = {
+      switch(
+        val,
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                # remove provincial total
+                dplyr::filter(
+                  .data[["R\u00E9gions"]] != "Total"
+                ) %>%
+                # clean RSS names
+                dplyr::mutate(
+                  "R\u00E9gions" = sub(
+                    "\\d{2} - ", "", .data[["R\u00E9gions"]]),
+
+                  "Nombre.de.d\u00E9c\u00E8s" = readr::parse_number(
+                    gsub("\u00a0", "", .data[["Nombre.de.d\u00E9c\u00E8s"]])) # note the unicode thousands separator
+                ) %>%
+                dplyr::rename(
+                  sub_region_1 = .data[["R\u00E9gions"]], # unicode
+                  value = .data[["Nombre.de.d\u00E9c\u00E8s"]]
+                ) %>%
+                dplyr::select(
+                  .data$sub_region_1,
+                  .data$value
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "b78d46c8-9a56-4b75-94c5-4ace36e014f5" = {
+      switch(
+        val,
+        "recovered" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds[2, 5, drop = FALSE] %>% # select by position
+                dplyr::mutate(
+                  value = readr::parse_number(
+                    gsub(" ", "", .)
+                  )) %>%
+                dplyr::select(.data$value) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
