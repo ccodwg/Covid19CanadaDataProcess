@@ -173,6 +173,12 @@ process_qc <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "vaccine_administration" = {
+          ds %>%
+            dplyr::slice_head(n = 1) %>%
+            dplyr::select(value = 3) %>% # ref by position to avoid unicode name
+            helper_cum_current(loc = "prov", val, prov, date_current)
+        },
         e_val()
       )
     },
