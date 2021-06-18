@@ -120,7 +120,7 @@ process_ab <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    "5c34c720-1a89-4486-8217-5f33545af9cb" = {
+    "24a572ea-0de3-4f83-b9b7-8764ea203eb6" = {
       switch(
         val,
         "vaccine_administration" = {
@@ -128,8 +128,17 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds %>%
-                rvest::html_elements("li") %>%
-                grep("doses administered", ., value = TRUE) %>%
+                rvest::html_elements("table") %>%
+                `[`(14) %>%
+                rvest::html_table() %>%
+                `[[`(1) %>%
+                # rename first column
+                dplyr::rename("Provider" = 1) %>%
+                # filter to total
+                dplyr::filter(.data$Provider == "Total") %>%
+                # select total administered
+                dplyr::select(.data[["Total administered"]]) %>%
+                as.character() %>%
                 readr::parse_number() %>%
                 data.frame(
                   value = .
@@ -144,8 +153,17 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds %>%
-                rvest::html_elements("li") %>%
-                grep("fully immunized", ., value = TRUE) %>%
+                rvest::html_elements("table") %>%
+                `[`(14) %>%
+                rvest::html_table() %>%
+                `[[`(1) %>%
+                # rename first column
+                dplyr::rename("Provider" = 1) %>%
+                # filter to total
+                dplyr::filter(.data$Provider == "Total") %>%
+                # select second doses
+                dplyr::select(.data[["Dose 2"]]) %>%
+                as.character() %>%
                 readr::parse_number() %>%
                 data.frame(
                   value = .
