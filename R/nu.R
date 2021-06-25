@@ -117,24 +117,27 @@ process_nu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_cum_current" = {
-              ds %>%
-                # chop off population table
-                magick::image_flop() %>%
-                magick::image_crop(geometry = "50%x100%+0+0") %>%
-                magick::image_flop() %>%
-                # crop to Nunavut summary
-                magick::image_crop(geometry = "100%x3%+0+122") %>%
+              dose_1 <- ds %>%
+                # crop to dose 1
+                magick::image_crop(geometry = "40x20-730-113") %>%
+                # increase contrast
                 magick::image_transparent("white", fuzz = 50) %>%
                 magick::image_background("white") %>%
                 # ocr text
                 tesseract::ocr() %>%
-                # process text
-                gsub("\n|\\||\\[|\\]", "", .) %>%
-                gsub("\\s+", " ", .) %>%
-                stringr::str_split(" ", simplify = TRUE) %>%
-                `[`(c(1, 3)) %>%
-                readr::parse_number() %>%
-                sum() %>%
+                # read number
+                readr::parse_number()
+              dose_2 <- ds %>%
+                # crop to dose 2
+                magick::image_crop(geometry = "40x20-849-115") %>%
+                # increase contrast
+                magick::image_transparent("white", fuzz = 50) %>%
+                magick::image_background("white") %>%
+                # ocr text
+                tesseract::ocr() %>%
+                # read number
+                readr::parse_number()
+                (dose_1 + dose_2) %>%
                 data.frame(
                   value = .
                 ) %>%
@@ -148,21 +151,14 @@ process_nu <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds %>%
-                # chop off population table
-                magick::image_flop() %>%
-                magick::image_crop(geometry = "50%x100%+0+0") %>%
-                magick::image_flop() %>%
-                # crop to Nunavut summary
-                magick::image_crop(geometry = "100%x3%+0+122") %>%
+                # crop to dose 2
+                magick::image_crop(geometry = "40x20-849-115") %>%
+                # increase contrast
                 magick::image_transparent("white", fuzz = 50) %>%
                 magick::image_background("white") %>%
                 # ocr text
                 tesseract::ocr() %>%
-                # process text
-                gsub("\n|\\||\\[|\\]", "", .) %>%
-                gsub("\\s+", " ", .) %>%
-                stringr::str_split(" ", simplify = TRUE) %>%
-                `[`(3) %>%
+                # read number
                 readr::parse_number() %>%
                 data.frame(
                   value = .
