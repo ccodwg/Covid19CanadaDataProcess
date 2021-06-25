@@ -20,7 +20,7 @@ process_nt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements(".metric") %>%
-                `[`(5) %>%
+                {.[grep("Confirmed Cases", .)]} %>%
                 rvest::html_text() %>%
                 readr::parse_number() %>%
                 data.frame(
@@ -49,62 +49,8 @@ process_nt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements(".metric") %>%
-                `[`(6) %>%
+                {.[grep("Resolved Cases", .)]} %>%
                 rvest::html_text() %>%
-                readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
-                helper_cum_current(loc = "prov", val, prov, date_current)
-            },
-            e_fmt()
-          )
-        },
-        "testing" = {
-          switch(
-            fmt,
-            "prov_cum_current" = {
-              ds %>%
-                rvest::html_elements(".metric") %>%
-                `[`(1) %>%
-                rvest::html_text() %>%
-                readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
-                helper_cum_current(loc = "prov", val, prov, date_current)
-            },
-            e_fmt()
-          )
-        },
-        "vaccine_administration" = {
-          switch(
-            fmt,
-            "prov_cum_current" = {
-              ds %>%
-                rvest::html_elements(".metric") %>%
-                `[`(7:8) %>%
-                rvest::html_text() %>%
-                sub("^.*)", "", .) %>% # remove "(Dose 1/2)"
-                readr::parse_number() %>%
-                sum() %>%
-                data.frame(
-                  value = .
-                ) %>%
-                helper_cum_current(loc = "prov", val, prov, date_current)
-            },
-            e_fmt()
-          )
-        },
-        "vaccine_completion" = {
-          switch(
-            fmt,
-            "prov_cum_current" = {
-              ds %>%
-                rvest::html_elements(".metric") %>%
-                `[`(8) %>%
-                rvest::html_text() %>%
-                sub("^.*)", "", .) %>% # remove "(Dose 2)"
                 readr::parse_number() %>%
                 data.frame(
                   value = .
