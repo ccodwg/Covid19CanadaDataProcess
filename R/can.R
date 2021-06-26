@@ -36,9 +36,10 @@ process_can <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_table() %>%
-                `[[`(1) %>%
+                {.[[grep("Vaccine distribution", .)]]} %>%
                 dplyr::filter(.data$`Vaccine distribution` == phac_prov(prov)) %>%
                 dplyr::pull(.data$Total) %>%
+                gsub(" ", "", .) %>% # strip out extra spaces after commas
                 readr::parse_number() %>%
                 data.frame(
                   value = .
