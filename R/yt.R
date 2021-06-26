@@ -20,10 +20,10 @@ process_yt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
-                `[[`(1) %>%
-                rvest::html_table() %>%
+                {.[[grep("Confirmed Yukon resident cases", .)]]} %>%
+                rvest::html_table(header = FALSE) %>%
+                dplyr::filter(.data$X1 == "Confirmed Yukon resident cases") %>%
                 dplyr::select(2) %>%
-                dplyr::slice(1) %>%
                 as.character() %>%
                 readr::parse_number() %>%
                 data.frame(
@@ -40,10 +40,10 @@ process_yt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
-                `[[`(1) %>%
-                rvest::html_table() %>%
+                {.[[grep("Deceased", .)]]} %>%
+                rvest::html_table(header = FALSE) %>%
+                dplyr::filter(.data$X1 == "Deceased") %>%
                 dplyr::select(2) %>%
-                dplyr::slice(4) %>%
                 as.character() %>%
                 readr::parse_number() %>%
                 data.frame(
@@ -60,10 +60,10 @@ process_yt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
-                `[[`(1) %>%
-                rvest::html_table() %>%
+                {.[[grep("Recovered", .)]]} %>%
+                rvest::html_table(header = FALSE) %>%
+                dplyr::filter(.data$X1 == "Recovered") %>%
                 dplyr::select(2) %>%
-                dplyr::slice(2) %>%
                 as.character() %>%
                 readr::parse_number() %>%
                 data.frame(
@@ -82,10 +82,10 @@ process_yt <- function(uuid, val, fmt, ds,
               if (testing_type == "n_tests_completed") {
                 ds %>%
                   rvest::html_elements("table") %>%
-                  `[[`(2) %>%
-                  rvest::html_table() %>%
+                  {.[[grep("Total number of tests", .)]]} %>%
+                  rvest::html_table(header = FALSE) %>%
+                  dplyr::filter(.data$X1 == "Total number of tests") %>%
                   dplyr::select(2) %>%
-                  dplyr::slice(1) %>%
                   as.character() %>%
                   readr::parse_number() %>%
                   data.frame(
@@ -95,10 +95,10 @@ process_yt <- function(uuid, val, fmt, ds,
               } else if (testing_type == "n_people_tested") {
                 ds %>%
                   rvest::html_elements("table") %>%
-                  `[[`(2) %>%
-                  rvest::html_table() %>%
+                  {.[[grep("Total people tested", .)]]} %>%
+                  rvest::html_table(header = FALSE) %>%
+                  dplyr::filter(.data$X1 == "Total people tested") %>%
                   dplyr::select(2) %>%
-                  dplyr::slice(2) %>%
                   as.character() %>%
                   readr::parse_number() %>%
                   data.frame(
@@ -116,10 +116,10 @@ process_yt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
-                `[[`(3) %>%
-                rvest::html_table() %>%
+                {.[[grep("Total doses", .)]]} %>%
+                rvest::html_table(header = FALSE) %>%
+                dplyr::filter(.data$X1 == "Total doses") %>%
                 dplyr::select(2) %>%
-                dplyr::slice(3) %>%
                 as.character() %>%
                 readr::parse_number() %>%
                 data.frame(
@@ -136,10 +136,10 @@ process_yt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
-                `[[`(3) %>%
-                rvest::html_table() %>%
+                {.[[grep("2nd shot", .)]]} %>%
+                rvest::html_table(header = FALSE) %>%
+                dplyr::filter(.data$X1 == "2nd shot") %>%
                 dplyr::select(2) %>%
-                dplyr::slice(2) %>%
                 as.character() %>%
                 readr::parse_number() %>%
                 data.frame(
