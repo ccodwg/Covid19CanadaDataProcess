@@ -125,6 +125,60 @@ process_nl <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "8419f6f1-b80b-4247-84e5-6414ab0154d8" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$total_cases) %>%
+                dplyr::rename(value = .data$total_cases) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$total_deaths) %>%
+                dplyr::rename(value = .data$total_deaths) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$total_recovered) %>%
+                dplyr::rename(value = .data$total_recovered) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "testing" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$total_tests_delivered) %>%
+                dplyr::rename(value = .data$total_tests_delivered) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
