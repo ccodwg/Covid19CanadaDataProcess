@@ -40,7 +40,7 @@ process_yt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
-                {.[[grep("Deceased", .)]]} %>%
+                {.[[grep("Confirmed Yukon resident cases", .)[1]]]} %>%
                 rvest::html_table(header = FALSE) %>%
                 dplyr::filter(.data$X1 == "Deceased") %>%
                 dplyr::select(2) %>%
@@ -60,7 +60,7 @@ process_yt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
-                {.[[grep("Recovered", .)]]} %>%
+                {.[[grep("Confirmed Yukon resident cases", .)[1]]]} %>%
                 rvest::html_table(header = FALSE) %>%
                 dplyr::filter(.data$X1 == "Recovered") %>%
                 dplyr::select(2) %>%
@@ -82,7 +82,7 @@ process_yt <- function(uuid, val, fmt, ds,
               if (testing_type == "n_tests_completed") {
                 ds %>%
                   rvest::html_elements("table") %>%
-                  {.[[grep("Total number of tests", .)]]} %>%
+                  {.[[grep("Total number of tests", .)[1]]]} %>%
                   rvest::html_table(header = FALSE) %>%
                   dplyr::filter(.data$X1 == "Total number of tests") %>%
                   dplyr::select(2) %>%
@@ -95,7 +95,7 @@ process_yt <- function(uuid, val, fmt, ds,
               } else if (testing_type == "n_people_tested") {
                 ds %>%
                   rvest::html_elements("table") %>%
-                  {.[[grep("Total people tested", .)]]} %>%
+                  {.[[grep("Total number of tests", .)[1]]]} %>%
                   rvest::html_table(header = FALSE) %>%
                   dplyr::filter(.data$X1 == "Total people tested") %>%
                   dplyr::select(2) %>%
@@ -116,7 +116,7 @@ process_yt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
-                {.[[grep("Total doses", .)]]} %>%
+                {.[[grep("Total adults and children", .)[1]]]} %>%
                 rvest::html_table(header = FALSE) %>%
                 dplyr::filter(.data$X1 == "Total doses") %>%
                 dplyr::select(2) %>%
@@ -136,7 +136,7 @@ process_yt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
-                {.[[grep("2nd shot", .)]]} %>%
+                {.[[grep("Total adults and children", .)[1]]]} %>%
                 rvest::html_table(header = FALSE) %>%
                 dplyr::filter(.data$X1 == "2nd shot") %>%
                 dplyr::select(2) %>%
