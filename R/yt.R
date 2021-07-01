@@ -20,7 +20,7 @@ process_yt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
-                {.[[grep("Confirmed Yukon resident cases", .)]]} %>%
+                {.[[grep("Confirmed Yukon resident cases", .)[1]]]} %>%
                 rvest::html_table(header = FALSE) %>%
                 dplyr::filter(.data$X1 == "Confirmed Yukon resident cases") %>%
                 dplyr::select(2) %>%
