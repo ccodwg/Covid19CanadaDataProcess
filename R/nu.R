@@ -111,14 +111,15 @@ process_nu <- function(uuid, val, fmt, ds,
       )
     },
     "bd18a4e4-bc22-47c6-b601-1aae39667a03" = {
+      # geometry to extract dose numbers from table image
+      dose_1_geom <- c("38x14-680-112")
+      dose_2_geom <- c("38x14-790-112")
       switch(
         val,
         "vaccine_administration" = {
           switch(
             fmt,
             "prov_cum_current" = {
-              dose_1_geom <- c("38x14-680-112")
-              dose_2_geom <- c("38x14-790-112")
               dose_1 <- ds %>%
                 # crop to dose 1
                 magick::image_crop(geometry = dose_1_geom) %>%
@@ -154,9 +155,9 @@ process_nu <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 # crop to dose 2
-                magick::image_crop(geometry = "40x20-849-115") %>%
+                magick::image_crop(geometry = dose_2_geom) %>%
                 # increase contrast
-                magick::image_transparent("white", fuzz = 50) %>%
+                magick::image_transparent("white", fuzz = 10) %>%
                 magick::image_background("white") %>%
                 # ocr text
                 tesseract::ocr() %>%
