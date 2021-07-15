@@ -284,6 +284,66 @@ process_qc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "68e5cbb9-0dcc-4a4f-ade0-58a0b06b1455" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                dplyr::slice(1:20) %>%
+                dplyr::rename(
+                  sub_region_1 = .data$Categorie,
+                  value = .data$Nb_Cas_Cumulatif) %>%
+                dplyr::select(
+                  .data$sub_region_1,
+                  .data$value
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                dplyr::slice(1:20) %>%
+                dplyr::rename(
+                  sub_region_1 = .data$Categorie,
+                  value = .data$Nb_Deces_Cumulatif_Total) %>%
+                dplyr::select(
+                  .data$sub_region_1,
+                  .data$value
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                dplyr::slice(1:20) %>%
+                dplyr::rename(
+                  sub_region_1 = .data$Categorie,
+                  value = .data$Nb_Retablis_Cumulatif) %>%
+                dplyr::select(
+                  .data$sub_region_1,
+                  .data$value
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
