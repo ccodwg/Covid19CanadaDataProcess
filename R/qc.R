@@ -293,6 +293,13 @@ process_qc <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 dplyr::slice(1:20) %>%
+                # strip numbers from region names
+                dplyr::mutate(
+                  Categorie = ifelse(
+                    .data$Categorie %in% c("R\u00E9gion inconnue", "Hors Qu\u00E9bec"),
+                    .data$Categorie,
+                    stringr::str_sub(.data$Categorie, 6, nchar(.data$Categorie)))
+                ) %>%
                 dplyr::rename(
                   sub_region_1 = .data$Categorie,
                   value = .data$Nb_Cas_Cumulatif) %>%
@@ -311,6 +318,13 @@ process_qc <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 dplyr::slice(1:20) %>%
+                # strip numbers from region names
+                dplyr::mutate(
+                  Categorie = ifelse(
+                    .data$Categorie %in% c("R\u00E9gion inconnue", "Hors Qu\u00E9bec"),
+                    .data$Categorie,
+                    stringr::str_sub(.data$Categorie, 6, nchar(.data$Categorie)))
+                ) %>%
                 dplyr::rename(
                   sub_region_1 = .data$Categorie,
                   value = .data$Nb_Deces_Cumulatif_Total) %>%
@@ -329,6 +343,13 @@ process_qc <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 dplyr::slice(1:20) %>%
+                # strip numbers from region names
+                dplyr::mutate(
+                  Categorie = ifelse(
+                    .data$Categorie %in% c("R\u00E9gion inconnue", "Hors Qu\u00E9bec"),
+                    .data$Categorie,
+                    stringr::str_sub(.data$Categorie, 6, nchar(.data$Categorie)))
+                ) %>%
                 dplyr::rename(
                   sub_region_1 = .data$Categorie,
                   value = .data$Nb_Retablis_Cumulatif) %>%
