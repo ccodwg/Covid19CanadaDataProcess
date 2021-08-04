@@ -83,8 +83,9 @@ webdriver_wait_for_element <- function(webdriver, By, value, timeout) {
   # check for element
   element <- NULL
   while (is.null(element)) {
-    element <- tryCatch({webdriver$client$findElement(using = By, value = value)},
-                        error = function(e){NULL})
+    element <- suppressWarnings(
+      tryCatch({webdriver$client$findElement(using = By, value = value)},
+               error = function(e){NULL}))
     # check timeout
     if (as.numeric(Sys.time() - start_time) > timeout) {
       stop("Timeout exceeded while waiting for element to be visible.")
