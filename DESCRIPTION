@@ -1,6 +1,6 @@
 Package: Covid19CanadaDataProcess
 Title: Process Canadian COVID-19 Data
-Version: 0.1.0
+Version: 0.2.0
 Authors@R:
     person(given = "Jean-Paul R.",
            family = "Soucy",
