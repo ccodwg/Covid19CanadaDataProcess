@@ -63,6 +63,45 @@ process_nt <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "66fbe91e-34c0-4f7f-aa94-cf6c14db0158" = {
+      url <- Covid19CanadaData::get_dataset_list() %>%
+        dplyr::filter(uuid == "66fbe91e-34c0-4f7f-aa94-cf6c14db0158") %>%
+        dplyr::pull(url)
+      switch(
+        val,
+        "testing" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              web <- Covid19CanadaData::webdriver_open(url)
+              # click on testing tab (when element is visible)
+              webdriver_wait_for_element(
+                web,
+                "xpath",
+                "/html/body/div[1]/nav/div/ul/li[2]/a",
+                10)$clickElement()
+              # extract HTML
+              Sys.sleep(10) # wait for page to load
+              ds <- web$client$getPageSource()
+              # tidy up
+              Covid19CanadaData::webdriver_close(web)
+              # parse HTML
+              ds[[1]] %>%
+                rvest::read_html() %>%
+                rvest::html_element("#PCR") %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
