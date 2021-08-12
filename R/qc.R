@@ -191,7 +191,8 @@ process_qc <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 dplyr::slice_tail(n = 1) %>%
-                dplyr::transmute(value = .data$RSS99_DOSES_Total_cumu) %>%
+                # dplyr::transmute(value = .data$RSS99_DOSES_Total_cumu) %>%
+                dplyr::transmute(value = .data$RSSAL_DOSES_Total_cumu) %>% # includes non-residents
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
@@ -203,7 +204,8 @@ process_qc <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 dplyr::slice_tail(n = 1) %>%
-                dplyr::transmute(value = .data$RSS99_DOSE_Numero2_cumu) %>%
+                # dplyr::transmute(value = .data$RSS99_DOSE_Numero2_cumu) %>%
+                dplyr::transmute(value = .data$RSSAL_DOSE_Numero2_cumu) %>% # includes non-residents
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
