@@ -21,8 +21,8 @@ process_pe <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_table() %>%
                 `[[`(1) %>%
+                dplyr::filter(grepl("Total cases", .data$X1)) %>%
                 dplyr::select(2) %>%
-                dplyr::slice(2) %>%
                 as.character() %>%
                 readr::parse_number() %>%
                 data.frame(
@@ -52,8 +52,8 @@ process_pe <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_table() %>%
                 `[[`(1) %>%
+                dplyr::filter(grepl("Recovered cases", .data$X1)) %>%
                 dplyr::select(2) %>%
-                dplyr::slice(4) %>%
                 as.character() %>%
                 readr::parse_number() %>%
                 data.frame(
@@ -71,12 +71,10 @@ process_pe <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_table() %>%
                 `[[`(1) %>%
+                dplyr::filter(grepl("tests completed", .data$X1)) %>%
                 dplyr::select(2) %>%
-                dplyr::slice(2, 3) %>%
-                dplyr::pull() %>%
                 as.character() %>%
                 readr::parse_number() %>%
-                sum() %>%
                 data.frame(
                   value = .
                 ) %>%
