@@ -120,9 +120,9 @@ process_on <- function(uuid, val, fmt, ds,
     },
     "73fffd44-fbad-4de8-8d32-00cc5ae180a6" = {
       switch(
-        value,
+        val,
         "recovered" = {
-          swtich(
+          switch(
             fmt,
             "prov_cum_current" = {
               ds %>%
