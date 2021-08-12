@@ -118,6 +118,28 @@ process_on <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "73fffd44-fbad-4de8-8d32-00cc5ae180a6" = {
+      switch(
+        value,
+        "recovered" = {
+          swtich(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                dplyr::select(.data$PHU_NAME, .data$RESOLVED_CASES) %>%
+                dplyr::filter(.data$PHU_NAME != "") %>%
+                dplyr::group_by(.data$PHU_NAME) %>%
+                dplyr::slice_tail(n = 1) %>%
+                dplyr::ungroup() %>%
+                dplyr::summarize(value = sum(.data$RESOLVED_CASES)) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
