@@ -134,7 +134,9 @@ process_on <- function(uuid, val, fmt, ds,
                 dplyr::group_by(.data$PHU_NAME) %>%
                 dplyr::slice_tail(n = 1) %>%
                 dplyr::summarize(value = sum(
-                  .data$ACTIVE_CASES + .data$RESOLVED_CASES + .data$DEATHS)) %>%
+                  .data$ACTIVE_CASES + .data$RESOLVED_CASES + .data$DEATHS),
+                  .groups = "drop") %>%
+                dplyr::rename(sub_region_1 = .data$PHU_NAME) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current)
               },
             e_fmt()
@@ -149,7 +151,8 @@ process_on <- function(uuid, val, fmt, ds,
                 dplyr::filter(.data$PHU_NAME != "") %>%
                 dplyr::group_by(.data$PHU_NAME) %>%
                 dplyr::slice_tail(n = 1) %>%
-                dplyr::summarize(value = sum(.data$DEATHS)) %>%
+                dplyr::summarize(value = sum(.data$DEATHS), .groups = "drop") %>%
+                dplyr::rename(sub_region_1 = .data$PHU_NAME) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
@@ -164,7 +167,8 @@ process_on <- function(uuid, val, fmt, ds,
                 dplyr::filter(.data$PHU_NAME != "") %>%
                 dplyr::group_by(.data$PHU_NAME) %>%
                 dplyr::slice_tail(n = 1) %>%
-                dplyr::summarize(value = sum(.data$RESOLVED_CASES)) %>%
+                dplyr::summarize(value = sum(.data$RESOLVED_CASES), .groups = "drop") %>%
+                dplyr::rename(sub_region_1 = .data$PHU_NAME) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current)
               },
             e_fmt()
