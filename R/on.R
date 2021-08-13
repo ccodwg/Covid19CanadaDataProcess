@@ -121,6 +121,40 @@ process_on <- function(uuid, val, fmt, ds,
     "73fffd44-fbad-4de8-8d32-00cc5ae180a6" = {
       switch(
         val,
+        "cases" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                dplyr::select(.data$PHU_NAME,
+                              .data$ACTIVE_CASES,
+                              .data$RESOLVED_CASES,
+                              .data$DEATHS) %>%
+                dplyr::filter(.data$PHU_NAME != "") %>%
+                dplyr::group_by(.data$PHU_NAME) %>%
+                dplyr::slice_tail(n = 1) %>%
+                dplyr::summarize(value = sum(
+                  .data$ACTIVE_CASES + .data$RESOLVED_CASES + .data$DEATHS)) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+              },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                dplyr::select(.data$PHU_NAME, .data$DEATHS) %>%
+                dplyr::filter(.data$PHU_NAME != "") %>%
+                dplyr::group_by(.data$PHU_NAME) %>%
+                dplyr::slice_tail(n = 1) %>%
+                dplyr::summarize(value = sum(.data$DEATHS)) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
         "recovered" = {
           switch(
             fmt,
@@ -130,10 +164,9 @@ process_on <- function(uuid, val, fmt, ds,
                 dplyr::filter(.data$PHU_NAME != "") %>%
                 dplyr::group_by(.data$PHU_NAME) %>%
                 dplyr::slice_tail(n = 1) %>%
-                dplyr::ungroup() %>%
                 dplyr::summarize(value = sum(.data$RESOLVED_CASES)) %>%
-                helper_cum_current(loc = "prov", val, prov, date_current)
-            },
+                helper_cum_current(loc = "hr", val, prov, date_current)
+              },
             e_fmt()
           )
         },
