@@ -8,7 +8,7 @@
 \usage{
 helper_cum_current(.data, loc = c("prov", "hr"), val, prov, date_current)
 
-helper_ts(.data, loc = c("prov", "hr"), val, prov)
+helper_ts(.data, loc = c("prov", "hr"), val, prov, convert_to_cum = FALSE)
 }
 \arguments{
 \item{.data}{The dataset to be processed.}
@@ -20,6 +20,8 @@ helper_ts(.data, loc = c("prov", "hr"), val, prov)
 \item{prov}{The province.}
 
 \item{date_current}{The date provided to cum_current (usually the current date).}
+
+\item{convert_to_cum}{Convert values to cumulative values? Default: FALSE.}
 }
 \description{
 Helper functions for \code{\link{process_dataset}}

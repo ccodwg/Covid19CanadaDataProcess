@@ -50,9 +50,10 @@ helper_cum_current <- function(.data, loc = c("prov", "hr"),
 #' @param loc One of "prov" or "hr", depending on the spatial resolution.
 #' @param val The value.
 #' @param prov The province.
+#' @param convert_to_cum Convert values to cumulative values? Default: FALSE.
 #' @rdname process_dataset_helpers
 helper_ts <- function(.data, loc = c("prov", "hr"),
-                               val, prov) {
+                               val, prov, convert_to_cum = FALSE) {
   match.arg(loc, choices = c("prov", "hr"), several.ok = FALSE)
   if (!inherits(.data$date, "Date")) {stop("Make sure the date variable is formatted as Date.")}
   date_seq <- seq.Date(from = min(.data$date), to = max(.data$date), by = "day")
@@ -80,6 +81,11 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
       dplyr::arrange(.data$name, .data$date) %>%
       tidyr::fill(.data$value, .direction = "down") %>%
       tidyr::replace_na(list(value = 0)) %>%
+      {if (convert_to_cum) {
+        dplyr::mutate(., value = cumsum(.data$value))
+      } else {
+        .
+      }} %>%
       dplyr::mutate(value = as.integer(.data$value))
   } else {
     sub_region_1_names <- sort(unique(.data$sub_region_1))
@@ -109,6 +115,11 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
       dplyr::group_by(.data$sub_region_1) %>%
       tidyr::fill(.data$value, .direction = "down") %>%
       tidyr::replace_na(list(value = 0)) %>%
+      {if (convert_to_cum) {
+        dplyr::mutate(., value = cumsum(.data$value))
+        } else {
+          .
+          }} %>%
       dplyr::ungroup() %>%
       dplyr::mutate(value = as.integer(.data$value))
   }
