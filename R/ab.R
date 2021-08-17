@@ -128,10 +128,8 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds %>%
-                rvest::html_elements("table") %>%
-                `[`(14) %>%
                 rvest::html_table() %>%
-                `[[`(1) %>%
+                {.[[grep("Total administered", lapply(., names))[1]]]} %>%
                 # rename first column
                 dplyr::rename("Provider" = 1) %>%
                 # filter to total
@@ -153,10 +151,8 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds %>%
-                rvest::html_elements("table") %>%
-                `[`(14) %>%
                 rvest::html_table() %>%
-                `[[`(1) %>%
+                {.[[grep("Total administered", lapply(., names))[1]]]} %>%
                 # rename first column
                 dplyr::rename("Provider" = 1) %>%
                 # filter to total
