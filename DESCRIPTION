@@ -15,6 +15,7 @@ LazyData: true
 Imports:
     Covid19CanadaData,
     dplyr,
+    tidyr,
     magick,
     magrittr,
     methods,
