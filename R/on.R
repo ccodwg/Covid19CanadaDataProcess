@@ -205,6 +205,41 @@ process_on <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "4b214c24-8542-4d26-a850-b58fc4ef6a30" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "ts_prov" = {
+              ds %>%
+                dplyr::select(.data$date, .data$hospitalizations) %>%
+                dplyr::mutate(date = as.Date(.data$date)) %>%
+                dplyr::group_by(.data$date) %>%
+                dplyr::summarize(value = sum(.data$hospitalizations), .groups = "drop") %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "ts_prov" = {
+              ds %>%
+                dplyr::select(.data$date, .data$icu_current_covid, .data$icu_former_covid) %>%
+                dplyr::mutate(date = as.Date(.data$date)) %>%
+                dplyr::group_by(.data$date) %>%
+                dplyr::summarize(value = sum(.data$icu_current_covid + .data$icu_former_covid),
+                                 .groups = "drop") %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
