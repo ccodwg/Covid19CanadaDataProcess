@@ -393,6 +393,38 @@ process_qc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "f0c25e20-2a6c-4f9a-adc3-61b28ab97245" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "ts_prov" = {
+              ds %>%
+                dplyr::select(.data$Date, .data$ACT_Total_RSS99) %>%
+                dplyr::mutate(Date = as.Date(.data$Date)) %>%
+                dplyr::rename(date = .data$Date, value = .data$ACT_Total_RSS99) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "ts_prov" = {
+              ds %>%
+                dplyr::select(.data$Date, .data$ACT_Si_RSS99) %>%
+                dplyr::mutate(Date = as.Date(.data$Date)) %>%
+                dplyr::rename(date = .data$Date, value = .data$ACT_Si_RSS99) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
