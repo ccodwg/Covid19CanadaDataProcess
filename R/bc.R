@@ -136,6 +136,30 @@ process_bc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "ab6abe51-c9b1-4093-b625-93de1ddb6302" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ds %>%
+                dplyr::select(.data$HA, .data$Reported_Date) %>%
+                dplyr::count(.data$HA, .data$Reported_Date) %>%
+                dplyr::mutate(Reported_Date = as.Date(.data$Reported_Date)) %>%
+                dplyr::rename(
+                  sub_region_1 = .data$HA,
+                  date = .data$Reported_Date,
+                  value = .data$n
+                ) %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }

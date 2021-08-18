@@ -17,15 +17,17 @@ process_on <- function(uuid, val, fmt, ds,
         "cases" = {
           switch(
             fmt,
-            "hr_cum_current" = {
+            "hr_ts" = {
               ds %>%
-                dplyr::select(.data$Reporting_PHU) %>%
-                dplyr::count(.data$Reporting_PHU) %>%
+                dplyr::select(.data$Reporting_PHU, .data$Case_Reported_Date) %>%
+                dplyr::count(.data$Reporting_PHU, .data$Case_Reported_Date) %>%
+                dplyr::mutate(Case_Reported_Date = as.Date(.data$Case_Reported_Date)) %>%
                 dplyr::rename(
                   sub_region_1 = .data$Reporting_PHU,
+                  date = .data$Case_Reported_Date,
                   value = .data$n
                 ) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current)
+                helper_ts(loc = "hr", val, prov, convert_to_cum = TRUE)
             },
             e_fmt()
           )
@@ -124,20 +126,28 @@ process_on <- function(uuid, val, fmt, ds,
         "cases" = {
           switch(
             fmt,
-            "prov_cum_current" = {
+            "hr_ts" = {
               ds %>%
-                dplyr::select(.data$PHU_NAME,
-                              .data$ACTIVE_CASES,
-                              .data$RESOLVED_CASES,
-                              .data$DEATHS) %>%
+                dplyr::select(
+                  .data$FILE_DATE,
+                  .data$PHU_NAME,
+                  .data$ACTIVE_CASES,
+                  .data$RESOLVED_CASES,
+                  .data$DEATHS) %>%
                 dplyr::filter(.data$PHU_NAME != "") %>%
-                dplyr::group_by(.data$PHU_NAME) %>%
-                dplyr::slice_tail(n = 1) %>%
-                dplyr::summarize(value = sum(
-                  .data$ACTIVE_CASES + .data$RESOLVED_CASES + .data$DEATHS),
-                  .groups = "drop") %>%
-                dplyr::rename(sub_region_1 = .data$PHU_NAME) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current)
+                dplyr::rowwise() %>%
+                dplyr::mutate(value = sum(.data$ACTIVE_CASES + .data$RESOLVED_CASES + .data$DEATHS)) %>%
+                dplyr::ungroup() %>%
+                dplyr::mutate(FILE_DATE = as.Date(.data$FILE_DATE)) %>%
+                dplyr::rename(
+                  date = .data$FILE_DATE,
+                  sub_region_1 = .data$PHU_NAME) %>%
+                dplyr::select(
+                  .data$sub_region_1,
+                  .data$date,
+                  .data$value
+                ) %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
               },
             e_fmt()
           )
@@ -145,15 +155,24 @@ process_on <- function(uuid, val, fmt, ds,
         "mortality" = {
           switch(
             fmt,
-            "prov_cum_current" = {
+            "hr_ts" = {
               ds %>%
-                dplyr::select(.data$PHU_NAME, .data$DEATHS) %>%
+                dplyr::select(
+                  .data$FILE_DATE,
+                  .data$PHU_NAME,
+                  .data$DEATHS) %>%
                 dplyr::filter(.data$PHU_NAME != "") %>%
-                dplyr::group_by(.data$PHU_NAME) %>%
-                dplyr::slice_tail(n = 1) %>%
-                dplyr::summarize(value = sum(.data$DEATHS), .groups = "drop") %>%
-                dplyr::rename(sub_region_1 = .data$PHU_NAME) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current)
+                dplyr::mutate(FILE_DATE = as.Date(.data$FILE_DATE)) %>%
+                dplyr::rename(
+                  date = .data$FILE_DATE,
+                  sub_region_1 = .data$PHU_NAME,
+                  value = .data$DEATHS) %>%
+                dplyr::select(
+                  .data$sub_region_1,
+                  .data$date,
+                  .data$value
+                ) %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
@@ -161,15 +180,24 @@ process_on <- function(uuid, val, fmt, ds,
         "recovered" = {
           switch(
             fmt,
-            "prov_cum_current" = {
+            "hr_ts" = {
               ds %>%
-                dplyr::select(.data$PHU_NAME, .data$RESOLVED_CASES) %>%
+                dplyr::select(
+                  .data$FILE_DATE,
+                  .data$PHU_NAME,
+                  .data$RESOLVED_CASES) %>%
                 dplyr::filter(.data$PHU_NAME != "") %>%
-                dplyr::group_by(.data$PHU_NAME) %>%
-                dplyr::slice_tail(n = 1) %>%
-                dplyr::summarize(value = sum(.data$RESOLVED_CASES), .groups = "drop") %>%
-                dplyr::rename(sub_region_1 = .data$PHU_NAME) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current)
+                dplyr::mutate(FILE_DATE = as.Date(.data$FILE_DATE)) %>%
+                dplyr::rename(
+                  date = .data$FILE_DATE,
+                  sub_region_1 = .data$PHU_NAME,
+                  value = .data$RESOLVED_CASES) %>%
+                dplyr::select(
+                  .data$sub_region_1,
+                  .data$date,
+                  .data$value
+                ) %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
               },
             e_fmt()
           )

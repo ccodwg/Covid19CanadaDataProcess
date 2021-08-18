@@ -17,23 +17,24 @@ process_qc <- function(uuid, val, fmt, ds,
         "cases" = {
           switch(
             fmt,
-            "hr_cum_current" = {
+            "hr_ts" = {
               ds %>%
                 dplyr::filter(
                   .data$Regroupement == "R\u00E9gion" & # unicode
-                    .data$Croisement != "RSS99" # all of Quebec
+                    .data$Croisement != "RSS99" & # all of Quebec
+                    .data$Date != "Date inconnue"
                 ) %>%
-                dplyr::select(.data$Nom, .data$cas_cum_tot_n) %>%
-                dplyr::group_by(.data$Nom) %>%
-                dplyr::slice_tail(n = 1) %>%
-                dplyr::ungroup() %>%
-                # clean RSS names
-                dplyr::mutate(Nom = sub("\\d{2} - ", "", .data$Nom)) %>%
+                dplyr::select(.data$Nom, .data$Date, .data$cas_cum_tot_n) %>%
+                # clean RSS names and convert dates
+                dplyr::mutate(
+                  Nom = sub("\\d{2} - ", "", .data$Nom),
+                  Date = as.Date(.data$Date)) %>%
                 dplyr::rename(
                   sub_region_1 = .data$Nom,
+                  date = .data$Date,
                   value = .data$cas_cum_tot_n
                 ) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current)
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
@@ -41,23 +42,24 @@ process_qc <- function(uuid, val, fmt, ds,
         "mortality" = {
           switch(
             fmt,
-            "hr_cum_current" = {
+            "hr_ts" = {
               ds %>%
                 dplyr::filter(
                   .data$Regroupement == "R\u00E9gion" & # unicode
-                    .data$Croisement != "RSS99" # all of Quebec
-                  ) %>%
-                dplyr::select(.data$Nom, .data$dec_cum_tot_n) %>%
-                dplyr::group_by(.data$Nom) %>%
-                dplyr::slice_tail(n = 1) %>%
-                dplyr::ungroup() %>%
-                # clean RSS names
-                dplyr::mutate(Nom = sub("\\d{2} - ", "", .data$Nom)) %>%
+                    .data$Croisement != "RSS99" & # all of Quebec
+                    .data$Date != "Date inconnue"
+                ) %>%
+                dplyr::select(.data$Nom, .data$Date, .data$dec_cum_tot_n) %>%
+                # clean RSS names and convert dates
+                dplyr::mutate(
+                  Nom = sub("\\d{2} - ", "", .data$Nom),
+                  Date = as.Date(.data$Date)) %>%
                 dplyr::rename(
                   sub_region_1 = .data$Nom,
+                  date = .data$Date,
                   value = .data$dec_cum_tot_n
                 ) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current)
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
@@ -65,21 +67,31 @@ process_qc <- function(uuid, val, fmt, ds,
         "recovered" = {
           switch(
             fmt,
-            "prov_cum_current" = {
+            "hr_ts" = {
               ds %>%
                 dplyr::filter(
                   .data$Regroupement == "R\u00E9gion" & # unicode
-                    .data$Croisement == "RSS99" # all of Quebec
+                    .data$Croisement != "RSS99" & # all of Quebec
+                    .data$Date != "Date inconnue"
                 ) %>%
-                dplyr::slice_tail(n = 1) %>%
+                dplyr::select(.data$Nom, .data$Date,
+                              .data$cas_cum_tot_n, .data$act_cum_tot_n, .data$dec_cum_tot_n) %>%
+                # clean RSS names and convert dates
+                dplyr::mutate(
+                  Nom = sub("\\d{2} - ", "", .data$Nom),
+                  Date = as.Date(.data$Date)) %>%
+                # calculate recovered
                 dplyr::mutate(
                   value =
                     .data$cas_cum_tot_n -
                     .data$act_cum_tot_n -
                     .data$dec_cum_tot_n
                 ) %>%
-                dplyr::select(.data$value) %>%
-                helper_cum_current(loc = "prov", val, prov, date_current)
+                dplyr::rename(
+                  sub_region_1 = .data$Nom,
+                  date = .data$Date,
+                ) %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
@@ -88,29 +100,43 @@ process_qc <- function(uuid, val, fmt, ds,
           match.arg(testing_type, c("n_people_tested", "n_eligible_tests_completed"), several.ok = FALSE)
           switch(
             fmt,
-            "prov_cum_current" = {
+            "hr_ts" = {
               if (testing_type == "n_people_tested") {
                 ds %>%
                   dplyr::filter(
                     .data$Regroupement == "R\u00E9gion" & # unicode
-                      .data$Croisement == "RSS99" # all of Quebec
+                      .data$Croisement != "RSS99" & # all of Quebec
+                      .data$Date != "Date inconnue"
                   ) %>%
-                  dplyr::slice_tail(n = 1) %>%
-                  dplyr::select(.data$psi_cum_tes_n) %>%
-                  dplyr::rename(value = .data$psi_cum_tes_n) %>%
-                  helper_cum_current(loc = "prov", val, prov, date_current)
+                  dplyr::select(.data$Nom, .data$Date, .data$psi_cum_tes_n) %>%
+                  # clean RSS names and convert dates
+                  dplyr::mutate(
+                    Nom = sub("\\d{2} - ", "", .data$Nom),
+                    Date = as.Date(.data$Date)) %>%
+                  dplyr::rename(
+                    sub_region_1 = .data$Nom,
+                    date = .data$Date,
+                    value = .data$psi_cum_tes_n
+                  ) %>%
+                  helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
               } else if (testing_type == "n_eligible_tests_completed") {
                 ds %>%
                   dplyr::filter(
                     .data$Regroupement == "R\u00E9gion" & # unicode
-                      .data$Croisement == "RSS99" # all of Quebec
+                      .data$Croisement != "RSS99" & # all of Quebec
+                      .data$Date != "Date inconnue"
                   ) %>%
-                  dplyr::select(.data$psi_quo_tes_n) %>%
-                  sum() %>%
-                  data.frame(
-                    value = .
+                  dplyr::select(.data$Nom, .data$Date, .data$psi_quo_tes_n) %>%
+                  # clean RSS names and convert dates
+                  dplyr::mutate(
+                    Nom = sub("\\d{2} - ", "", .data$Nom),
+                    Date = as.Date(.data$Date)) %>%
+                  dplyr::rename(
+                    sub_region_1 = .data$Nom,
+                    date = .data$Date,
+                    value = .data$psi_quo_tes_n
                   ) %>%
-                  helper_cum_current(loc = "prov", val, prov, date_current)
+                  helper_ts(loc = "hr", val, prov, convert_to_cum = TRUE)
               }
             },
             e_fmt()

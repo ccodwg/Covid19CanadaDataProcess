@@ -16,15 +16,17 @@ process_ab <- function(uuid, val, fmt, ds,
         "cases" = {
           switch(
             fmt,
-            "hr_cum_current" = {
+            "hr_ts" = {
               ds %>%
-                dplyr::select(.data$Alberta.Health.Services.Zone) %>%
-                dplyr::count(.data$Alberta.Health.Services.Zone) %>%
+                dplyr::select(.data$Alberta.Health.Services.Zone, .data$Date.reported) %>%
+                dplyr::count(.data$Alberta.Health.Services.Zone, .data$Date.reported) %>%
+                dplyr::mutate(Date.reported = as.Date(.data$Date.reported)) %>%
                 dplyr::rename(
                   sub_region_1 = .data$Alberta.Health.Services.Zone,
+                  date = .data$Date.reported,
                   value = .data$n
                 ) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current)
+                helper_ts(loc = "hr", val, prov, convert_to_cum = TRUE)
             },
             e_fmt()
           )
