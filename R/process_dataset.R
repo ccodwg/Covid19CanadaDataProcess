@@ -14,6 +14,8 @@
 #'  \item vaccine_distribution
 #'  \item vaccine_administration
 #'  \item vaccine_completion
+#'  \item hospitalizations
+#'  \item icu
 #' }
 #'
 #' @param uuid The UUID of the dataset from datasets.json.
@@ -33,7 +35,9 @@ process_dataset <- function(uuid,
                               "testing",
                               "vaccine_distribution",
                               "vaccine_administration",
-                              "vaccine_completion"
+                              "vaccine_completion",
+                              "hospitalizations",
+                              "icu"
                             ),
                             fmt,
                             ds,
@@ -58,7 +62,9 @@ process_dataset <- function(uuid,
                 "testing",
                 "vaccine_distribution",
                 "vaccine_administration",
-                "vaccine_completion"),
+                "vaccine_completion",
+                "hospitalizations",
+                "icu"),
     several.ok = FALSE
   )
 

@@ -211,7 +211,7 @@ process_on <- function(uuid, val, fmt, ds,
         "hospitalizations" = {
           switch(
             fmt,
-            "ts_prov" = {
+            "prov_ts" = {
               ds %>%
                 dplyr::select(.data$date, .data$hospitalizations) %>%
                 dplyr::mutate(date = as.Date(.data$date)) %>%
@@ -225,7 +225,7 @@ process_on <- function(uuid, val, fmt, ds,
         "icu" = {
           switch(
             fmt,
-            "ts_prov" = {
+            "prov_ts" = {
               ds %>%
                 dplyr::select(.data$date, .data$icu_current_covid, .data$icu_former_covid) %>%
                 dplyr::mutate(date = as.Date(.data$date)) %>%

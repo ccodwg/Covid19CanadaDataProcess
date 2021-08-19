@@ -35,6 +35,8 @@ The currently supported values are the following:
  \item vaccine_distribution
  \item vaccine_administration
  \item vaccine_completion
+ \item hospitalizations
+ \item icu
 }
 }
 \keyword{internal}

@@ -7,7 +7,7 @@
 process_dataset(
   uuid,
   val = c("cases", "mortality", "recovered", "testing", "vaccine_distribution",
-    "vaccine_administration", "vaccine_completion"),
+    "vaccine_administration", "vaccine_completion", "hospitalizations", "icu"),
   fmt,
   ds,
   ...
@@ -44,5 +44,7 @@ The currently supported values are the following:
  \item vaccine_distribution
  \item vaccine_administration
  \item vaccine_completion
+ \item hospitalizations
+ \item icu
 }
 }

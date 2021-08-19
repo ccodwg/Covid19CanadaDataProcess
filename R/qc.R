@@ -399,7 +399,7 @@ process_qc <- function(uuid, val, fmt, ds,
         "hospitalizations" = {
           switch(
             fmt,
-            "ts_prov" = {
+            "prov_ts" = {
               ds %>%
                 dplyr::select(.data$Date, .data$ACT_Total_RSS99) %>%
                 dplyr::mutate(Date = as.Date(.data$Date)) %>%
@@ -412,7 +412,7 @@ process_qc <- function(uuid, val, fmt, ds,
         "icu" = {
           switch(
             fmt,
-            "ts_prov" = {
+            "prov_ts" = {
               ds %>%
                 dplyr::select(.data$Date, .data$ACT_Si_RSS99) %>%
                 dplyr::mutate(Date = as.Date(.data$Date)) %>%
