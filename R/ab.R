@@ -17,10 +17,22 @@ process_ab <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_ts" = {
+              # calculate number of cases with unknown zone
+              n_unknown <- ds %>%
+                dplyr::filter(.data$Alberta.Health.Services.Zone == "Unknown") %>% nrow
               ds %>%
                 dplyr::select(.data$Alberta.Health.Services.Zone, .data$Date.reported) %>%
                 dplyr::count(.data$Alberta.Health.Services.Zone, .data$Date.reported) %>%
                 dplyr::mutate(Date.reported = as.Date(.data$Date.reported)) %>%
+                # unknown cases should only be reported for the most recent date
+                # should be zero for all other dates
+                dplyr::mutate(
+                  n = dplyr::case_when(
+                    .data$Alberta.Health.Services.Zone == "Unknown" &
+                      .data$Date.reported == max(.data$Date.reported) ~ n_unknown,
+                    .data$Alberta.Health.Services.Zone == "Unknown" ~ as.integer(0),
+                    TRUE ~ .data$n
+                    )) %>%
                 dplyr::rename(
                   sub_region_1 = .data$Alberta.Health.Services.Zone,
                   date = .data$Date.reported,
