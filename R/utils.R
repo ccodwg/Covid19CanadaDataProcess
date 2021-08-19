@@ -65,6 +65,12 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
       province = prov,
       value = as.integer(.data$value)
     ) %>%
+      dplyr::arrange(.data$name, .data$date) %>%
+      {if (convert_to_cum) {
+        dplyr::mutate(., value = cumsum(.data$value))
+      } else {
+        .
+      }} %>%
       dplyr::right_join(
         data.frame(
           name = val,
@@ -81,11 +87,6 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
       dplyr::arrange(.data$name, .data$date) %>%
       tidyr::fill(.data$value, .direction = "down") %>%
       tidyr::replace_na(list(value = 0)) %>%
-      {if (convert_to_cum) {
-        dplyr::mutate(., value = cumsum(.data$value))
-      } else {
-        .
-      }} %>%
       dplyr::mutate(value = as.integer(.data$value))
   } else {
     sub_region_1_names <- sort(unique(.data$sub_region_1))
@@ -96,6 +97,14 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
       province = prov,
       value = as.integer(.data$value)
     ) %>%
+      dplyr::arrange(.data$name, .data$date, .data$sub_region_1) %>%
+      {if (convert_to_cum) {
+        dplyr::group_by(., .data$sub_region_1) %>%
+        dplyr::mutate(value = cumsum(.data$value)) %>%
+        dplyr::ungroup()
+      } else {
+        .
+      }} %>%
       dplyr::right_join(
         data.frame(
           name = val,
@@ -115,11 +124,6 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
       dplyr::group_by(.data$sub_region_1) %>%
       tidyr::fill(.data$value, .direction = "down") %>%
       tidyr::replace_na(list(value = 0)) %>%
-      {if (convert_to_cum) {
-        dplyr::mutate(., value = cumsum(.data$value))
-        } else {
-          .
-          }} %>%
       dplyr::ungroup() %>%
       dplyr::mutate(value = as.integer(.data$value))
   }
