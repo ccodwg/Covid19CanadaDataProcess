@@ -86,7 +86,7 @@ process_nt <- function(uuid, val, fmt, ds,
               # parse HTML
               ds[[1]] %>%
                 rvest::read_html() %>%
-                rvest::html_element("#PCR") %>%
+                rvest::html_element("#complete") %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(
