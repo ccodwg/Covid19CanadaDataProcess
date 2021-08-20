@@ -129,6 +129,52 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
   }
 }
 
+#' process_dataset: Common processing for fmt = ts for data with multiple provinces (e.g., Canada-wide data)
+#' @param .data The dataset to be processed.
+#' @param val The value.
+#' @param convert_to_cum Convert values to cumulative values? Default: FALSE.
+#' @rdname process_dataset_helpers
+helper_ts_can <- function(.data, val, convert_to_cum = FALSE) {
+  if (!inherits(.data$date, "Date")) {stop("Make sure the date variable is formatted as Date.")}
+  if (!"province" %in% names(.data)) {stop("Make sure your province column is named 'province'.")}
+  date_seq <- seq.Date(from = min(.data$date), to = max(.data$date), by = "day")
+  date_n <- length(date_seq)
+  provs <- sort(unique(.data$province))
+  prov_n <- length(provs)
+  dplyr::mutate(
+    .data,
+    name = val,
+    value = as.integer(.data$value)
+  ) %>%
+    dplyr::arrange(.data$name, .data$province, .data$date) %>%
+    {if (convert_to_cum) {
+      dplyr::group_by(., .data$province) %>%
+      dplyr::mutate(., value = cumsum(.data$value)) %>%
+      dplyr::ungroup()
+    } else {
+      .
+    }} %>%
+    dplyr::right_join(
+      data.frame(
+        name = val,
+        province = rep(provs, each = date_n),
+        date = rep(date_seq, times = prov_n)
+      ),
+      by = c("name", "province", "date")
+    ) %>%
+    dplyr::select(
+      .data$name,
+      .data$province,
+      .data$date,
+      .data$value) %>%
+    dplyr::arrange(.data$name, .data$province, .data$date) %>%
+    dplyr::group_by(.data$province) %>%
+    tidyr::fill(.data$value, .direction = "down") %>%
+    tidyr::replace_na(list(value = 0)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(value = as.integer(.data$value))
+}
+
 #' Error functions for process_dataset
 #'
 #' Error functions for \code{\link{process_dataset}}

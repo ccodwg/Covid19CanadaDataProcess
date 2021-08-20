@@ -4,11 +4,14 @@
 \alias{process_dataset_helpers}
 \alias{helper_cum_current}
 \alias{helper_ts}
+\alias{helper_ts_can}
 \title{Helper functions for process_dataset}
 \usage{
 helper_cum_current(.data, loc = c("prov", "hr"), val, prov, date_current)
 
 helper_ts(.data, loc = c("prov", "hr"), val, prov, convert_to_cum = FALSE)
+
+helper_ts_can(.data, val, convert_to_cum = FALSE)
 }
 \arguments{
 \item{.data}{The dataset to be processed.}
