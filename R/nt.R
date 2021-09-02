@@ -73,11 +73,14 @@ process_nt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               web <- Covid19CanadaData::webdriver_open(url)
               # click on testing tab (when element is visible)
-              webdriver_wait_for_element(
+              elm <- webdriver_wait_for_element(
                 web,
                 "xpath",
                 "/html/body/div[1]/nav/div/ul/li[2]/a",
-                10)$clickElement()
+                10)
+              # wait for page to load before clicking tab
+              Sys.sleep(5)
+              elm$clickElement()
               # extract HTML
               Sys.sleep(10) # wait for page to load
               ds <- web$client$getPageSource()
@@ -109,12 +112,16 @@ process_nt <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               web <- Covid19CanadaData::webdriver_open(url)
-              # click on vaccine doses tab (when element is visible)
-              webdriver_wait_for_element(
+              # click on vaccine doses tab dropdown (when element is visible)
+              elm <- webdriver_wait_for_element(
                 web,
                 "xpath",
                 "/html/body/div[1]/nav/div/ul/li[4]/a",
-                10)$clickElement()
+                10)
+              # wait for page to load before clicking tab
+              Sys.sleep(5)
+              elm$clickElement()
+              # click tab
               webdriver_wait_for_element(
                 web,
                 "xpath",
@@ -146,12 +153,16 @@ process_nt <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               web <- Covid19CanadaData::webdriver_open(url)
-              # click on vaccine doses tab (when element is visible)
-              webdriver_wait_for_element(
+              # click on vaccine doses tab dropdown (when element is visible)
+              elm <- webdriver_wait_for_element(
                 web,
                 "xpath",
                 "/html/body/div[1]/nav/div/ul/li[4]/a",
-                10)$clickElement()
+                10)
+              # wait for page to load before clicking tab
+              Sys.sleep(5)
+              elm$clickElement()
+              # click tab
               webdriver_wait_for_element(
                 web,
                 "xpath",
