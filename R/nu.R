@@ -112,8 +112,8 @@ process_nu <- function(uuid, val, fmt, ds,
     },
     "bd18a4e4-bc22-47c6-b601-1aae39667a03" = {
       # geometry to extract dose numbers from table image
-      dose_1_geom <- c("38x14+679+114")
-      dose_2_geom <- c("38x14+790+114")
+      dose_1_geom <- c("38x14+679+110")
+      dose_2_geom <- c("38x14+790+110")
       switch(
         val,
         "vaccine_administration" = {
