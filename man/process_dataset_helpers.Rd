@@ -7,7 +7,14 @@
 \alias{helper_ts_can}
 \title{Helper functions for process_dataset}
 \usage{
-helper_cum_current(.data, loc = c("prov", "hr"), val, prov, date_current)
+helper_cum_current(
+  .data,
+  loc = c("prov", "hr"),
+  val,
+  prov,
+  date_current,
+  hr = NULL
+)
 
 helper_ts(.data, loc = c("prov", "hr"), val, prov, convert_to_cum = FALSE)
 
@@ -23,6 +30,8 @@ helper_ts_can(.data, val, convert_to_cum = FALSE)
 \item{prov}{The province.}
 
 \item{date_current}{The date provided to cum_current (usually the current date).}
+
+\item{hr}{The health region, if providing data for one specific health region only. Used for ON PHU data only.}
 
 \item{convert_to_cum}{Convert values to cumulative values? Default: FALSE.}
 }

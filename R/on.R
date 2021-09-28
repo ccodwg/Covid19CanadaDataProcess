@@ -3,7 +3,13 @@
 #' @keywords internal
 #' @importFrom rlang .data
 process_on <- function(uuid, val, fmt, ds,
-                       prov, date_current, testing_type) {
+                       prov, hr, date_current, testing_type) {
+
+  # if a health region is specified, pass off to on_phu
+  if (!is.null(hr)) {
+    return(process_on_phu(uuid, val, fmt, ds,
+                          prov, hr, date_current, testing_type))
+  }
 
   # set defaults
   prov <- "ON"

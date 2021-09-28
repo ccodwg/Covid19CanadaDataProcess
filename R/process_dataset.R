@@ -89,10 +89,15 @@ process_dataset <- function(uuid,
   } else {
     testing_type <- NULL
   }
+  if (methods::hasArg("hr")) {
+    hr <- dots[["hr"]]
+  } else {
+    hr <- NULL
+  }
 
   # pass arguments to processing function
   dat_processed <- process_fun(uuid, val, fmt, ds,
-                               prov, date_current, testing_type)
+                               prov, hr, date_current, testing_type)
 
   # return processed data
   dat_processed
