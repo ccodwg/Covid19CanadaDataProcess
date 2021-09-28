@@ -5,7 +5,14 @@
 \alias{helper_cum_current}
 \title{Helper functions for process_dataset}
 \usage{
-helper_cum_current(.data, loc = c("prov", "hr"), val, prov, date_current)
+helper_cum_current(
+  .data,
+  loc = c("prov", "hr"),
+  val,
+  prov,
+  date_current,
+  hr = NULL
+)
 }
 \arguments{
 \item{.data}{The dataset to be processed.}
@@ -17,6 +24,8 @@ helper_cum_current(.data, loc = c("prov", "hr"), val, prov, date_current)
 \item{prov}{The province.}
 
 \item{date_current}{The date provided to cum_current (usually the current date).}
+
+\item{hr}{The health region, if providing data for one specific health region only. Used for ON PHU data only.}
 }
 \description{
 Helper functions for \code{\link{process_dataset}}

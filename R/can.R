@@ -3,7 +3,7 @@
 #' @keywords internal
 #' @importFrom rlang .data
 process_can <- function(uuid, val, fmt, ds,
-                       prov, date_current, testing_type) {
+                       prov, hr, date_current, testing_type) {
   # function: province abbreviation to province name (PHAC)
   phac_prov <- function(p) {
     dplyr::case_when(

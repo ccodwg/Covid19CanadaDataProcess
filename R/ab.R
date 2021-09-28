@@ -3,7 +3,7 @@
 #' @keywords internal
 #' @importFrom rlang .data
 process_ab <- function(uuid, val, fmt, ds,
-                       prov, date_current, testing_type) {
+                       prov, hr, date_current, testing_type) {
   # set defaults
   prov <- "AB"
 

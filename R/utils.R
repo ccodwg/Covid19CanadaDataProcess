@@ -11,9 +11,10 @@ NULL
 #' @param val The value.
 #' @param prov The province.
 #' @param date_current The date provided to cum_current (usually the current date).
+#' @param hr The health region, if providing data for one specific health region only. Used for ON PHU data only.
 #' @rdname process_dataset_helpers
 helper_cum_current <- function(.data, loc = c("prov", "hr"),
-                               val, prov, date_current) {
+                               val, prov, date_current, hr = NULL) {
   match.arg(loc, choices = c("prov", "hr"), several.ok = FALSE)
   if (loc == "prov") {
     dplyr::mutate(
@@ -36,6 +37,12 @@ helper_cum_current <- function(.data, loc = c("prov", "hr"),
       date = date_current,
       value = as.integer(.data$value)
     ) %>%
+      {if (!is.null(hr)) {
+        dplyr::mutate(
+          .,
+          sub_region_1 = hr
+        )
+      } else {.}} %>%
       dplyr::select(
         .data$name,
         .data$province,
