@@ -95,7 +95,7 @@ process_nl <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    "3c0bcd2e-e563-4426-b2d8-3928cbce9f37" = {
+    "25ca2057-978c-49b8-a9e6-1a1f70732659" = {
       switch(
         val,
         "vaccine_administration" = {
@@ -103,8 +103,8 @@ process_nl <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds$features$attributes %>%
-                dplyr::select(.data$TotalAdmin) %>%
-                dplyr::rename(value = .data$TotalAdmin) %>%
+                dplyr::select(.data$Administered) %>%
+                dplyr::rename(value = .data$Administered) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
@@ -115,8 +115,8 @@ process_nl <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds$features$attributes %>%
-                dplyr::select(.data$TotalAdmin, .data$OneDose) %>%
-                dplyr::transmute(value = .data$TotalAdmin - .data$OneDose) %>%
+                dplyr::select(.data$Vaccinated) %>%
+                dplyr::rename(value = .data$Vaccinated) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
