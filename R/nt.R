@@ -35,9 +35,14 @@ process_nt <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_cum_current" = {
-              data.frame(
-                value = 0 # deaths are not reported
-              ) %>%
+              ds %>%
+                rvest::html_elements(".metric") %>%
+                {.[grep("Deaths", .)]} %>%
+                rvest::html_text() %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
