@@ -10,8 +10,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
 
   # process datasets
   switch(
-    # Algoma
     uuid,
+    # Algoma
     "685df305-f6c7-4ac2-992b-ec707eb1f1cb" = {
       hr <- "Algoma"
       switch(
