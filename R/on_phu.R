@@ -210,6 +210,61 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    # Toronto
+    "ebad185e-9706-44f4-921e-fc89d5cfa334" = {
+      switch(
+        val,
+        # sheet = "Status"
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                dplyr::filter(.data$`Indicator Name` == "Case Count - Overall") %>%
+                dplyr::pull(.data$`Cumulative Count`) %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        # sheet = "Status"
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                dplyr::filter(.data$`Indicator Name` == "Fatal Cases") %>%
+                dplyr::pull(.data$`Cumulative Count`) %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        # sheet = "Status"
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                dplyr::filter(.data$`Indicator Name` == "Recovered Cases") %>%
+                dplyr::pull(.data$`Cumulative Count`) %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
