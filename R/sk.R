@@ -218,6 +218,54 @@ process_sk <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "61cfdd06-7749-4ae6-9975-d8b4f10d5651" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ds %>%
+                dplyr::select(.data$Region, .data$Date, .data$Total.Cases) %>%
+                dplyr::mutate(Date = as.Date(.data$Date, "%Y/%m/%d")) %>%
+                dplyr::group_by(.data$Date, .data$Region) %>%
+                dplyr::summarize(Total.Cases = sum(.data$Total.Cases, na.rm = TRUE), .groups = "drop_last") %>%
+                dplyr::arrange(.data$Date, .data$Region) %>%
+                tidyr::fill(.data$Total.Cases, .direction = "down") %>%
+                dplyr::rename(
+                  date = .data$Date,
+                  sub_region_1 = .data$Region,
+                  value = .data$Total.Cases
+                ) %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ds %>%
+                dplyr::select(.data$Region, .data$Date, .data$Deaths) %>%
+                dplyr::mutate(Date = as.Date(.data$Date, "%Y/%m/%d")) %>%
+                dplyr::group_by(.data$Date, .data$Region) %>%
+                dplyr::summarize(Deaths = sum(.data$Deaths, na.rm = TRUE), .groups = "drop_last") %>%
+                dplyr::arrange(.data$Date, .data$Region) %>%
+                tidyr::fill(.data$Deaths, .direction = "down") %>%
+                dplyr::rename(
+                  date = .data$Date,
+                  sub_region_1 = .data$Region,
+                  value = .data$Deaths
+                ) %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
