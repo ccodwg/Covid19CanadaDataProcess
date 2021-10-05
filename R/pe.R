@@ -89,6 +89,7 @@ process_pe <- function(uuid, val, fmt, ds,
     "3ff94c42-8b12-4653-a6c9-0ddd8ff343d5" = {
       switch(
         val,
+        # sheet = "Total Doses"
         "vaccine_administration" = {
           switch(
             fmt,
@@ -104,6 +105,7 @@ process_pe <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        # sheet = "Fully Immunized"
         "vaccine_completion" = {
             switch(
               fmt,
