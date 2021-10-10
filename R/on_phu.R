@@ -3,7 +3,7 @@
 #' @keywords internal
 #' @importFrom rlang .data
 process_on_phu <- function(uuid, val, fmt, ds,
-                       prov, hr, date_current, testing_type) {
+                           prov, hr, date_current, testing_type) {
 
   # set defaults
   prov <- "ON"
@@ -25,6 +25,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 {.[[grep("Confirmedcases", .)[1]]]} %>%
                 dplyr::select(.data$`Confirmedcases (2)`) %>%
                 `[[`(1, 1) %>%
+                as.character() %>%
                 readr::parse_number() %>%
                 data.frame(
                   value = .
@@ -39,7 +40,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_table(header = TRUE) %>%
+                rvest::html_elements(header = TRUE) %>%
                 {.[[grep("Deceased", .)[1]]]} %>%
                 dplyr::select(.data$Deceased) %>%
                 `[[`(1, 1) %>%
@@ -67,6 +68,125 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 {data.frame(
                   value = .$`Resolvedcases (3)` - .$Deceased
                 )} %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Eastern
+    "cd1db4e8-c4e5-4b24-86a5-2294281919c6" = {
+      hr <- "Eastern"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>% rvest::html_table(header = TRUE) %>%
+                {.[[grep("Confirmed Cases", .)[1]]]} %>%
+                dplyr::select(.data$`EOHU`) %>%
+                `[[`(1, 1) %>%
+                as.character() %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_nodes("span") %>%
+                rvest::html_text(trim = TRUE) %>%
+                dplyr::nth(8) %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_nodes("span") %>%
+                rvest::html_text(trim = TRUE) %>%
+                dplyr::nth(7) %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Grey Bruce
+    "eac45a46-e5b5-4e75-9393-77995cd7e219" = {
+      hr <- "Grey Bruce"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_nodes(".col-sm-7 p") %>%
+                rvest::html_text(trim = TRUE) %>%
+                dplyr::nth(4) %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_nodes(".col-sm-7 p") %>%
+                rvest::html_text(trim = TRUE) %>%
+                dplyr::nth(8) %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_nodes(".col-sm-7 p") %>%
+                rvest::html_text(trim = TRUE) %>%
+                dplyr::nth(7) %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -141,8 +261,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    # Sudbury
-    "4b9c88a2-9487-4632-adc5-cfd4a2fddb3f" = {
+    # Ottawa
+    "d8d4cbc6-d0a5-4544-ad3e-5a3c3060f973" = {
+      hr <- "Ottawa"
       switch(
         val,
         "cases" = {
@@ -150,11 +271,65 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_table() %>%
-                {.[[grep("Cases1 | Cas1", .)[1]]]} %>%
-                dplyr::filter(.[1] == "Cases1 | Cas1") %>%
-                dplyr::pull(.data$`Current / Actuellement`) %>%
-                sub(" ", "", .) %>%
+                dplyr::mutate(date = lubridate::ymd(.data$Date)) %>%
+                dplyr::filter(.data$date == max(.data$date)) %>%
+                dplyr::pull(.data$Cumulative.Cases.by.Episode.Date) %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                dplyr::mutate(date = lubridate::ymd(.data$Date)) %>%
+                dplyr::filter(.data$date == max(.data$date)) %>%
+                dplyr::pull(.data$Cumulative.Deaths.by.Date.of.Death) %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                dplyr::mutate(date = lubridate::ymd(.data$Date)) %>%
+                dplyr::filter(.data$date == max(.data$date)) %>%
+                dplyr::pull(.data$Cumulative.Resolved.Cases.by.Episode.Date) %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Peterborough
+    "c3aa6a5e-2ff5-4158-83ab-dcde251bc365" = {
+      hr <- "Peterborough"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_nodes("p") %>%
+                rvest::html_text(trim = TRUE) %>%
+                {.[[grep("Total confirmed cases", .)[1]]]} %>%
                 readr::parse_number() %>%
                 data.frame(
                   value = .
@@ -169,11 +344,67 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_table() %>%
-                {.[[grep("Deceased | D\u00E9c\u00E8s", .)[1]]]} %>%
-                dplyr::filter(.[1] == "Deceased | D\u00E9c\u00E8s") %>%
-                dplyr::pull(.data$`Current / Actuellement`) %>%
-                sub(" ", "", .) %>%
+                rvest::html_nodes("p") %>%
+                rvest::html_text(trim = TRUE) %>%
+                {.[[grep("Deaths", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_nodes("p") %>%
+                rvest::html_text(trim = TRUE) %>%
+                {.[[grep("Resolved cases", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Porcupine
+    "00cc3ae2-7bf8-4074-81b7-8e06e91c947a" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_nodes("li") %>%
+                rvest::html_text(trim = TRUE) %>%
+                {.[[grep("Number of Cases", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_nodes("li") %>%
+                rvest::html_text(trim = TRUE) %>%
+                {.[[grep("Deaths", .)[1]]]} %>%
                 readr::parse_number() %>%
                 data.frame(
                   value = .
@@ -188,20 +419,13 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               resolved <- ds %>%
-                rvest::html_table() %>%
-                {.[[grep("Resolved cases2 | Cas r\u00E9gl\u00E9s2", .)[1]]]} %>%
-                dplyr::filter(.[1] == "Resolved cases2 | Cas r\u00E9gl\u00E9s2") %>%
-                dplyr::pull(.data$`Current / Actuellement`) %>%
-                sub(" ", "", .) %>%
-                readr::parse_number()
-              deceased <- ds %>%
-                rvest::html_table() %>%
-                {.[[grep("Deceased | D\u00E9c\u00E8s", .)[1]]]} %>%
-                dplyr::filter(.[1] == "Deceased | D\u00E9c\u00E8s") %>%
-                dplyr::pull(.data$`Current / Actuellement`) %>%
-                sub(" ", "", .) %>%
-                readr::parse_number()
-              data.frame(value = resolved - deceased) %>%
+                rvest::html_nodes("li") %>%
+                rvest::html_text(trim = TRUE) %>%
+                {.[[grep("Recovered", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
