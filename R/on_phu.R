@@ -40,10 +40,11 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(header = TRUE) %>%
+                rvest::html_table(header = TRUE) %>%
                 {.[[grep("Deceased", .)[1]]]} %>%
                 dplyr::select(.data$Deceased) %>%
                 `[[`(1, 1) %>%
+                as.character() %>%
                 readr::parse_number() %>%
                 data.frame(
                   value = .
@@ -64,6 +65,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                   .data$`Resolvedcases (3)`,
                   .data$Deceased) %>%
                 dplyr::slice_head(n = 1) %>%
+                dplyr::mutate(dplyr::across(.cols = dplyr::everything(), as.character)) %>%
                 dplyr::mutate(dplyr::across(.cols = dplyr::everything(), readr::parse_number)) %>%
                 {data.frame(
                   value = .$`Resolvedcases (3)` - .$Deceased
