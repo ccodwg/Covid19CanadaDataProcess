@@ -106,9 +106,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_nodes("span") %>%
+                rvest::html_elements(".col-sm-6 .mb-0 , span") %>%
                 rvest::html_text(trim = TRUE) %>%
-                dplyr::nth(8) %>%
+                {.[grep("Total Deceased", .)+1]} %>%
                 readr::parse_number() %>%
                 data.frame(
                   value = .
@@ -123,9 +123,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_nodes("span") %>%
+                rvest::html_elements(".col-sm-6 .mb-0 , span") %>%
                 rvest::html_text(trim = TRUE) %>%
-                dplyr::nth(7) %>%
+                {.[grep("Total Resolved", .)+1]} %>%
                 readr::parse_number() %>%
                 data.frame(
                   value = .
@@ -148,9 +148,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_nodes(".col-sm-7 p") %>%
+                rvest::html_elements(".col-sm-7 p") %>%
                 rvest::html_text(trim = TRUE) %>%
-                dplyr::nth(4) %>%
+                {.[[grep("confirmed cases", .)[1]]]} %>%
                 readr::parse_number() %>%
                 data.frame(
                   value = .
@@ -165,9 +165,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_nodes(".col-sm-7 p") %>%
+                rvest::html_elements(".col-sm-7 p") %>%
                 rvest::html_text(trim = TRUE) %>%
-                dplyr::nth(8) %>%
+                {.[[grep("death", .)[1]]]} %>%
                 readr::parse_number() %>%
                 data.frame(
                   value = .
@@ -182,9 +182,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_nodes(".col-sm-7 p") %>%
+                rvest::html_elements(".col-sm-7 p") %>%
                 rvest::html_text(trim = TRUE) %>%
-                dplyr::nth(7) %>%
+                {.[[grep("resolved cases", .)[1]]]} %>%
                 readr::parse_number() %>%
                 data.frame(
                   value = .
@@ -329,7 +329,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_nodes("p") %>%
+                rvest::html_elements("p") %>%
                 rvest::html_text(trim = TRUE) %>%
                 {.[[grep("Total confirmed cases", .)[1]]]} %>%
                 readr::parse_number() %>%
@@ -346,7 +346,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_nodes("p") %>%
+                rvest::html_elements("p") %>%
                 rvest::html_text(trim = TRUE) %>%
                 {.[[grep("Deaths", .)[1]]]} %>%
                 readr::parse_number() %>%
@@ -363,7 +363,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_nodes("p") %>%
+                rvest::html_elements("p") %>%
                 rvest::html_text(trim = TRUE) %>%
                 {.[[grep("Resolved cases", .)[1]]]} %>%
                 readr::parse_number() %>%
@@ -387,7 +387,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_nodes("li") %>%
+                rvest::html_elements("li") %>%
                 rvest::html_text(trim = TRUE) %>%
                 {.[[grep("Number of Cases", .)[1]]]} %>%
                 readr::parse_number() %>%
@@ -404,7 +404,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_nodes("li") %>%
+                rvest::html_elements("li") %>%
                 rvest::html_text(trim = TRUE) %>%
                 {.[[grep("Deaths", .)[1]]]} %>%
                 readr::parse_number() %>%
@@ -421,7 +421,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_nodes("li") %>%
+                rvest::html_elements("li") %>%
                 rvest::html_text(trim = TRUE) %>%
                 {.[[grep("Recovered", .)[1]]]} %>%
                 readr::parse_number() %>%
