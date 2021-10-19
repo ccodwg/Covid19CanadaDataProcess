@@ -16,7 +16,6 @@ Imports:
     Covid19CanadaData,
     dplyr,
     tidyr,
-    lubridate,
     magick,
     magrittr,
     methods,
