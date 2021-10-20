@@ -597,7 +597,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_table(header = FALSE) %>%
                 {.[[1]]} %>%
-                dplyr::filter(.data$X1 = ="Deceased") %>%
+                dplyr::filter(.data$X1 == "Deceased") %>%
                 {.[2]} %>%
                 as.character() %>%
                 readr::parse_number() %>%
