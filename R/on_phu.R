@@ -748,6 +748,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
     },
     # York
     "3821cc66-f88d-4f12-99ca-d36d368872cd" = {
+      hr <- "York"
       switch(
         val,
         "cases" = {
@@ -782,7 +783,6 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 dplyr::summarise(value = dplyr::n()) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
-
             e_fmt()
           )
         },
