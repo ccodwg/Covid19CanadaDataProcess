@@ -183,6 +183,29 @@ process_ab <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "vaccine_dose3" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                rvest::html_table() %>%
+                {.[[grep("Total administered", lapply(., names))[1]]]} %>%
+                # rename first column
+                dplyr::rename("Provider" = 1) %>%
+                # filter to total
+                dplyr::filter(.data$Provider == "Total") %>%
+                # select second doses
+                dplyr::select(.data[["Dose 3"]]) %>%
+                as.character() %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
         e_val()
       )
     },
