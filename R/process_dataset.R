@@ -99,8 +99,17 @@ process_dataset <- function(uuid,
   }
 
   # pass arguments to processing function
-  dat_processed <- process_fun(uuid, val, fmt, ds,
-                               prov, hr, date_current, testing_type)
+  dat_processed <- tryCatch(
+    process_fun(uuid, val, fmt, ds, prov, hr, date_current, testing_type),
+    error = function(e) {
+      print(e)
+      warn <- paste(val, fmt, sep = "/")
+      if (!is.null(hr)) warn <- paste(hr, warn, sep = "/")
+      if (!is.null(prov)) warn <- paste(prov, warn, sep = "/")
+      cat(paste0(warn, " - Failed, returning NA"), fill = TRUE)
+      return(NA)
+    }
+  )
 
   # return processed data
   dat_processed
