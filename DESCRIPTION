@@ -26,4 +26,4 @@ Imports:
     stringr,
     tesseract
 Remotes: ccodwg/Covid19CanadaData
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
