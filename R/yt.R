@@ -116,7 +116,7 @@ process_yt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
-                {.[[grep("Doses administered", .)[3]]]} %>%
+                {.[[grep("Total % vaccinated", .)[1]]]} %>%
                 rvest::html_table(header = FALSE) %>%
                 dplyr::filter(.data$X1 == "Total doses") %>%
                 dplyr::select(2) %>%
@@ -136,7 +136,7 @@ process_yt <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
-                {.[[grep("Doses administered", .)[3]]]} %>%
+                {.[[grep("Total % vaccinated", .)[1]]]} %>%
                 rvest::html_table(header = FALSE) %>%
                 dplyr::filter(.data$X1 == "2nd shot") %>%
                 dplyr::select(2) %>%
@@ -149,6 +149,20 @@ process_yt <- function(uuid, val, fmt, ds,
             },
             e_fmt()
           )
+        },
+        "vaccine_dose3" = {
+          ds %>%
+            rvest::html_elements("table") %>%
+            {.[[grep("Total % vaccinated", .)[1]]]} %>%
+            rvest::html_table(header = FALSE) %>%
+            dplyr::filter(.data$X1 == "3rd shot") %>%
+            dplyr::select(2) %>%
+            as.character() %>%
+            readr::parse_number() %>%
+            data.frame(
+              value = .
+            ) %>%
+            helper_cum_current(loc = "prov", val, prov, date_current)
         },
         e_val()
       )
