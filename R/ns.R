@@ -154,7 +154,7 @@ process_ns <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
-        "vaccine_thirddose" = {
+        "vaccine_dose3" = {
           switch(
             fmt,
             "prov_cum_current" = {
