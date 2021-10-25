@@ -154,6 +154,22 @@ process_ns <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "vaccine_thirddose" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                rvest::html_text2() %>%
+                stringr::str_extract("(?<!\\S)(\\d*\\.?\\d+|\\d{1,3}(,\\d{3})*(\\.\\d+)?)(?!\\S)(?=[a-zA-Z\\s]* third dose)") %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
         e_val()
       )
     },
