@@ -6,9 +6,9 @@
 \usage{
 process_dataset(
   uuid,
-  val = c("cases", "mortality", "recovered", "testing", "vaccine_distribution",
-    "vaccine_administration", "vaccine_completion", "vaccine_dose3", "hospitalizations",
-    "icu"),
+  val = c("cases", "mortality", "recovered", "active", "testing",
+    "vaccine_distribution", "vaccine_administration", "vaccine_completion",
+    "vaccine_dose3", "hospitalizations", "icu"),
   fmt,
   ds,
   ...
@@ -41,6 +41,7 @@ The currently supported values are the following:
  \item cases
  \item mortality
  \item recovered
+ \item active
  \item testing
  \item vaccine_distribution
  \item vaccine_administration

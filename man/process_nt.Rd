@@ -31,6 +31,7 @@ The currently supported values are the following:
  \item cases
  \item mortality
  \item recovered
+ \item active
  \item testing
  \item vaccine_distribution
  \item vaccine_administration

@@ -10,6 +10,7 @@
 #'  \item cases
 #'  \item mortality
 #'  \item recovered
+#'  \item active
 #'  \item testing
 #'  \item vaccine_distribution
 #'  \item vaccine_administration
@@ -33,6 +34,7 @@ process_dataset <- function(uuid,
                               "cases",
                               "mortality",
                               "recovered",
+                              "active",
                               "testing",
                               "vaccine_distribution",
                               "vaccine_administration",
@@ -61,6 +63,7 @@ process_dataset <- function(uuid,
     choices = c("cases",
                 "mortality",
                 "recovered",
+                "active",
                 "testing",
                 "vaccine_distribution",
                 "vaccine_administration",
