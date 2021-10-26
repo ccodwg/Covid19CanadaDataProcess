@@ -23,7 +23,6 @@ Imports:
     readr,
     rlang,
     rvest,
-    stringr,
-    tesseract
+    stringr
 Remotes: ccodwg/Covid19CanadaData
 RoxygenNote: 7.1.2

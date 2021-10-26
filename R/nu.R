@@ -20,7 +20,7 @@ process_nu <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_table(header = TRUE) %>%
-                `[[`(1) %>%
+                {.[[grep("Total confirmed cases", .)[1]]]} %>%
                 dplyr::select(.data$`Total confirmed cases`) %>%
                 as.character() %>%
                 readr::parse_number() %>%
@@ -38,7 +38,7 @@ process_nu <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_table(header = TRUE) %>%
-                `[[`(1) %>%
+                {.[[grep("Deaths", .)[1]]]} %>%
                 dplyr::select(.data$Deaths) %>%
                 as.character() %>%
                 readr::parse_number() %>%
@@ -56,7 +56,7 @@ process_nu <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_table(header = TRUE) %>%
-                `[[`(1) %>%
+                {.[[grep("Total recovered cases", .)[1]]]} %>%
                 dplyr::select(.data$`Total recovered cases`) %>%
                 as.character() %>%
                 readr::parse_number() %>%
@@ -76,7 +76,7 @@ process_nu <- function(uuid, val, fmt, ds,
               if (testing_type == "n_tests_completed") {
                 ds %>%
                   rvest::html_table(header = TRUE) %>%
-                  `[[`(1) %>%
+                  {.[[grep("Total tests", .)[1]]]} %>%
                   dplyr::select(.data$`Total tests`) %>%
                   as.character() %>%
                   readr::parse_number() %>%
@@ -87,7 +87,7 @@ process_nu <- function(uuid, val, fmt, ds,
               } else if (testing_type == "n_people_tested") {
                 ds %>%
                   rvest::html_table(header = TRUE) %>%
-                  `[[`(3) %>%
+                  {.[[grep("Tests Negative", .)[1]]]} %>%
                   dplyr::filter(.data$Community == "Total") %>%
                   dplyr::select(
                     .data$`Tests Positive`,
@@ -97,52 +97,32 @@ process_nu <- function(uuid, val, fmt, ds,
                     `Tests Positive` = readr::parse_number(
                       as.character(.data$`Tests Positive`)), # in case someone adds a special character, e.g. "*"
                     `Tests Negative` = readr::parse_number(
-                      as.character(.data$`Tests Negative`)),
-                    value = .data$`Tests Positive` + .data$`Tests Negative`
+                      as.character(.data$`Tests Negative`))
                   ) %>%
-                  dplyr::select(.data$value) %>%
+                  dplyr::transmute(value = .data$`Tests Positive` + .data$`Tests Negative`) %>%
                   helper_cum_current(loc = "prov", val, prov, date_current)
               }
             },
             e_fmt()
           )
         },
-        e_val()
-      )
-    },
-    "bd18a4e4-bc22-47c6-b601-1aae39667a03" = {
-      # geometry to extract dose numbers from table image
-      dose_1_geom <- c("38x14+679+112")
-      dose_2_geom <- c("38x14+790+112")
-      switch(
-        val,
         "vaccine_administration" = {
           switch(
             fmt,
             "prov_cum_current" = {
-              dose_1 <- ds %>%
-                # crop to dose 1
-                magick::image_crop(geometry = dose_1_geom) %>%
-                # increase contrast
-                magick::image_transparent("white", fuzz = 10) %>%
-                magick::image_background("white") %>%
-                # ocr text
-                tesseract::ocr() %>%
-                # read number
-                readr::parse_number()
-              dose_2 <- ds %>%
-                # crop to dose 2
-                magick::image_crop(geometry = dose_2_geom) %>%
-                # increase contrast
-                magick::image_transparent("white", fuzz = 10) %>%
-                magick::image_background("white") %>%
-                # ocr text
-                tesseract::ocr() %>%
-                # read number
-                readr::parse_number()
-                (dose_1 + dose_2) %>%
-                data.frame(
-                  value = .
+              ds %>%
+                rvest::html_table(header = TRUE) %>%
+                {.[[grep("Total persons vaccinated with at least one dose in Nunavut", .)[1]]]} %>%
+                dplyr::select(
+                  .data$`Total persons vaccinated with at least one dose in Nunavut`,
+                  .data$`Total persons vaccinated with two doses in Nunavut`
+                  ) %>%
+                dplyr::transmute(
+                  dose_1 = readr::parse_number(as.character(.data$`Total persons vaccinated with at least one dose in Nunavut`)),
+                  dose_2 = readr::parse_number(as.character(.data$`Total persons vaccinated with two doses in Nunavut`))
+                ) %>%
+                dplyr::transmute(
+                  value = .data$dose_1 + .data$dose_2
                 ) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
@@ -151,24 +131,20 @@ process_nu <- function(uuid, val, fmt, ds,
         },
         "vaccine_completion" = {
           switch(
-            fmt,
-            "prov_cum_current" = {
-              ds %>%
-                # crop to dose 2
-                magick::image_crop(geometry = dose_2_geom) %>%
-                # increase contrast
-                magick::image_transparent("white", fuzz = 10) %>%
-                magick::image_background("white") %>%
-                # ocr text
-                tesseract::ocr() %>%
-                # read number
-                readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
-                helper_cum_current(loc = "prov", val, prov, date_current)
-            },
-            e_fmt()
+           fmt,
+           "prov_cum_current" = {
+             ds %>%
+               rvest::html_table(header = TRUE) %>%
+               {.[[grep("Total persons vaccinated with two doses in Nunavut", .)[1]]]} %>%
+               dplyr::select(.data$`Total persons vaccinated with two doses in Nunavut`) %>%
+               as.character() %>%
+               readr::parse_number() %>%
+               data.frame(
+                 value = .
+               ) %>%
+               helper_cum_current(loc = "prov", val, prov, date_current)
+           },
+           e_fmt()
           )
         },
         e_val()
