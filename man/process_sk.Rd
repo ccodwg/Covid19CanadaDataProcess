@@ -36,7 +36,7 @@ The currently supported values are the following:
  \item vaccine_distribution
  \item vaccine_administration
  \item vaccine_completion
- \item vaccine_dose3
+ \item vaccine_additional_doses
  \item hospitalizations
  \item icu
 }

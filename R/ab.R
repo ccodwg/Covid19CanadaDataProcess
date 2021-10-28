@@ -183,7 +183,7 @@ process_ab <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
-        "vaccine_dose3" = {
+        "vaccine_additional_doses" = {
           switch(
             fmt,
             "prov_cum_current" = {

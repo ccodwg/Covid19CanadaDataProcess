@@ -150,7 +150,7 @@ process_yt <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
-        "vaccine_dose3" = {
+        "vaccine_additional_doses" = {
           ds %>%
             rvest::html_elements("table") %>%
             {.[[grep("Total % vaccinated", .)[1]]]} %>%

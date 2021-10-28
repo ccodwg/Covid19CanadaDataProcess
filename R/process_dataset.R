@@ -15,7 +15,7 @@
 #'  \item vaccine_distribution
 #'  \item vaccine_administration
 #'  \item vaccine_completion
-#'  \item vaccine_dose3
+#'  \item vaccine_additional_doses
 #'  \item hospitalizations
 #'  \item icu
 #' }
@@ -39,7 +39,7 @@ process_dataset <- function(uuid,
                               "vaccine_distribution",
                               "vaccine_administration",
                               "vaccine_completion",
-                              "vaccine_dose3",
+                              "vaccine_additional_doses",
                               "hospitalizations",
                               "icu"
                             ),
@@ -68,7 +68,7 @@ process_dataset <- function(uuid,
                 "vaccine_distribution",
                 "vaccine_administration",
                 "vaccine_completion",
-                "vaccine_dose3",
+                "vaccine_additional_doses",
                 "hospitalizations",
                 "icu"),
     several.ok = FALSE
