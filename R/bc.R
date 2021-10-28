@@ -133,6 +133,22 @@ process_bc <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "vaccine_additional_doses" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::filter(.data$HA_Name == "BC") %>%
+                dplyr::select(.data$Other_Doses) %>%
+                sum %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
         e_val()
       )
     },
