@@ -69,31 +69,13 @@ process_nt <- function(uuid, val, fmt, ds,
       )
     },
     "66fbe91e-34c0-4f7f-aa94-cf6c14db0158" = {
-      url <- Covid19CanadaData::get_dataset_url("66fbe91e-34c0-4f7f-aa94-cf6c14db0158")
       switch(
         val,
         "testing" = {
           switch(
             fmt,
             "prov_cum_current" = {
-              web <- Covid19CanadaData::webdriver_open(url)
-              # click on testing tab (when element is visible)
-              elm <- webdriver_wait_for_element(
-                web,
-                "xpath",
-                "/html/body/div[1]/nav/div/ul/li[2]/a",
-                10)
-              # wait for page to load before clicking tab
-              Sys.sleep(5)
-              elm$clickElement()
-              # extract HTML
-              Sys.sleep(10) # wait for page to load
-              ds <- web$client$getPageSource()
-              # tidy up
-              Covid19CanadaData::webdriver_close(web)
-              # parse HTML
-              ds[[1]] %>%
-                rvest::read_html() %>%
+              ds %>%
                 rvest::html_element("#complete") %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
@@ -109,37 +91,13 @@ process_nt <- function(uuid, val, fmt, ds,
       )
     },
     "454de458-f7b4-4814-96a6-5a426f8c8c60" = {
-      url <- Covid19CanadaData::get_dataset_url("454de458-f7b4-4814-96a6-5a426f8c8c60")
       switch(
         val,
         "vaccine_administration" = {
           switch(
             fmt,
             "prov_cum_current" = {
-              web <- Covid19CanadaData::webdriver_open(url)
-              # click on vaccine doses tab dropdown (when element is visible)
-              elm <- webdriver_wait_for_element(
-                web,
-                "xpath",
-                "/html/body/div[1]/nav/div/ul/li[4]/a",
-                10)
-              # wait for page to load before clicking tab
-              Sys.sleep(5)
-              elm$clickElement()
-              # click tab
-              webdriver_wait_for_element(
-                web,
-                "xpath",
-                "/html/body/div[1]/nav/div/ul/li[4]/ul/li[2]/a",
-                10)$clickElement()
-              # extract HTML
-              Sys.sleep(10) # wait for page to load
-              ds <- web$client$getPageSource()
-              # tidy up
-              Covid19CanadaData::webdriver_close(web)
-              # parse HTML
-              ds[[1]] %>%
-                rvest::read_html() %>%
+              ds %>%
                 rvest::html_element("#totaldoses") %>%
                 rvest::html_text2() %>%
                 # get everything after last \n
@@ -157,30 +115,7 @@ process_nt <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_cum_current" = {
-              web <- Covid19CanadaData::webdriver_open(url)
-              # click on vaccine doses tab dropdown (when element is visible)
-              elm <- webdriver_wait_for_element(
-                web,
-                "xpath",
-                "/html/body/div[1]/nav/div/ul/li[4]/a",
-                10)
-              # wait for page to load before clicking tab
-              Sys.sleep(5)
-              elm$clickElement()
-              # click tab
-              webdriver_wait_for_element(
-                web,
-                "xpath",
-                "/html/body/div[1]/nav/div/ul/li[4]/ul/li[2]/a",
-                10)$clickElement()
-              # extract HTML
-              Sys.sleep(10) # wait for page to load
-              ds <- web$client$getPageSource()
-              # tidy up
-              Covid19CanadaData::webdriver_close(web)
-              # parse HTML
-              ds[[1]] %>%
-                rvest::read_html() %>%
+              ds %>%
                 rvest::html_element("#totalseconddose") %>%
                 rvest::html_text2() %>%
                 # get everything after last \n
