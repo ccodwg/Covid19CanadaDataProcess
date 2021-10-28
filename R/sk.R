@@ -266,6 +266,31 @@ process_sk <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "28d7f978-9a7b-4933-a520-41b073868d05" = {
+      switch(
+        val,
+        "vaccine_additional_doses" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                rvest::html_table(header = TRUE) %>%
+                {.[[grep("Total Extra Doses", .)[1]]]} %>%
+                dplyr::filter(.data$`Age Range` == "Total") %>%
+                dplyr::pull(.data$`Total Extra Doses`) %>%
+                as.character() %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
