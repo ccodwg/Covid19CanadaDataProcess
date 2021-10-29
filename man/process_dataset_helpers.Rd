@@ -9,7 +9,7 @@
 \usage{
 helper_cum_current(
   .data,
-  loc = c("prov", "hr"),
+  loc = c("prov", "hr", "subhr"),
   val,
   prov,
   date_current,

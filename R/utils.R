@@ -7,48 +7,52 @@ NULL
 
 #' process_dataset: Common processing for fmt = cum_current
 #' @param .data The dataset to be processed.
-#' @param loc One of "prov" or "hr", depending on the spatial resolution.
+#' @param loc One of "prov", "hr" or "subhr", depending on the spatial resolution.
 #' @param val The value.
 #' @param prov The province.
 #' @param date_current The date provided to cum_current (usually the current date).
 #' @param hr The health region, if providing data for one specific health region only. Used for ON PHU data only.
 #' @rdname process_dataset_helpers
-helper_cum_current <- function(.data, loc = c("prov", "hr"),
+helper_cum_current <- function(.data, loc = c("prov", "hr", "subhr"),
                                val, prov, date_current, hr = NULL) {
-  match.arg(loc, choices = c("prov", "hr"), several.ok = FALSE)
+  match.arg(loc, choices = c("prov", "hr", "subhr"), several.ok = FALSE)
+  # add common columns
+  d <- dplyr::mutate(
+    .data,
+    province = prov,
+    date = date_current,
+    value = as.integer(.data$value)
+    )
+  # replace "name" with "val" if "val" is supplied
+  if (!is.null(val)) d <- dplyr::mutate(d, name = val)
   if (loc == "prov") {
-    dplyr::mutate(
-      .data,
-      name = val,
-      province = prov,
-      date = date_current,
-      value = as.integer(.data$value)
-    ) %>%
+    d %>%
       dplyr::select(
-        .data$name,
-        .data$province,
-        .data$date,
-        .data$value)
-  } else {
-    dplyr::mutate(
-      .data,
-      name = val,
-      province = prov,
-      date = date_current,
-      value = as.integer(.data$value)
-    ) %>%
+      .data$name,
+      .data$province,
+      .data$date,
+      .data$value)
+  } else if (loc == "hr") {
+    d %>%
       {if (!is.null(hr)) {
-        dplyr::mutate(
-          .,
-          sub_region_1 = hr
-        )
-      } else {.}} %>%
+        dplyr::mutate(., sub_region_1 = hr)
+    } else {.}} %>%
       dplyr::select(
         .data$name,
         .data$province,
         .data$sub_region_1,
         .data$date,
         .data$value)
+    } else {
+      d %>%
+        dplyr::mutate(sub_region_1 = hr) %>%
+        dplyr::select(
+          .data$name,
+          .data$province,
+          .data$sub_region_1,
+          .data$sub_region_2,
+          .data$date,
+          .data$value)
   }
 }
 
