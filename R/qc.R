@@ -237,6 +237,24 @@ process_qc <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "vaccine_additional_doses" = {
+          total <- ds %>%
+            dplyr::slice_tail(n = 1) %>%
+            # dplyr::transmute(value = .data$RSS99_DOSES_Total_cumu) %>%
+            dplyr::transmute(value = .data$RSSAL_DOSES_Total_cumu) # includes non-residents
+          dose_1 <- ds %>%
+            dplyr::slice_tail(n = 1) %>%
+            # dplyr::transmute(value = .data$RSS99_DOSE_Numero1_cumu) %>%
+            dplyr::transmute(value = .data$RSSAL_DOSE_Numero1_cumu) # includes non-residents
+          dose_2 <- ds %>%
+            dplyr::slice_tail(n = 1) %>%
+            # dplyr::transmute(value = .data$RSS99_DOSE_Numero2_cumu) %>%
+            dplyr::transmute(value = .data$RSSAL_DOSE_Numero2_cumu) # includes non-residents
+          data.frame(
+            value = total - dose_1 - dose_2
+          ) %>%
+            helper_cum_current(loc = "prov", val, prov, date_current)
+        },
         e_val()
       )
     },
