@@ -28,10 +28,14 @@ helper_cum_current <- function(.data, loc = c("prov", "hr", "subhr"),
   if (loc == "prov") {
     d %>%
       dplyr::select(
-      .data$name,
-      .data$province,
-      .data$date,
-      .data$value)
+        .data$name,
+        .data$province,
+        .data$date,
+        .data$value) %>%
+      dplyr::arrange(
+        .data$date,
+        .data$province,
+        .data$name)
   } else if (loc == "hr") {
     d %>%
       {if (!is.null(hr)) {
@@ -42,7 +46,12 @@ helper_cum_current <- function(.data, loc = c("prov", "hr", "subhr"),
         .data$province,
         .data$sub_region_1,
         .data$date,
-        .data$value)
+        .data$value) %>%
+      dplyr::arrange(
+        .data$date,
+        .data$province,
+        .data$sub_region_1,
+        .data$name)
     } else {
       d %>%
         dplyr::mutate(sub_region_1 = hr) %>%
@@ -52,7 +61,13 @@ helper_cum_current <- function(.data, loc = c("prov", "hr", "subhr"),
           .data$sub_region_1,
           .data$sub_region_2,
           .data$date,
-          .data$value)
+          .data$value) %>%
+        dplyr::arrange(
+          .data$date,
+          .data$province,
+          .data$sub_region_1,
+          .data$sub_region_2,
+          .data$name)
   }
 }
 
