@@ -14,6 +14,7 @@
 #'  \item testing
 #'  \item vaccine_distribution
 #'  \item vaccine_administration
+#'  \item vaccine_first_doses
 #'  \item vaccine_completion
 #'  \item vaccine_additional_doses
 #'  \item hospitalizations
@@ -38,6 +39,7 @@ process_dataset <- function(uuid,
                               "testing",
                               "vaccine_distribution",
                               "vaccine_administration",
+                              "vaccine_first_doses",
                               "vaccine_completion",
                               "vaccine_additional_doses",
                               "hospitalizations",
@@ -67,6 +69,7 @@ process_dataset <- function(uuid,
                 "testing",
                 "vaccine_distribution",
                 "vaccine_administration",
+                "vaccine_first_doses",
                 "vaccine_completion",
                 "vaccine_additional_doses",
                 "hospitalizations",
