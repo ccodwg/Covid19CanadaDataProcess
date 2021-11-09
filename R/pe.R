@@ -105,6 +105,22 @@ process_pe <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        # sheet = "Partially or Fully"
+        "vaccine_first_doses" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                as.character() %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
         # sheet = "Fully Immunized"
         "vaccine_completion" = {
             switch(
