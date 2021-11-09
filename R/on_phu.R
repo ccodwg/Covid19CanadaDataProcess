@@ -197,6 +197,76 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    # Hamilton
+    "b8ef690e-d23f-4b7d-8cf8-bc4a0f3d0a84" = {
+      hr <- "Hamilton"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("TotalCases", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("FatalCount", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              # ignore "resolved %"
+              cases <- ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("TotalCases", .)[1]]]} %>%
+                readr::parse_number()
+              mortalities <- ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("FatalCount", .)[1]]]} %>%
+                readr::parse_number()
+              active_cases <- ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("ActiveCount", .)[1]]]} %>%
+                readr::parse_number()
+              data.frame(
+                value = cases - mortalities - active_cases
+              ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     # Northwestern
     "4c56a58b-0cb3-4d71-bafe-9fdb42e5c1d5" = {
       hr <- "Northwestern"
