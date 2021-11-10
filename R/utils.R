@@ -13,6 +13,7 @@ NULL
 #' @param date_current The date provided to cum_current (usually the current date).
 #' @param hr The health region, if providing data for one specific health region only. Used for ON PHU data only.
 #' @rdname process_dataset_helpers
+#' @export
 helper_cum_current <- function(.data, loc = c("prov", "hr", "subhr"),
                                val, prov, date_current, hr = NULL) {
   match.arg(loc, choices = c("prov", "hr", "subhr"), several.ok = FALSE)
@@ -78,6 +79,7 @@ helper_cum_current <- function(.data, loc = c("prov", "hr", "subhr"),
 #' @param prov The province.
 #' @param convert_to_cum Convert values to cumulative values? Default: FALSE.
 #' @rdname process_dataset_helpers
+#' @export
 helper_ts <- function(.data, loc = c("prov", "hr"),
                       val, prov, convert_to_cum = FALSE) {
   match.arg(loc, choices = c("prov", "hr"), several.ok = FALSE)
@@ -160,6 +162,7 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
 #' @param val The value.
 #' @param convert_to_cum Convert values to cumulative values? Default: FALSE.
 #' @rdname process_dataset_helpers
+#' @export
 helper_ts_can <- function(.data, val, convert_to_cum = FALSE) {
   if (!inherits(.data$date, "Date")) {stop("Make sure the date variable is formatted as Date.")}
   if (!"province" %in% names(.data)) {stop("Make sure your province column is named 'province'.")}
@@ -219,5 +222,3 @@ e_val <- function() stop("The specified value cannot be extracted from this UUID
 #' process_dataset: Report value cannot be extracted with specified output format
 #' @rdname process_dataset_e
 e_fmt <- function() stop("The specified output format is not available for this value.")
-
-
