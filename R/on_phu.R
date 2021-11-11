@@ -267,6 +267,156 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    # Lambton
+    "958da0fc-a1cd-4a9a-bad5-76adab3634d2" = {
+      hr <- "Lambton"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>% {.[[grep("Total Confirmed", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>% {.[[grep("Deaths", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>% {.[[grep("Resolved", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Niagara
+    "e1887eb2-538f-4610-bc00-bcd7d929a375" = {
+      hr <- "Niagara"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>% {.[[grep("CasesCount", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>% {.[[grep("Number of deaths", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>% {.[[grep("Count_RecoveredCases", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # North Bay
+    "3178dd11-17af-4478-a72e-e1a35d7d1b2d" = {
+      hr <- "North Bay Parry Sound"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>% {.[[grep("Count of Age Group", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>% {.[[grep("Deaths", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>% {.[[grep("Resolved", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     # Northwestern
     "4c56a58b-0cb3-4d71-bafe-9fdb42e5c1d5" = {
       hr <- "Northwestern"
@@ -381,6 +531,58 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 data.frame(
                   value = .
                 ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Peel
+    "34b7dda2-1843-47e1-9c24-0c2a7ab78431" = {
+      hr <- "Peel"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>% {.[[grep("Total cases", .)[1]]]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>% {.[[grep("Case Count Recovered1", .)[3]]]} %>%
+                gsub("Recovered1","",.) %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>% {.[[grep("Case Count Recovered1", .)[1]]]} %>%
+                gsub("Recovered1","",.) %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -558,6 +760,58 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 data.frame(
                   value = .
                 ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Simcoe Muskoka
+    "7106106a-2f43-4ed2-b2a2-a75a7046ff81" = {
+      hr <- "Simcoe Muskoka"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>% rvest::html_table() %>% {.[[1]]} %>%
+                dplyr::filter(.$X1=="Total # of Confirmed Cases") %>%
+                {.[2]} %>% as.character() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>% rvest::html_table() %>% {.[[1]]} %>%
+                dplyr::filter(.$X1=="Total # of Deaths") %>%
+                {.[2]} %>%
+                as.character() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>% rvest::html_table() %>% {.[[1]]} %>%
+                dplyr::filter(.$X1=="Total # of Resolved Cases") %>%
+                {.[2]} %>%
+                as.character() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
