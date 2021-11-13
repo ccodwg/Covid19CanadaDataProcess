@@ -267,6 +267,61 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    ##########
+    # Middlesex-London
+    "b32a2f6b-7745-4bb1-9f9b-7ad0000d98a0" = {
+      hr <- "Middlesex-London"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".visualContainer") %>%
+                {.[[grep("Total number of confirmed cases", .)[1]]]} %>%
+                rvest::html_element(".textRun") %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".visualContainer") %>%
+                {.[[grep("Total", .)[3]]]} %>%
+                rvest::html_element(".textRun") %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".visualContainer") %>%
+                {.[[grep("Total", .)[5]]]} %>%
+                rvest::html_element(".textRun") %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    ##########
     # Lambton
     "958da0fc-a1cd-4a9a-bad5-76adab3634d2" = {
       hr <- "Lambton"
