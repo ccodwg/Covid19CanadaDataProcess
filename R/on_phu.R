@@ -78,6 +78,186 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    # Brant
+    "2e7a5549-92ae-473d-a97a-7b8e0c1ddbbc" = {
+      hr <- "Brant"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("Total confirmed cases", .)[1]]]} %>%
+                stringr::str_replace_all(., "\\,", "") %>% # Remove commas
+                stringr::str_extract(., "^([^.]+)\\.([^.]+)\\.*") %>% # Keeps everything before the second period
+                stringr::str_replace_all(., "\\.", "") %>% # Remove periods or else readr::parse_number() throws a parsing error
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("Deaths", .)[1]]]} %>%
+                stringr::str_replace_all(., "\\,", "") %>% # Remove commas
+                stringr::str_extract(., "^([^.]+)\\.([^.]+)\\.*") %>% # Keeps everything before the second period
+                stringr::str_replace_all(., "\\.", "") %>% # Remove periods or else readr::parse_number() throws a parsing error
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("Total resolved cases", .)[1]]]} %>%
+                stringr::str_replace_all(., "\\,", "") %>% # Remove commas
+                stringr::str_extract(., "^([^.]+)\\.([^.]+)\\.*") %>% # Keeps everything before the second period
+                stringr::str_replace_all(., "\\.", "") %>% # Remove periods or else readr::parse_number() throws a parsing error
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Chatham-Kent
+    "fe08035c-2c03-4960-a642-bde1fe18c857" = {
+      hr <- "Chatham-Kent"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[c(grep("Total Confirmed Cases", .)-1, grep("Total Confirmed Cases", .))]} %>% # Extract value in the adjacent vector element to the value label
+                stringr::str_c(collapse = " ") %>%
+                stringr::str_replace_all(., "\\.", "") %>% # Need to remove periods or it throws a parsing error %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[c(grep("Total COVID Deaths", .), grep("Total COVID Deaths", .)+1)]} %>% # Extract value in the adjacent vector element to the value label
+                stringr::str_c(collapse = " ") %>%
+                stringr::str_replace_all(., "\\.", "") %>% # Need to remove periods or it throws a parsing error %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[c(grep("Total Resolved Cases", .), grep("Total Resolved Cases", .)+1)]} %>% # Extract value in the adjacent vector element to the value label
+                stringr::str_c(collapse = " ") %>%
+                stringr::str_replace_all(., "\\.", "") %>% # Need to remove periods or it throws a parsing error %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Durham
+    "ba7b0d74-5fe2-41d8-aadb-6320ff9acb21" = {
+      hr <- "Durham"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[grep("CaseCount", .)][1]} %>%  # Extract the first value of CaseCount (corresponds to total deceased but this might not always be the case)
+                stringr::str_replace_all(., "CaseCount", "") %>%
+                stringr::str_replace_all(., "\\.", "") %>%  # Need to remove periods or readr::parse_number() throws a parsing error
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[grep("CaseCount", .)][7]} %>%  # Extract the seventh value of CaseCount (corresponds to total deceased but this might not always be the case)
+                stringr::str_replace_all(., "CaseCount", "") %>%
+                stringr::str_replace_all(., "\\.", "") %>%  # Need to remove periods or readr::parse_number() throws a parsing error
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[grep("CaseCount", .)][4]} %>%  # Extract the fourth value of CaseCount (corresponds to total resolved but this might not always be the case)
+                stringr::str_replace_all(., "CaseCount", "") %>%
+                stringr::str_replace_all(., "\\.", "") %>%  # Need to remove periods or readr::parse_number() throws a parsing error
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     # Eastern
     "cd1db4e8-c4e5-4b24-86a5-2294281919c6" = {
       hr <- "Eastern"
@@ -259,6 +439,59 @@ process_on_phu <- function(uuid, val, fmt, ds,
               data.frame(
                 value = cases - mortalities - active_cases
               ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Kingston Frontenac Lennox & Addington
+    "83d1fa13-7fb3-4079-b3dc-5bc50c584fd3" = {
+      hr <- "Kingston Frontenac Lennox & Addington"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[grep("# of Cases", .)][1]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[grep("# of Deaths", .)][1]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[grep("# of Cases Resolved", .)][1]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
