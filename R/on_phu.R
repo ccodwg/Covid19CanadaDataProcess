@@ -408,7 +408,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_elements(".visualContainer") %>%
                 rvest::html_elements(".card") %>%
-                {.[grep("Count of Case Status 2", .)][1]} %>%
+                {.[grep("Count of Case Status 2", .)][2]} %>%
                 rvest::html_attr("aria-label") %>%
                 sub("Count of Case Status 2", "", .) %>%
                 readr::parse_number() %>%
