@@ -377,6 +377,150 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    # Haldimand-Norfolk
+    "07fcf6b9-6e61-433e-b1a8-a951ee15b01d" = {
+      hr <- "Haldimand-Norfolk"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".visualContainer") %>%
+                {.[grep("All Positive Cases", .)][1]} %>%
+                rvest::html_elements(".card") %>%
+                {.[grep("Count of Result", .)][1]} %>%
+                rvest::html_attr("aria-label") %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".visualContainer") %>%
+                rvest::html_elements(".card") %>%
+                {.[grep("Count of Case Status 2", .)][1]} %>%
+                rvest::html_attr("aria-label") %>%
+                sub("Count of Case Status 2", "", .) %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              recovered <- ds %>%
+                rvest::html_elements(".visualContainer") %>%
+                rvest::html_elements(".card") %>%
+                {.[grep("Count of Cases Status 1", .)][1]} %>%
+                rvest::html_attr("aria-label") %>%
+                sub("Count of Cases Status 1", "", .) %>%
+                readr::parse_number()
+              non_covid_deaths <- ds %>%
+                rvest::html_elements(".visualContainer") %>%
+                rvest::html_elements(".card") %>%
+                {.[grep("Count of Case Status 2", .)][3]} %>% # first two are active cases and mortality
+                rvest::html_attr("aria-label") %>%
+                sub("Count of Case Status 2", "", .) %>%
+                readr::parse_number()
+                data.frame(
+                  value = recovered + non_covid_deaths
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Halton
+    "8d4067a7-4828-4b09-8396-089231cf2e94" = {
+      hr <- "Halton"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                {.[grep("ProbConf", .)][1]} %>%
+                rvest::html_text2() %>%
+                stringr::str_extract("(\\d+|\\d{1,3}(,\\d{3})*)(\\.\\d+)? were confirmed cases") %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_element(".bodyCells") %>%
+                rvest::html_element("div") %>%
+                rvest::html_element("div") %>%
+                rvest::html_children() %>%
+                `[`(7) %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(
+                  value = .
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              resolved <- ds %>%
+                rvest::html_element(".bodyCells") %>%
+                rvest::html_element("div") %>%
+                rvest::html_element("div") %>%
+                rvest::html_children() %>%
+                `[`(5) %>%
+                rvest::html_text2() %>%
+                readr::parse_number()
+              probable_cases <- ds %>%
+                rvest::html_elements(".card") %>%
+                {.[grep("ProbConf", .)][1]} %>%
+                rvest::html_text2() %>%
+                stringr::str_extract("(\\d+|\\d{1,3}(,\\d{3})*)(\\.\\d+)? were probable cases") %>%
+                readr::parse_number()
+              data.frame(
+                value = resolved - probable_cases
+              ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     # Hamilton
     "b8ef690e-d23f-4b7d-8cf8-bc4a0f3d0a84" = {
       hr <- "Hamilton"
