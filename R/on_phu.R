@@ -449,6 +449,99 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    # Haliburton Kawartha Pineridge
+    "c1cd96db-69c3-4970-9a4b-e7bcdc12d39b" = {
+      hr <- "Haliburton Kawartha Pineridge"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              confirmed_cases <- ds %>%
+                rvest::html_elements(".bodyCells") %>%
+                `[`(2) %>% # second table
+                rvest::html_element("div") %>%
+                rvest::html_element("div") %>%
+                rvest::html_children() %>%
+                `[`(5) %>% # Confirmed Cases (Total to date)
+                rvest::html_children() %>%
+                `[`(4) %>% # Total
+                rvest::html_text2() %>%
+                readr::parse_number()
+              probable_deaths <- ds %>%
+                rvest::html_elements(".bodyCells") %>%
+                `[`(2) %>% # second table
+                rvest::html_element("div") %>%
+                rvest::html_element("div") %>%
+                rvest::html_children() %>%
+                `[`(9) %>% # Probable Deaths (Total to date)
+                rvest::html_children() %>%
+                `[`(4) %>% # Total
+                rvest::html_text2() %>%
+                readr::parse_number()
+              data.frame(value = confirmed_cases + probable_deaths) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              confirmed_deaths <- ds %>%
+                rvest::html_elements(".bodyCells") %>%
+                `[`(2) %>% # second table
+                rvest::html_element("div") %>%
+                rvest::html_element("div") %>%
+                rvest::html_children() %>%
+                `[`(8) %>% # Confirmed Deaths (Total to date)
+                rvest::html_children() %>%
+                `[`(4) %>% # Total
+                rvest::html_text2() %>%
+                readr::parse_number()
+              probable_deaths <- ds %>%
+                rvest::html_elements(".bodyCells") %>%
+                `[`(2) %>% # second table
+                rvest::html_element("div") %>%
+                rvest::html_element("div") %>%
+                rvest::html_children() %>%
+                `[`(9) %>% # Probable Deaths (Total to date)
+                rvest::html_children() %>%
+                `[`(4) %>% # Total
+                rvest::html_text2() %>%
+                readr::parse_number()
+              data.frame(value = confirmed_deaths + probable_deaths) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".bodyCells") %>%
+                `[`(2) %>% # second table
+                rvest::html_element("div") %>%
+                rvest::html_element("div") %>%
+                rvest::html_children() %>%
+                `[`(6) %>% # Confirmed Cases Resolved (Total to date)
+                rvest::html_children() %>%
+                `[`(4) %>% # Total
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     # Halton
     "8d4067a7-4828-4b09-8396-089231cf2e94" = {
       hr <- "Halton"
