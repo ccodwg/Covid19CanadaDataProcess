@@ -658,6 +658,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 {.[8]} %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -668,8 +669,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>% {.[[grep("Deaths", .)[1]]]} %>%
+                rvest::html_elements(".textRun") %>%
+                {.[14]} %>%
+                rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
@@ -682,8 +684,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>% {.[[grep("Resolved", .)[1]]]} %>%
+                rvest::html_elements(".textRun") %>%
+                {.[12]} %>%
+                rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
@@ -704,10 +707,12 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".textRun") %>%
-                {.[14]} %>%
+                rvest::html_elements(".visualContainer") %>%
+                {.[[grep("Total number of confirmed cases", .)[1]]]} %>%
+                rvest::html_element(".textRun") %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -718,10 +723,12 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".textRun") %>%
-                {.[12]} %>%
+                rvest::html_elements(".visualContainer") %>%
+                {.[[grep("Total", .)[3]]]} %>%
+                rvest::html_element(".textRun") %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
