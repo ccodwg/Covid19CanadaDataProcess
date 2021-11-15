@@ -709,6 +709,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_element(".textRun") %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -724,6 +725,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_element(".textRun") %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -739,6 +741,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_element(".textRun") %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
