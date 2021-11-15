@@ -645,7 +645,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
       )
     },
     # Lambton
-    "958da0fc-a1cd-4a9a-bad5-76adab3634d2" = {
+    "8d0cf226-b9b7-4fc3-8100-a4f56dec6792" = {
       hr <- "Lambton"
       switch(
         val,
@@ -654,10 +654,10 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>% {.[[grep("Total Confirmed", .)[1]]]} %>%
+                rvest::html_elements(".textRun") %>%
+                {.[8]} %>%
+                rvest::html_text2() %>%
                 readr::parse_number() %>%
-                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -704,12 +704,10 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".visualContainer") %>%
-                {.[[grep("Total number of confirmed cases", .)[1]]]} %>%
-                rvest::html_element(".textRun") %>%
+                rvest::html_elements(".textRun") %>%
+                {.[14]} %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
-                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -720,12 +718,10 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".visualContainer") %>%
-                {.[[grep("Total", .)[3]]]} %>%
-                rvest::html_element(".textRun") %>%
+                rvest::html_elements(".textRun") %>%
+                {.[12]} %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
-                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
