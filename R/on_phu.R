@@ -1447,6 +1447,59 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    # Wellington Dufferin Guelph
+    "e00e2148-b0ea-458b-9f00-3533e0c5ae8e" = {
+      hr <- "Wellington Dufferin Guelph"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".content") %>%
+                {.[grep("Total Confirmed", .)][1]} %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".content") %>%
+                {.[grep("Fatal Cases", .)][1]} %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".content") %>%
+                {.[grep("Total Resolved", .)][1]} %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     # Windsor-Essex
     "01574538-062f-4a41-9dd5-8fdb72a0fe03" = {
       hr <- "Windsor-Essex"
