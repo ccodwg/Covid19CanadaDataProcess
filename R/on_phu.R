@@ -1326,6 +1326,59 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    # Thunder Bay
+    "942e48c4-1148-46e1-a5d3-e25aa9bede05" = {
+      hr <- "Thunder Bay"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements("span") %>%
+                {.[14]} %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements("span") %>%
+                {.[29]} %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements("span") %>%
+                {.[25]} %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     # Timiskaming
     "9c7bbba4-33ba-493a-8ea1-4eedd5149bc0" = {
       hr <- "Timiskaming"
