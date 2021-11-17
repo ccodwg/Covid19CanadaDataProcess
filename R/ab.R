@@ -194,8 +194,8 @@ process_ab <- function(uuid, val, fmt, ds,
                 dplyr::rename("Provider" = 1) %>%
                 # filter to total
                 dplyr::filter(.data$Provider == "Total") %>%
-                # select second doses
-                dplyr::select(.data[["Dose 3"]]) %>%
+                # select additional doses
+                dplyr::select(.data[["Additional dose"]]) %>%
                 as.character() %>%
                 readr::parse_number() %>%
                 data.frame(
