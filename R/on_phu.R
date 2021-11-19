@@ -684,6 +684,29 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    # Hastings Prince Edward
+    "22c51a16-63d6-470c-8b8a-54ae243883b5" = {
+      hr <- "Hastings Prince Edward"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[grep("Total", .)][1]} %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     # Kingston Frontenac Lennox & Addington
     "83d1fa13-7fb3-4079-b3dc-5bc50c584fd3" = {
       hr <- "Kingston Frontenac Lennox & Addington"
