@@ -137,6 +137,25 @@ process_ab <- function(uuid, val, fmt, ds,
     "24a572ea-0de3-4f83-b9b7-8764ea203eb6" = {
       switch(
         val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_element("#geospatial") %>%
+                rvest::html_table() %>%
+                dplyr::select(.data$Zone, .data$Count) %>%
+                dplyr::filter(.data$Zone != "All") %>%
+                dplyr::mutate(Count = readr::parse_number(.data$Count)) %>%
+                dplyr::rename(
+                  sub_region_1 = .data$Zone,
+                  value = .data$Count
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
         "vaccine_administration" = {
           switch(
             fmt,
