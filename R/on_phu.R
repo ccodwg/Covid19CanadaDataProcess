@@ -268,15 +268,13 @@ process_on_phu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_cum_current" = {
-              ds %>% rvest::html_table(header = TRUE) %>%
-                {.[[grep("Confirmed Cases", .)[1]]]} %>%
-                dplyr::select(.data$`EOHU`) %>%
-                `[[`(1, 1) %>%
-                as.character() %>%
+              ds %>%
+                rvest::html_element(".stats") %>%
+                rvest::html_elements(".card") %>%
+                {.[[grep("Total Cumulative Cases", .)[1]]]} %>%
+                rvest::html_text2() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -287,13 +285,12 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".col-sm-6 .mb-0 , span") %>%
-                rvest::html_text(trim = TRUE) %>%
-                {.[grep("Total Deceased", .)+1]} %>%
+                rvest::html_element(".stats") %>%
+                rvest::html_elements(".card") %>%
+                {.[[grep("Total Deceased", .)[1]]]} %>%
+                rvest::html_text2() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -304,13 +301,12 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".col-sm-6 .mb-0 , span") %>%
-                rvest::html_text(trim = TRUE) %>%
-                {.[grep("Total Resolved", .)+1]} %>%
+                rvest::html_element(".stats") %>%
+                rvest::html_elements(".card") %>%
+                {.[[grep("Total Resolved", .)[1]]]} %>%
+                rvest::html_text2() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
