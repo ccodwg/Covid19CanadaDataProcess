@@ -76,7 +76,7 @@ process_nt <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds %>%
-                rvest::html_element("#complete") %>%
+                rvest::html_element("#completed_tests") %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(
