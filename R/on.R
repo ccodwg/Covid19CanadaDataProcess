@@ -123,6 +123,17 @@ process_on <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "vaccine_additional_doses" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                dplyr::slice_tail(n = 1) %>%
+                dplyr::transmute(value = .data$total_individuals_3doses) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            }
+          )
+        },
         e_val()
       )
     },
