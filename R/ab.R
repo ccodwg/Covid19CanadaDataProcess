@@ -89,9 +89,7 @@ process_ab <- function(uuid, val, fmt, ds,
                 rvest::html_elements("li") %>%
                 grep("Recovered cases", ., value = TRUE) %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 dplyr::mutate(
                   name = val,
                   province = prov,
@@ -113,18 +111,14 @@ process_ab <- function(uuid, val, fmt, ds,
                   rvest::html_elements("li") %>%
                   grep("Total tests completed", ., value = TRUE) %>%
                   readr::parse_number() %>%
-                  data.frame(
-                    value = .
-                  ) %>%
+                  data.frame(value = .) %>%
                   helper_cum_current(loc = "prov", val, prov, date_current)
               } else if (testing_type == "n_people_tested") {
                 ds %>%
                   rvest::html_elements("li") %>%
                   grep("People tested", ., value = TRUE) %>%
                   readr::parse_number() %>%
-                  data.frame(
-                    value = .
-                  ) %>%
+                  data.frame(value = .) %>%
                   helper_cum_current(loc = "prov", val, prov, date_current)
               }
             },
@@ -161,8 +155,9 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds %>%
+                rvest::html_elements("table") %>%
+                {.[[grep("Dose 1.*Dose 2.*Total administered", .)]]} %>%
                 rvest::html_table() %>%
-                {.[[grep("Total administered", lapply(., names))[1]]]} %>%
                 # rename first column
                 dplyr::rename("Provider" = 1) %>%
                 # filter to total
@@ -171,9 +166,7 @@ process_ab <- function(uuid, val, fmt, ds,
                 dplyr::select(.data[["Total administered"]]) %>%
                 as.character() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
@@ -184,8 +177,9 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds %>%
+                rvest::html_elements("table") %>%
+                {.[[grep("Dose 1.*Dose 2.*Total administered", .)]]} %>%
                 rvest::html_table() %>%
-                {.[[grep("Total administered", lapply(., names))[1]]]} %>%
                 # rename first column
                 dplyr::rename("Provider" = 1) %>%
                 # filter to total
@@ -194,9 +188,7 @@ process_ab <- function(uuid, val, fmt, ds,
                 dplyr::select(.data[["Dose 2"]]) %>%
                 as.character() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
@@ -207,8 +199,9 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds %>%
+                rvest::html_elements("table") %>%
+                {.[[grep("Dose 1.*Dose 2.*Total administered", .)]]} %>%
                 rvest::html_table() %>%
-                {.[[grep("Total administered", lapply(., names))[1]]]} %>%
                 # rename first column
                 dplyr::rename("Provider" = 1) %>%
                 # filter to total
@@ -217,9 +210,7 @@ process_ab <- function(uuid, val, fmt, ds,
                 dplyr::select(.data[["Additional dose"]]) %>%
                 as.character() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
