@@ -816,7 +816,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 {.[[grep("Text box Total number of deaths", rvest::html_attr(., "aria-label"))[[1]]]]} %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
-                data.frame(value = .)
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
