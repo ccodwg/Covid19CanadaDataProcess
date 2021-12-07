@@ -147,10 +147,9 @@ process_nt <- function(uuid, val, fmt, ds,
                 dplyr::slice(-1, -2) %>%
                 dplyr::rename(
                   sub_region_2 = .data$X1,
-                  active_residents = .data$X2,
-                  active_nonresidents = .data$X3,
-                  cases_cumulative_residents = .data$X4,
-                  cases_cumulative_nonresidents = .data$X5
+                  active = .data$X2,
+                  cases_cumulative_residents = .data$X3,
+                  cases_cumulative_nonresidents = .data$X4
                 ) %>%
                 dplyr::select(
                   .data$sub_region_2,
@@ -170,22 +169,20 @@ process_nt <- function(uuid, val, fmt, ds,
           # special format - includes values for residents and non-residents
           switch(
             fmt,
-            "subhr_current_residents_nonresidents" = {
+            "subhr_current" = {
               ds %>%
                 rvest::html_table(header = FALSE) %>%
                 `[[`(1) %>%
                 dplyr::slice(-1, -2) %>%
                 dplyr::rename(
                   sub_region_2 = .data$X1,
-                  active_residents = .data$X2,
-                  active_nonresidents = .data$X3,
-                  cases_cumulative_residents = .data$X4,
-                  cases_cumulative_nonresidents = .data$X5
+                  active = .data$X2,
+                  cases_cumulative_residents = .data$X3,
+                  cases_cumulative_nonresidents = .data$X4
                 ) %>%
                 dplyr::select(
                   .data$sub_region_2,
-                  .data$active_residents,
-                  .data$active_nonresidents
+                  .data$active
                 ) %>%
                 tidyr::pivot_longer(
                   cols = !.data$sub_region_2,
