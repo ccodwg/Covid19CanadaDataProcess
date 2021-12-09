@@ -113,9 +113,7 @@ process_pe <- function(uuid, val, fmt, ds,
               ds %>%
                 as.character() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
@@ -129,13 +127,25 @@ process_pe <- function(uuid, val, fmt, ds,
                 ds %>%
                   as.character() %>%
                   readr::parse_number() %>%
-                  data.frame(
-                    value = .
-                  ) %>%
+                  data.frame(value = .) %>%
                   helper_cum_current(loc = "prov", val, prov, date_current)
               },
               e_fmt()
             )
+        },
+        # sheet = "Third Doses"
+        "vaccine_additional_doses" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                as.character() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+              },
+            e_fmt()
+          )
         },
         e_val()
       )
