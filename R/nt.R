@@ -103,9 +103,7 @@ process_nt <- function(uuid, val, fmt, ds,
                 # get everything after last \n
                 stringr::str_extract("[^\n]*$") %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
@@ -121,9 +119,23 @@ process_nt <- function(uuid, val, fmt, ds,
                 # get everything after last \n
                 stringr::str_extract("[^\n]*$") %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_additional_doses" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                rvest::html_element("#totalthirddose") %>%
+                rvest::html_text2() %>%
+                # get everything after last \n
+                stringr::str_extract("[^\n]*$") %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
