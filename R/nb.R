@@ -118,9 +118,21 @@ process_nb <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds$features$attributes %>%
-                dplyr::select(.data$TotalAdmin, .data$PopOneDose) %>%
-                dplyr::mutate(value = .data$TotalAdmin - .data$PopOneDose) %>%
+                dplyr::select(.data$PopSecondDose) %>%
+                dplyr::mutate(value = .data$PopSecondDose) %>%
                 dplyr::select(.data$value) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_additional_doses" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$PopBoosterDose) %>%
+                dplyr::rename(value = .data$PopBoosterDose) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
