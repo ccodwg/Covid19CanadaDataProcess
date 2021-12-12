@@ -91,7 +91,7 @@ process_dataset <- function(uuid,
   if (methods::hasArg("date_current")) {
     date_current <- dots[["date_current"]]
   } else {
-    date_current <- as.Date(Sys.Date())
+    date_current <- lubridate::date(lubridate::with_tz(Sys.time(), "America/Toronto"))
   }
   if (methods::hasArg("testing_type")) {
     testing_type <- dots[["testing_type"]]
