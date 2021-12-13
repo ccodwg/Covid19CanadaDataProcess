@@ -150,10 +150,11 @@ process_nb <- function(uuid, val, fmt, ds,
             "prov_ts" = {
               ds$features$attributes %>%
                 dplyr::select(.data$Date, .data$Hospitalizations) %>%
-                dplyr::mutate(date = as.POSIXct((.data$Date+0.1)/1000, origin="1970-01-01")) %>%
-                dplyr::mutate(date = as.Date(.data$date)) %>%
-                dplyr::group_by(.data$date) %>%
-                dplyr::summarize(value = sum(.data$Hospitalizations), .groups = "drop") %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$Date / 1000, origin = "1970-01-01"),
+                                       tz = "America/Halifax")),
+                  value = .data$Hospitalizations) %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
@@ -165,10 +166,11 @@ process_nb <- function(uuid, val, fmt, ds,
             "prov_ts" = {
               ds$features$attributes %>%
                 dplyr::select(.data$Date, .data$ICU) %>%
-                dplyr::mutate(date = as.POSIXct((.data$Date+0.1)/1000, origin="1970-01-01")) %>%
-                dplyr::mutate(date = as.Date(.data$date)) %>%
-                dplyr::group_by(.data$date) %>%
-                dplyr::summarize(value = sum(.data$ICU), .groups = "drop") %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$Date / 1000, origin = "1970-01-01"),
+                                       tz = "America/Halifax")),
+                  value = .data$ICU) %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()

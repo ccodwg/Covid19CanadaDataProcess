@@ -181,10 +181,12 @@ process_ns <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds$features$attributes %>%
-                dplyr::filter(.data$zone=="NS") %>%
-                # hospitalizations = hospitalizations + ICU
-                dplyr::mutate(hos = readr::parse_number(.$hos), hos_icu = readr::parse_number(.$hos_icu)) %>%
-                dplyr::summarize(value = sum(.data$hos +.data$hos_icu)) %>%
+                dplyr::filter(.data$zone == "NS") %>%
+                # hospitalizations = hospitalizations (non-ICU) + ICU
+                dplyr::mutate(
+                  hos = readr::parse_number(.$hos),
+                  hos_icu = readr::parse_number(.$hos_icu)) %>%
+                dplyr::transmute(value = .data$hos +.data$hos_icu) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
@@ -195,10 +197,8 @@ process_ns <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds$features$attributes %>%
-                dplyr::filter(.data$zone=="NS") %>%
-                dplyr::summarize(value = .data$hos_icu) %>%
-                as.character() %>%
-                readr::parse_number() %>%
+                dplyr::filter(.data$zone == "NS") %>%
+                dplyr::transmute(value = readr::parse_number(.$hos_icu)) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()

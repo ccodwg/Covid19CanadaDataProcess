@@ -186,11 +186,11 @@ process_mb <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
                 ds$features$attributes %>%
-                dplyr::select(.data$Area, .data$Total_Hospitalizations) %>%
-                dplyr::filter(.data$Area %in% mb_rha) %>%
-                dplyr::rename(sub_region_1 = .data$Area,
-                              value = .data$Total_Hospitalizations) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current)
+                  dplyr::select(.data$Area, .data$Total_Hospitalizations) %>%
+                  dplyr::filter(.data$Area %in% mb_rha) %>%
+                  dplyr::rename(sub_region_1 = .data$Area,
+                                value = .data$Total_Hospitalizations) %>%
+                  helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )
@@ -200,11 +200,11 @@ process_mb <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
                 ds$features$attributes %>%
-                dplyr::select(.data$Area, .data$Total_ICU_Patients) %>%
-                dplyr::filter(.data$Area %in% mb_rha) %>%
-                dplyr::rename(sub_region_1 = .data$Area,
-                              value = .data$Total_ICU_Patients) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current)
+                  dplyr::select(.data$Area, .data$Total_ICU_Patients) %>%
+                  dplyr::filter(.data$Area %in% mb_rha) %>%
+                  dplyr::rename(sub_region_1 = .data$Area,
+                                value = .data$Total_ICU_Patients) %>%
+                  helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )

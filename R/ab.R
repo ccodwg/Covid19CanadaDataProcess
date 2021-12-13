@@ -200,6 +200,7 @@ process_ab <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_elements("table") %>%
+                {.[[grep("Dose 1.*Dose 2.*Total administered", .)]]} %>%
                 rvest::html_table() %>%
                 # rename first column
                 dplyr::rename("Provider" = 1) %>%
@@ -250,9 +251,8 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements("table") %>%
-                {.[[1]]} %>%
                 rvest::html_table() %>%
+                `[[`(1) %>%
                 dplyr::filter(!grepl("In", .$Location)) %>%
                 dplyr::select(.data$Location, .data$`In\n\t\t\thospital**`) %>%
                 dplyr::transmute(sub_region_1 = .data$Location,
@@ -267,9 +267,8 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements("table") %>%
-                {.[[1]]} %>%
                 rvest::html_table() %>%
+                `[[`(1) %>%
                 dplyr::filter(!grepl("In", .$Location)) %>%
                 dplyr::select(.data$Location, .data$`In intensive\n\t\t\tcare***`) %>%
                 dplyr::transmute(sub_region_1 = .data$Location,
