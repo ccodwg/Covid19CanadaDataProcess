@@ -243,6 +243,44 @@ process_ab <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "d3b170a7-bb86-4bb0-b362-2adc5e6438c2" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_table() %>%
+                `[[`(1) %>%
+                dplyr::filter(!grepl("In", .$Location)) %>%
+                dplyr::select(.data$Location, .data$`In\n\t\t\thospital**`) %>%
+                dplyr::transmute(sub_region_1 = .data$Location,
+                                 value = readr::parse_number(.data$`In\n\t\t\thospital**`)) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_table() %>%
+                `[[`(1) %>%
+                dplyr::filter(!grepl("In", .$Location)) %>%
+                dplyr::select(.data$Location, .data$`In intensive\n\t\t\tcare***`) %>%
+                dplyr::transmute(sub_region_1 = .data$Location,
+                              value = readr::parse_number(.data$`In intensive\n\t\t\tcare***`)) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }

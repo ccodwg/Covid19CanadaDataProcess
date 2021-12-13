@@ -141,6 +141,44 @@ process_nb <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "4cf063fa-1bca-409c-867c-f710ef9d17e5" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$Date, .data$Hospitalizations) %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$Date / 1000, origin = "1970-01-01"),
+                                       tz = "America/Halifax")),
+                  value = .data$Hospitalizations) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$Date, .data$ICU) %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$Date / 1000, origin = "1970-01-01"),
+                                       tz = "America/Halifax")),
+                  value = .data$ICU) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
