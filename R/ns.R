@@ -173,6 +173,40 @@ process_ns <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "d0f05ef1-419f-4f4c-bc2d-17446c10059f" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::filter(.data$zone=="NS") %>%
+                # hospitalizations = hospitalizations + ICU
+                dplyr::mutate(hos = readr::parse_number(.$hos), hos_icu = readr::parse_number(.$hos_icu)) %>%
+                dplyr::summarize(value = sum(.data$hos +.data$hos_icu)) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::filter(.data$zone=="NS") %>%
+                dplyr::summarize(value = .data$hos_icu) %>%
+                as.character() %>%
+                readr::parse_number() %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }

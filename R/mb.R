@@ -178,6 +178,40 @@ process_mb <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "8cb83971-19f0-4dfc-b832-69efc1036ddd" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+                ds$features$attributes %>%
+                dplyr::select(.data$Area, .data$Total_Hospitalizations) %>%
+                dplyr::filter(.data$Area %in% mb_rha) %>%
+                dplyr::rename(sub_region_1 = .data$Area,
+                              value = .data$Total_Hospitalizations) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+                ds$features$attributes %>%
+                dplyr::select(.data$Area, .data$Total_ICU_Patients) %>%
+                dplyr::filter(.data$Area %in% mb_rha) %>%
+                dplyr::rename(sub_region_1 = .data$Area,
+                              value = .data$Total_ICU_Patients) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }

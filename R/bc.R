@@ -176,6 +176,38 @@ process_bc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "91367e1d-8b79-422c-b314-9b3441ba4f42" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$HA_Name, .data$CurrentlyHosp) %>%
+                dplyr::rename(sub_region_1 = .data$HA_Name,
+                              value = .data$CurrentlyHosp) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$HA_Name, .data$CurrentlyICU) %>%
+                dplyr::rename(sub_region_1 = .data$HA_Name,
+                              value = .data$CurrentlyICU) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }

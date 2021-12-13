@@ -179,6 +179,59 @@ process_nl <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "13a35524-89bf-46a2-afc5-d88ef81bfa82" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$date_of_update, .data$currently_hospitalized) %>%
+                dplyr::mutate(date = as.POSIXct((.data$date_of_update+0.1)/1000, origin="1970-01-01")) %>%
+                dplyr::mutate(date = as.Date(.data$date)) %>%
+                dplyr::group_by(.data$date) %>%
+                dplyr::summarize(value = sum(.data$currently_hospitalized), .groups = "drop") %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "f0e10f54-a4db-48d8-9c4e-8571e663ca28" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$name, .data$currently_hospitalized) %>%
+                dplyr::rename(sub_region_1 = .data$name,
+                              value = .data$currently_hospitalized) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$name, .data$current_in_icu) %>%
+                dplyr::rename(sub_region_1 = .data$name,
+                              value = .data$current_in_icu) %>%
+              helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }

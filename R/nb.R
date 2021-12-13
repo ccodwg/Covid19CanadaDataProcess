@@ -141,6 +141,42 @@ process_nb <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "4cf063fa-1bca-409c-867c-f710ef9d17e5" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$Date, .data$Hospitalizations) %>%
+                dplyr::mutate(date = as.POSIXct((.data$Date+0.1)/1000, origin="1970-01-01")) %>%
+                dplyr::mutate(date = as.Date(.data$date)) %>%
+                dplyr::group_by(.data$date) %>%
+                dplyr::summarize(value = sum(.data$Hospitalizations), .groups = "drop") %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$Date, .data$ICU) %>%
+                dplyr::mutate(date = as.POSIXct((.data$Date+0.1)/1000, origin="1970-01-01")) %>%
+                dplyr::mutate(date = as.Date(.data$date)) %>%
+                dplyr::group_by(.data$date) %>%
+                dplyr::summarize(value = sum(.data$ICU), .groups = "drop") %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
