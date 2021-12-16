@@ -49,12 +49,15 @@ process_dataset <- function(uuid,
                             ds,
                             ...) {
 
-  # get datasets.json
-  ds_list <- Covid19CanadaData::get_dataset_list()
+  # get list of datasets (datasets.json)
+  ds_list <- Covid19CanadaData::get_datasets()
+
+  # get list of uuids
+  uuids <- names(ds_list)
 
   # check UUID
-  if (uuid %in% ds_list$uuid) {
-    d <- ds_list[ds_list$uuid == uuid, ]
+  if (uuid %in% uuids) {
+    d <- ds_list[[uuid]]
   } else {
     stop("Specified UUID does not exist in datasets.json.")
   }
