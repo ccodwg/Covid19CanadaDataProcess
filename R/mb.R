@@ -178,6 +178,69 @@ process_mb <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "a5801472-42ae-409e-aedd-9bf92831434a" = {
+      switch(
+        val,
+        "vaccine_administration" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::select(
+                  .data$Vaccination_Date,
+                  .data$Total_Doses
+                ) %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$Vaccination_Date / 1000, origin = "1970-01-01"),
+                                       tz = "America/Regina")),
+                  value = .data$Total_Doses) %>%
+                helper_ts(loc = "hr", val, prov, date_current, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_completion" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::select(
+                  .data$Vaccination_Date,
+                  .data$Second_Doses
+                ) %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$Vaccination_Date / 1000, origin = "1970-01-01"),
+                                       tz = "America/Regina")),
+                  value = .data$Second_Doses) %>%
+                helper_ts(loc = "hr", val, prov, date_current, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_additional_doses" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::select(
+                  .data$Vaccination_Date,
+                  .data$Third_Doses
+                ) %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$Vaccination_Date / 1000, origin = "1970-01-01"),
+                                       tz = "America/Regina")),
+                  value = .data$Third_Doses) %>%
+                helper_ts(loc = "hr", val, prov, date_current, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     "8cb83971-19f0-4dfc-b832-69efc1036ddd" = {
       switch(
         val,
