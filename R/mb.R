@@ -188,13 +188,13 @@ process_mb <- function(uuid, val, fmt, ds,
               ds$features$attributes %>%
                 dplyr::select(
                   .data$Vaccination_Date,
-                  .data$Total_Doses
+                  .data$Cumulative_Total_Doses
                 ) %>%
                 dplyr::transmute(
                   date = lubridate::date(
                     lubridate::with_tz(as.POSIXct(.data$Vaccination_Date / 1000, origin = "1970-01-01"),
-                                       tz = "America/Regina")),
-                  value = .data$Total_Doses) %>%
+                                       tz = "America/Winnipeg")),
+                  value = .data$Cumulative_Total_Doses) %>%
                 helper_ts(loc = "hr", val, prov, date_current, convert_to_cum = FALSE)
             },
             e_fmt()
@@ -207,13 +207,13 @@ process_mb <- function(uuid, val, fmt, ds,
               ds$features$attributes %>%
                 dplyr::select(
                   .data$Vaccination_Date,
-                  .data$Second_Doses
+                  .data$Cumulative_Second_Doses
                 ) %>%
                 dplyr::transmute(
                   date = lubridate::date(
                     lubridate::with_tz(as.POSIXct(.data$Vaccination_Date / 1000, origin = "1970-01-01"),
-                                       tz = "America/Regina")),
-                  value = .data$Second_Doses) %>%
+                                       tz = "America/Winnipeg")),
+                  value = .data$Cumulative_Second_Doses) %>%
                 helper_ts(loc = "hr", val, prov, date_current, convert_to_cum = FALSE)
             },
             e_fmt()
@@ -226,13 +226,13 @@ process_mb <- function(uuid, val, fmt, ds,
               ds$features$attributes %>%
                 dplyr::select(
                   .data$Vaccination_Date,
-                  .data$Third_Doses
+                  .data$Cumulative_Third_Doses
                 ) %>%
                 dplyr::transmute(
                   date = lubridate::date(
                     lubridate::with_tz(as.POSIXct(.data$Vaccination_Date / 1000, origin = "1970-01-01"),
-                                       tz = "America/Regina")),
-                  value = .data$Third_Doses) %>%
+                                       tz = "America/Winnipeg")),
+                  value = .data$Cumulative_Third_Doses) %>%
                 helper_ts(loc = "hr", val, prov, date_current, convert_to_cum = FALSE)
             },
             e_fmt()
