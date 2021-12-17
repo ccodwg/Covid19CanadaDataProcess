@@ -195,7 +195,7 @@ process_mb <- function(uuid, val, fmt, ds,
                     lubridate::with_tz(as.POSIXct(.data$Vaccination_Date / 1000, origin = "1970-01-01"),
                                        tz = "America/Winnipeg")),
                   value = .data$Cumulative_Total_Doses) %>%
-                helper_ts(loc = "hr", val, prov, date_current, convert_to_cum = FALSE)
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
@@ -214,7 +214,7 @@ process_mb <- function(uuid, val, fmt, ds,
                     lubridate::with_tz(as.POSIXct(.data$Vaccination_Date / 1000, origin = "1970-01-01"),
                                        tz = "America/Winnipeg")),
                   value = .data$Cumulative_Second_Doses) %>%
-                helper_ts(loc = "hr", val, prov, date_current, convert_to_cum = FALSE)
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
@@ -233,7 +233,7 @@ process_mb <- function(uuid, val, fmt, ds,
                     lubridate::with_tz(as.POSIXct(.data$Vaccination_Date / 1000, origin = "1970-01-01"),
                                        tz = "America/Winnipeg")),
                   value = .data$Cumulative_Third_Doses) %>%
-                helper_ts(loc = "hr", val, prov, date_current, convert_to_cum = FALSE)
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
