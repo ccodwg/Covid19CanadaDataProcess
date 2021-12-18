@@ -103,8 +103,7 @@ process_nl <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds$features$attributes %>%
-                dplyr::select(.data$Administered) %>%
-                dplyr::rename(value = .data$Administered) %>%
+                dplyr::transmute(value = .data$Administered) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
@@ -115,8 +114,22 @@ process_nl <- function(uuid, val, fmt, ds,
             fmt,
             "prov_cum_current" = {
               ds$features$attributes %>%
-                dplyr::select(.data$Vaccinated) %>%
-                dplyr::rename(value = .data$Vaccinated) %>%
+                # Vaccinated = 12+ / Vaccinated5to11 = 5-11
+                dplyr::transmute(value = .data$Vaccinated + .data$Vaccinated5to11) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_additional_doses" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::transmute(
+                  value = .data$Administered -
+                    .data$OneDose - .data$OneDose5to11 -
+                    .data$Vaccinated - .data$Vaccinated5to11) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
