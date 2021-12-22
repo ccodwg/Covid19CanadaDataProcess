@@ -1445,8 +1445,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements("span") %>%
-                {.[14]} %>%
+                rvest::html_elements(".InfographicEditor-Contents-Item") %>%
+                {.[grep("^Cumulative Confirmed Cases", rvest::html_text2(.))]} %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
@@ -1460,8 +1460,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements("span") %>%
-                {.[29]} %>%
+                rvest::html_elements(".InfographicEditor-Contents-Item") %>%
+                {.[grep("^Deceased", rvest::html_text2(.))]} %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
@@ -1475,8 +1475,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements("span") %>%
-                {.[25]} %>%
+                rvest::html_elements(".InfographicEditor-Contents-Item") %>%
+                {.[grep("^Resolved Cases", rvest::html_text2(.))]} %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
