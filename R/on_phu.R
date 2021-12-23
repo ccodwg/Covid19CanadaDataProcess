@@ -461,7 +461,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_element("div") %>%
                 rvest::html_element("div") %>%
                 rvest::html_children() %>%
-                `[`(5) %>% # Confirmed Cases (Total to date)
+                `[`(4) %>% # Confirmed Cases (Total to date)
                 rvest::html_children() %>%
                 `[`(4) %>% # Total
                 rvest::html_text2() %>%
@@ -472,7 +472,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_element("div") %>%
                 rvest::html_element("div") %>%
                 rvest::html_children() %>%
-                `[`(9) %>% # Probable Deaths (Total to date)
+                `[`(8) %>% # Probable Deaths (Total to date)
                 rvest::html_children() %>%
                 `[`(4) %>% # Total
                 rvest::html_text2() %>%
@@ -493,7 +493,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_element("div") %>%
                 rvest::html_element("div") %>%
                 rvest::html_children() %>%
-                `[`(8) %>% # Confirmed Deaths (Total to date)
+                `[`(7) %>% # Confirmed Deaths (Total to date)
                 rvest::html_children() %>%
                 `[`(4) %>% # Total
                 rvest::html_text2() %>%
@@ -504,7 +504,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_element("div") %>%
                 rvest::html_element("div") %>%
                 rvest::html_children() %>%
-                `[`(9) %>% # Probable Deaths (Total to date)
+                `[`(8) %>% # Probable Deaths (Total to date)
                 rvest::html_children() %>%
                 `[`(4) %>% # Total
                 rvest::html_text2() %>%
@@ -525,7 +525,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_element("div") %>%
                 rvest::html_element("div") %>%
                 rvest::html_children() %>%
-                `[`(6) %>% # Confirmed Cases Resolved (Total to date)
+                `[`(5) %>% # Confirmed Cases Resolved (Total to date)
                 rvest::html_children() %>%
                 `[`(4) %>% # Total
                 rvest::html_text2() %>%
