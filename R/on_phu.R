@@ -22,14 +22,12 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table(header = TRUE) %>%
-                {.[[grep("Confirmedcases", .)[1]]]} %>%
-                dplyr::select(dplyr::matches("Confirmedcases")) %>%
-                `[[`(1, 1) %>%
+                {.[[grep("Confirmed cases", .)[1]]]} %>%
+                {dplyr::filter(., .[[1]] == "Confirmed cases")} %>%
+                dplyr::select(.data$Current) %>%
                 as.character() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -42,13 +40,11 @@ process_on_phu <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_table(header = TRUE) %>%
                 {.[[grep("Deceased", .)[1]]]} %>%
-                dplyr::select(dplyr::matches("Deceased")) %>%
-                `[[`(1, 1) %>%
+                {dplyr::filter(., .[[1]] == "Deceased")} %>%
+                dplyr::select(.data$Current) %>%
                 as.character() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -60,17 +56,15 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table(header = TRUE) %>%
-                {.[[grep("Resolvedcases", .)[1]]]} %>%
-                dplyr::select(dplyr::matches("Resolvedcases|Deceased")) %>%
-                {dplyr::rename(., c(
-                  "Deceased" = grep("Deceased", names(.))),
-                  "Resolvedcases" = grep("Resolvedcases", names(.)))} %>%
-                dplyr::slice_head(n = 1) %>%
-                dplyr::mutate(dplyr::across(.cols = dplyr::everything(), as.character)) %>%
-                dplyr::mutate(dplyr::across(.cols = dplyr::everything(), readr::parse_number)) %>%
-                {data.frame(
-                  value = .$Resolvedcases - .$Deceased
-                )} %>%
+                {.[[grep("Resolved", .)[1]]]} %>%
+                {dplyr::filter(., .[[1]] == "Deceased" | .[[1]] == "Resolved")} %>%
+                # rename first column so it is easier to reference
+                dplyr::rename("Name" = 1) %>%
+                dplyr::select(.data$Name, .data$Current) %>%
+                dplyr::mutate(Current = readr::parse_number(as.character(.data$Current))) %>%
+                {.[.$Name == "Resolved", "Current"] - .[.$Name == "Deceased", "Current"]} %>%
+                dplyr::pull() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
