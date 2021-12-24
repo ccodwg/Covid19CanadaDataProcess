@@ -207,7 +207,7 @@ process_ab <- function(uuid, val, fmt, ds,
                 # filter to total
                 dplyr::filter(.data$Provider == "Total") %>%
                 # select additional doses
-                dplyr::select(.data[["Additional dose"]]) %>%
+                dplyr::select(dplyr::matches(c("Additional dose", "Dose 3"))) %>%
                 as.character() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
