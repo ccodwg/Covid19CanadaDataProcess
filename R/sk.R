@@ -29,17 +29,17 @@ process_sk <- function(uuid, val, fmt, ds,
                 dplyr::rename(
                   sub_region_1 = .data$X1,
                   value = .data$X2
-                  ) %>%
-              dplyr::mutate(value = as.integer(.data$value))
-            # append missing HR data (diff between SK total and sum of HRs)
-            dat <- dat %>%
-              dplyr::add_row(
-                sub_region_1 = "Not Reported",
-                value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][2]) -
-                  sum(dat$value)
-            )
-            dat %>%
-              helper_cum_current(loc = "hr", val, prov, date_current)
+                ) %>%
+                dplyr::mutate(value = as.integer(.data$value))
+              # append missing HR data (diff between SK total and sum of HRs)
+              dat <- dat %>%
+                dplyr::add_row(
+                  sub_region_1 = "Not Reported",
+                  value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][2]) -
+                    sum(dat$value)
+                )
+              dat %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )
@@ -284,6 +284,44 @@ process_sk <- function(uuid, val, fmt, ds,
                   value = .
                 ) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "6e5dd7b2-c6b8-4fd0-8236-ef34873233d2" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              dat <- do.call(rbind.data.frame,ds[[1]]$tabs$tables[[1]]$body[[2]]$cells)
+              dat <- data.frame(matrix(unlist(dat), ncol = 3, byrow = TRUE))
+
+              dat %>% dplyr::filter(!is.na(.data$X1)) %>%
+                dplyr::select(.data$X1,.data$X2) %>%
+                dplyr::rename( sub_region_1 = .data$X1, value = .data$X2) %>%
+                dplyr::mutate(value = as.integer(.data$value)) %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              dat <- do.call(rbind.data.frame,ds[[1]]$tabs$tables[[1]]$body[[2]]$cells)
+              dat <- data.frame(matrix(unlist(dat), ncol = 3, byrow = TRUE))
+
+              dat %>% dplyr::filter(!is.na(.data$X1)) %>%
+                dplyr::select(.data$X1,.data$X3) %>%
+                dplyr::rename( sub_region_1 = .data$X1, value = .data$X3) %>%
+                dplyr::mutate(value = as.integer(.data$value)) %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
