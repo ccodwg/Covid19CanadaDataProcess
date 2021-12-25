@@ -29,17 +29,17 @@ process_sk <- function(uuid, val, fmt, ds,
                 dplyr::rename(
                   sub_region_1 = .data$X1,
                   value = .data$X2
-                ) %>%
-                dplyr::mutate(value = as.integer(.data$value))
-              # append missing HR data (diff between SK total and sum of HRs)
-              dat <- dat %>%
-                dplyr::add_row(
-                  sub_region_1 = "Not Reported",
-                  value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][2]) -
-                    sum(dat$value)
-                )
-              dat %>%
-                helper_cum_current(loc = "hr", val, prov, date_current)
+                  ) %>%
+              dplyr::mutate(value = as.integer(.data$value))
+            # append missing HR data (diff between SK total and sum of HRs)
+            dat <- dat %>%
+              dplyr::add_row(
+                sub_region_1 = "Not Reported",
+                value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][2]) -
+                  sum(dat$value)
+            )
+            dat %>%
+              helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )
