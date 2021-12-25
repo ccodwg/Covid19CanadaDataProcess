@@ -298,14 +298,23 @@ process_sk <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_ts" = {
-              dat <- do.call(rbind.data.frame,ds[[1]]$tabs$tables[[1]]$body[[2]]$cells)
-              dat <- data.frame(matrix(unlist(dat), ncol = 3, byrow = TRUE))
-
-              dat %>% dplyr::filter(!is.na(.data$X1)) %>%
-                dplyr::select(.data$X1,.data$X2) %>%
-                dplyr::rename( sub_region_1 = .data$X1, value = .data$X2) %>%
-                dplyr::mutate(value = as.integer(.data$value)) %>%
-                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
+              dat <- do.call(rbind.data.frame, ds$tabs$tables[[1]]$body[[2]]$cells) %>%
+                {data.frame(matrix(unlist(.), ncol = 3, byrow = TRUE))} %>%
+                dplyr::filter(!is.na(.data$X1)) %>%
+                dplyr::transmute(sub_region_1 = .data$X1, value = .data$X2) %>%
+                dplyr::mutate(value = as.integer(.data$value))
+              # append missing HR data (diff between SK total and sum of HRs)
+              total_sk <- dat %>%
+                dplyr::filter(.data$sub_region_1 == "Total Saskatchewan") %>%
+                dplyr::pull(.data$value)
+              dat <- dat %>%
+                dplyr::filter(.data$sub_region_1 != "Total Saskatchewan") %>%
+                {dplyr::add_row(
+                  .,
+                  sub_region_1 = "Not Reported",
+                  value = total_sk - sum(.$value))}
+              # final processing
+              dat %>% helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
@@ -314,14 +323,23 @@ process_sk <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_ts" = {
-              dat <- do.call(rbind.data.frame,ds[[1]]$tabs$tables[[1]]$body[[2]]$cells)
-              dat <- data.frame(matrix(unlist(dat), ncol = 3, byrow = TRUE))
-
-              dat %>% dplyr::filter(!is.na(.data$X1)) %>%
-                dplyr::select(.data$X1,.data$X3) %>%
-                dplyr::rename( sub_region_1 = .data$X1, value = .data$X3) %>%
-                dplyr::mutate(value = as.integer(.data$value)) %>%
-                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
+              dat <- do.call(rbind.data.frame, ds$tabs$tables[[1]]$body[[2]]$cells) %>%
+                {data.frame(matrix(unlist(.), ncol = 3, byrow = TRUE))} %>%
+                dplyr::filter(!is.na(.data$X1)) %>%
+                dplyr::transmute(sub_region_1 = .data$X1, value = .data$X3) %>%
+                dplyr::mutate(value = as.integer(.data$value))
+              # append missing HR data (diff between SK total and sum of HRs)
+              total_sk <- dat %>%
+                dplyr::filter(.data$sub_region_1 == "Total Saskatchewan") %>%
+                dplyr::pull(.data$value)
+              dat <- dat %>%
+                dplyr::filter(.data$sub_region_1 != "Total Saskatchewan") %>%
+                {dplyr::add_row(
+                  .,
+                  sub_region_1 = "Not Reported",
+                  value = total_sk - sum(.$value))}
+              # final processing
+              dat %>% helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
