@@ -1616,6 +1616,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_elements(".content") %>%
                 {.[grep("Total Confirmed", .)][1]} %>%
                 rvest::html_text2() %>%
+                stringr::str_split("\u2503") %>%
+                `[[`(1) %>%
+                {.[grep("Total Confirmed", .)]} %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
@@ -1631,6 +1634,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_elements(".content") %>%
                 {.[grep("Fatal Cases", .)][1]} %>%
                 rvest::html_text2() %>%
+                stringr::str_split("\u2503") %>%
+                `[[`(1) %>%
+                {.[grep("Fatal Cases", .)]} %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
@@ -1646,6 +1652,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_elements(".content") %>%
                 {.[grep("Total Resolved", .)][1]} %>%
                 rvest::html_text2() %>%
+                stringr::str_split("\u2503") %>%
+                `[[`(1) %>%
+                {.[grep("Total Resolved", .)]} %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
