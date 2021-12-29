@@ -111,11 +111,10 @@ process_dataset <- function(uuid,
   dat_processed <- tryCatch(
     process_fun(uuid, val, fmt, ds, prov, hr, date_current, testing_type),
     error = function(e) {
-      print(e)
-      warn <- paste(val, fmt, sep = "/")
-      if (!is.null(hr)) warn <- paste(hr, warn, sep = "/")
-      if (!is.null(prov)) warn <- paste(prov, warn, sep = "/")
-      cat(paste0(warn, " - Failed, returning NA"), fill = TRUE)
+      uuid_id_name <- tryCatch(Covid19CanadaData::get_uuid(uuid)$id_name, error = function(e) return("Name unknown"))
+      warn <- paste(uuid_id_name, uuid, val, fmt, sep = " / ")
+      warn <- paste0(e, warn, "\nFailed, returning NA\n")
+      message(warn)
       return(NA)
     }
   )
