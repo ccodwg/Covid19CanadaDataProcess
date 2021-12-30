@@ -1370,14 +1370,12 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table() %>%
-                {.[[grep("Cases1 | Cas1", .)[1]]]} %>%
-                dplyr::filter(.[1] == "Cases1 | Cas1") %>%
+                {.[[grep("Cases1", .)[1]]]} %>%
+                {dplyr::filter(., grepl("Cases1", .[[1]]))} %>%
                 dplyr::pull(.data$`Current / Actuellement`) %>%
                 sub(" ", "", .) %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -1389,14 +1387,12 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table() %>%
-                {.[[grep("Deceased | D\u00E9c\u00E8s", .)[1]]]} %>%
-                dplyr::filter(.[1] == "Deceased | D\u00E9c\u00E8s") %>%
+                {.[[grep("Deceased", .)[1]]]} %>%
+                {dplyr::filter(., grepl("Deceased", .[[1]]))} %>%
                 dplyr::pull(.data$`Current / Actuellement`) %>%
                 sub(" ", "", .) %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -1408,15 +1404,15 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               resolved <- ds %>%
                 rvest::html_table() %>%
-                {.[[grep("Resolved cases2 | Cas r\u00E9gl\u00E9s2", .)[1]]]} %>%
-                dplyr::filter(.[1] == "Resolved cases2 | Cas r\u00E9gl\u00E9s2") %>%
+                {.[[grep("Resolved cases", .)[1]]]} %>%
+                {dplyr::filter(., grepl("Resolved cases", .[[1]]))} %>%
                 dplyr::pull(.data$`Current / Actuellement`) %>%
                 sub(" ", "", .) %>%
                 readr::parse_number()
               deceased <- ds %>%
                 rvest::html_table() %>%
-                {.[[grep("Deceased | D\u00E9c\u00E8s", .)[1]]]} %>%
-                dplyr::filter(.[1] == "Deceased | D\u00E9c\u00E8s") %>%
+                {.[[grep("Deceased", .)[1]]]} %>%
+                {dplyr::filter(., grepl("Deceased", .[[1]]))} %>%
                 dplyr::pull(.data$`Current / Actuellement`) %>%
                 sub(" ", "", .) %>%
                 readr::parse_number()
