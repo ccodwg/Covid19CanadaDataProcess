@@ -972,6 +972,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table() %>%
+                {.[unlist(lapply(., nrow)) != 0]} %>%
                 {.[[grep("TOTALS", .)[1]]]} %>%
                 dplyr::filter(.data$`Local Health Hub` == "TOTALS") %>%
                 dplyr::pull(.data$Total) %>%
@@ -989,6 +990,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table() %>%
+                {.[unlist(lapply(., nrow)) != 0]} %>%
                 {.[[grep("Deceased", .)[1]]]} %>%
                 dplyr::pull(.data[["\u200BDeceased"]]) %>% # note zero-width space
                 as.character() %>%
@@ -1005,6 +1007,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               resolved <- ds %>%
                 rvest::html_table() %>%
+                {.[unlist(lapply(., nrow)) != 0]} %>%
                 {.[[grep("TOTALS", .)[1]]]} %>%
                 dplyr::filter(.data$`Local Health Hub` == "TOTALS") %>%
                 dplyr::pull(.data$Resolved) %>%
@@ -1012,6 +1015,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 readr::parse_number()
               deceased <- ds %>%
                 rvest::html_table() %>%
+                {.[unlist(lapply(., nrow)) != 0]} %>%
                 {.[[grep("Deceased", .)[1]]]} %>%
                 dplyr::pull(.data[["\u200BDeceased"]]) %>% # note zero-width space
                 as.character() %>%
