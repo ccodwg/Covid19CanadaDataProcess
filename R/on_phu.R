@@ -23,6 +23,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_table(header = TRUE) %>%
                 {.[[grep("Confirmed cases", .)[1]]]} %>%
+                dplyr::rename("column_1" = 1) %>% # avoid zero-length variable name error in some circumstances
                 {dplyr::filter(., .[[1]] == "Confirmed cases")} %>%
                 dplyr::select(.data$Current) %>%
                 as.character() %>%
@@ -40,6 +41,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_table(header = TRUE) %>%
                 {.[[grep("Deceased", .)[1]]]} %>%
+                dplyr::rename("column_1" = 1) %>% # avoid zero-length variable name error in some circumstances
                 {dplyr::filter(., .[[1]] == "Deceased")} %>%
                 dplyr::select(.data$Current) %>%
                 as.character() %>%
@@ -57,6 +59,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_table(header = TRUE) %>%
                 {.[[grep("Resolved", .)[1]]]} %>%
+                dplyr::rename("column_1" = 1) %>% # avoid zero-length variable name error in some circumstances
                 {dplyr::filter(., .[[1]] == "Deceased" | .[[1]] == "Resolved")} %>%
                 # rename first column so it is easier to reference
                 dplyr::rename("Name" = 1) %>%
