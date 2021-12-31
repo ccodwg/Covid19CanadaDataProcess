@@ -457,7 +457,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_children() %>%
                 `[`(4) %>% # Confirmed Cases (Total to date)
                 rvest::html_children() %>%
-                `[`(4) %>% # Total
+                `[`(1) %>% # Total
                 rvest::html_text2() %>%
                 readr::parse_number()
               probable_deaths <- ds %>%
@@ -468,7 +468,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_children() %>%
                 `[`(8) %>% # Probable Deaths (Total to date)
                 rvest::html_children() %>%
-                `[`(4) %>% # Total
+                `[`(1) %>% # Total
                 rvest::html_text2() %>%
                 readr::parse_number()
               data.frame(value = confirmed_cases + probable_deaths) %>%
@@ -489,7 +489,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_children() %>%
                 `[`(7) %>% # Confirmed Deaths (Total to date)
                 rvest::html_children() %>%
-                `[`(4) %>% # Total
+                `[`(1) %>% # Total
                 rvest::html_text2() %>%
                 readr::parse_number()
               probable_deaths <- ds %>%
@@ -500,7 +500,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_children() %>%
                 `[`(8) %>% # Probable Deaths (Total to date)
                 rvest::html_children() %>%
-                `[`(4) %>% # Total
+                `[`(1) %>% # Total
                 rvest::html_text2() %>%
                 readr::parse_number()
               data.frame(value = confirmed_deaths + probable_deaths) %>%
@@ -521,7 +521,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_children() %>%
                 `[`(5) %>% # Confirmed Cases Resolved (Total to date)
                 rvest::html_children() %>%
-                `[`(4) %>% # Total
+                `[`(1) %>% # Total
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
