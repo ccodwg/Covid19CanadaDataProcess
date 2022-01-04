@@ -275,14 +275,12 @@ process_sk <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_table(header = TRUE) %>%
-                {.[[grep("Total Extra Doses", .)[1]]]} %>%
+                {.[[grep("w/ 3rd Dose", .)[1]]]} %>%
                 dplyr::filter(.data$`Age Range` == "Total") %>%
-                dplyr::pull(.data$`Total Extra Doses`) %>%
+                dplyr::select(.data$`w/ 3rd Dose`, .data$`w/ 4th Dose`) %>%
                 as.character() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                {data.frame(value = sum(.))} %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
