@@ -150,9 +150,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_elements(".card") %>%
                 rvest::html_attr("aria-label") %>%
-                {.[c(grep("Total Confirmed Cases", .)-1, grep("Total Confirmed Cases", .))]} %>% # Extract value in the adjacent vector element to the value label
-                stringr::str_c(collapse = " ") %>%
-                stringr::str_replace_all(., "\\.", "") %>% # Need to remove periods or it throws a parsing error %>%
+                {.[grep("Cases", .)]} %>%
+                `[`(2) %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
@@ -177,23 +176,23 @@ process_on_phu <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
-        "recovered" = {
-          switch(
-            fmt,
-            "hr_cum_current" = {
-              ds %>%
-                rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>%
-                {.[c(grep("Total Resolved Cases", .), grep("Total Resolved Cases", .)+1)]} %>% # Extract value in the adjacent vector element to the value label
-                stringr::str_c(collapse = " ") %>%
-                stringr::str_replace_all(., "\\.", "") %>% # Need to remove periods or it throws a parsing error %>%
-                readr::parse_number() %>%
-                data.frame(value = .) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current, hr)
-            },
-            e_fmt()
-          )
-        },
+        # "recovered" = {
+        #   switch(
+        #     fmt,
+        #     "hr_cum_current" = {
+        #       ds %>%
+        #         rvest::html_elements(".card") %>%
+        #         rvest::html_attr("aria-label") %>%
+        #         {.[c(grep("Total Resolved Cases", .), grep("Total Resolved Cases", .)+1)]} %>% # Extract value in the adjacent vector element to the value label
+        #         stringr::str_c(collapse = " ") %>%
+        #         stringr::str_replace_all(., "\\.", "") %>% # Need to remove periods or it throws a parsing error %>%
+        #         readr::parse_number() %>%
+        #         data.frame(value = .) %>%
+        #         helper_cum_current(loc = "hr", val, prov, date_current, hr)
+        #     },
+        #     e_fmt()
+        #   )
+        # },
         e_val()
       )
     },
