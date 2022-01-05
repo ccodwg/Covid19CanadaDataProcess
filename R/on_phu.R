@@ -223,11 +223,10 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".card") %>%
+                rvest::html_elements("div") %>%
+                {.[grep("Total Deceased\\*", rvest::html_attr(., "aria-label"))][1]} %>%
+                rvest::html_element(".card") %>%
                 rvest::html_attr("aria-label") %>%
-                {.[grep("CaseCount", .)][7]} %>%  # Extract the seventh value of CaseCount (corresponds to total deceased but this might not always be the case)
-                stringr::str_replace_all(., "CaseCount", "") %>%
-                stringr::str_replace_all(., "\\.", "") %>%  # Need to remove periods or readr::parse_number() throws a parsing error
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
