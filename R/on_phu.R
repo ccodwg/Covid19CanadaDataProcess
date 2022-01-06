@@ -206,11 +206,10 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".card") %>%
+                rvest::html_elements("div") %>%
+                {.[grep("Total Confirmed Cases", rvest::html_attr(., "aria-label"))][1]} %>%
+                rvest::html_element(".card") %>%
                 rvest::html_attr("aria-label") %>%
-                {.[grep("CaseCount", .)][1]} %>%  # Extract the first value of CaseCount (corresponds to total deceased but this might not always be the case)
-                stringr::str_replace_all(., "CaseCount", "") %>%
-                stringr::str_replace_all(., "\\.", "") %>%  # Need to remove periods or readr::parse_number() throws a parsing error
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
@@ -239,11 +238,10 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".card") %>%
+                rvest::html_elements("div") %>%
+                {.[grep("Total Resolved", rvest::html_attr(., "aria-label"))][1]} %>%
+                rvest::html_element(".card") %>%
                 rvest::html_attr("aria-label") %>%
-                {.[grep("CaseCount", .)][4]} %>%  # Extract the fourth value of CaseCount (corresponds to total resolved but this might not always be the case)
-                stringr::str_replace_all(., "CaseCount", "") %>%
-                stringr::str_replace_all(., "\\.", "") %>%  # Need to remove periods or readr::parse_number() throws a parsing error
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
