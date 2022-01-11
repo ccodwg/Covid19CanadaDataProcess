@@ -160,6 +160,7 @@ process_ns <- function(uuid, val, fmt, ds,
                 rvest::html_text2() %>%
                 stringr::str_extract("(?<!\\S)(\\d*\\.?\\d+|\\d{1,3}(,\\d{3})*(\\.\\d+)?)(?!\\S)(?=[a-zA-Z\\s]* second dose)") %>%
                 readr::parse_number() %>%
+                {round(. / 100 * 971395)} %>% # derive doses from 2019 mid-year pop and second dose coverage estimate
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
@@ -174,6 +175,7 @@ process_ns <- function(uuid, val, fmt, ds,
                 rvest::html_text2() %>%
                 stringr::str_extract("(?<!\\S)(\\d*\\.?\\d+|\\d{1,3}(,\\d{3})*(\\.\\d+)?)(?!\\S)(?=[a-zA-Z\\s]* third dose)") %>%
                 readr::parse_number() %>%
+                {round(. / 100 * 971395)} %>% # derive doses from 2019 mid-year pop and third dose coverage estimate
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
