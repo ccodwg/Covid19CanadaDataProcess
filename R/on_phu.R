@@ -813,8 +813,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".visualContainer") %>%
-                {.[[grep("Text box Total number of confirmed cases", rvest::html_attr(., "aria-label"))[[1]]]]} %>%
+                rvest::html_elements(".textbox") %>%
+                `[`(4) %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
@@ -828,8 +828,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".visualContainer") %>%
-                {.[[grep("Text box Total number of deaths", rvest::html_attr(., "aria-label"))[[1]]]]} %>%
+                rvest::html_elements(".textbox") %>%
+                `[`(10) %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
@@ -843,9 +843,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".visualContainer") %>%
-                # [[2]] because [[1]] has the same aria-label but is active cases
-                {.[[grep("Text box Total number of recovered cases", rvest::html_attr(., "aria-label"))[[2]]]]} %>%
+                rvest::html_elements(".textbox") %>%
+                `[`(12) %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
