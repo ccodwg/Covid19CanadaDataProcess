@@ -132,6 +132,17 @@ process_ns <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "vaccine_additional_doses" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::transmute(value = round(.data$prct_pop_3 / 100 * 971395)) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
         e_val()
       )
     },
