@@ -1491,14 +1491,10 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table(header = FALSE) %>%
-                {.[[1]]} %>%
-                dplyr::filter(.data$X1 == "Positive COVID-19 cases to date") %>%
-                {.[2]} %>%
-                as.character() %>%
-                readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                `[[`(1) %>%
+                dplyr::filter(.data$X1 == "Positive cases") %>%
+                {sum(readr::parse_number(as.character(.[1, -1])))} %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -1510,14 +1506,10 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table(header = FALSE) %>%
-                {.[[1]]} %>%
-                dplyr::filter(.data$X1 == "Deceased") %>%
-                {.[2]} %>%
-                as.character() %>%
-                readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                `[[`(1) %>%
+                dplyr::filter(.data$X1 == "Deaths") %>%
+                {sum(readr::parse_number(as.character(.[1, -1])))} %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -1527,16 +1519,22 @@ process_on_phu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_cum_current" = {
-              ds %>%
+              total_cases <- ds %>%
                 rvest::html_table(header = FALSE) %>%
-                {.[[1]]} %>%
-                dplyr::filter(.data$X1 == "Positive cases resolved") %>%
-                {.[2]} %>%
-                as.character() %>%
-                readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                `[[`(1) %>%
+                dplyr::filter(.data$X1 == "Positive cases") %>%
+                {sum(readr::parse_number(as.character(.[1, -1])))}
+              total_deaths <- ds %>%
+                rvest::html_table(header = FALSE) %>%
+                `[[`(1) %>%
+                dplyr::filter(.data$X1 == "Deaths") %>%
+                {sum(readr::parse_number(as.character(.[1, -1])))}
+              total_active <- ds %>%
+                rvest::html_table(header = FALSE) %>%
+                `[[`(1) %>%
+                dplyr::filter(grepl("Active cases", .data$X1)) %>%
+                {sum(readr::parse_number(as.character(.[1, -1])))}
+              data.frame(value = total_cases - total_deaths - total_active) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
