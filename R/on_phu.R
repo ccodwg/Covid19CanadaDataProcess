@@ -662,6 +662,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_elements(".card") %>%
                 rvest::html_attr("aria-label") %>%
                 {.[[grep("ActiveCount", .)[1]]]} %>%
+                # sub "K" for thousands, if used
+                sub("(?<=\\d)K", "000", ., perl = TRUE) %>%
                 readr::parse_number()
               data.frame(
                 value = cases - mortalities - active_cases
