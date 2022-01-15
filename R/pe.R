@@ -33,18 +33,6 @@ process_pe <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
-        "mortality" = {
-          switch(
-            fmt,
-            "prov_cum_current" = {
-              data.frame(
-                value = 0 # deaths are not reported
-              ) %>%
-                helper_cum_current(loc = "prov", val, prov, date_current)
-            },
-            e_fmt()
-          )
-        },
         "recovered" = {
           switch(
             fmt,
