@@ -699,59 +699,6 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    # Kingston Frontenac Lennox & Addington
-    "83d1fa13-7fb3-4079-b3dc-5bc50c584fd3" = {
-      hr <- "Kingston Frontenac Lennox & Addington"
-      switch(
-        val,
-        "cases" = {
-          switch(
-            fmt,
-            "hr_cum_current" = {
-              ds %>%
-                rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>%
-                {.[grep("# of Cases", .)][1]} %>%
-                readr::parse_number() %>%
-                data.frame(value = .) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current, hr)
-            },
-            e_fmt()
-          )
-        },
-        "mortality" = {
-          switch(
-            fmt,
-            "hr_cum_current" = {
-              ds %>%
-                rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>%
-                {.[grep("# of Deaths", .)][1]} %>%
-                readr::parse_number() %>%
-                data.frame(value = .) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current, hr)
-            },
-            e_fmt()
-          )
-        },
-        "recovered" = {
-          switch(
-            fmt,
-            "hr_cum_current" = {
-              ds %>%
-                rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>%
-                {.[grep("# of Cases Resolved", .)][1]} %>%
-                readr::parse_number() %>%
-                data.frame(value = .) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current, hr)
-            },
-            e_fmt()
-          )
-        },
-        e_val()
-      )
-    },
     # Lambton
     "8d0cf226-b9b7-4fc3-8100-a4f56dec6792" = {
       hr <- "Lambton"
