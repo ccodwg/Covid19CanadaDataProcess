@@ -93,7 +93,7 @@ process_nt <- function(uuid, val, fmt, ds,
     "454de458-f7b4-4814-96a6-5a426f8c8c60" = {
       switch(
         val,
-        "vaccine_administration" = {
+        "vaccine_total_doses" = {
           switch(
             fmt,
             "prov_cum_current" = {
@@ -109,7 +109,7 @@ process_nt <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
-        "vaccine_completion" = {
+        "vaccine_dose_2" = {
           switch(
             fmt,
             "prov_cum_current" = {

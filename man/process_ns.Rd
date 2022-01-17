@@ -34,9 +34,9 @@ The currently supported values are the following:
  \item active
  \item testing
  \item vaccine_distribution
- \item vaccine_administration
+ \item vaccine_total_doses
  \item vaccine_first_doses
- \item vaccine_completion
+ \item vaccine_dose_2
  \item vaccine_additional_doses
  \item hospitalizations
  \item icu

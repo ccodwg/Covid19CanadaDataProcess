@@ -199,7 +199,7 @@ process_qc <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
-        "vaccine_administration" = {
+        "vaccine_total_doses" = {
           ds %>%
             dplyr::slice_head(n = 1) %>%
             dplyr::select(value = 3) %>% # ref by position to avoid unicode name
@@ -211,7 +211,7 @@ process_qc <- function(uuid, val, fmt, ds,
     "4e04442d-f372-4357-ba15-3b64f4e03fbe" = {
       switch(
         val,
-        "vaccine_administration" = {
+        "vaccine_total_doses" = {
           switch(
             fmt,
             "prov_cum_current" = {
@@ -224,7 +224,7 @@ process_qc <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
-        "vaccine_completion" = {
+        "vaccine_dose_2" = {
           switch(
             fmt,
             "prov_cum_current" = {

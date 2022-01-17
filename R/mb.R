@@ -120,7 +120,7 @@ process_mb <- function(uuid, val, fmt, ds,
     "a57dc10d-7139-4164-9042-eb2242716585" = {
       switch(
         val,
-        "vaccine_administration" = {
+        "vaccine_total_doses" = {
           switch(
             fmt,
             "hr_cum_current" = {
@@ -139,7 +139,7 @@ process_mb <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
-        "vaccine_completion" = {
+        "vaccine_dose_2" = {
           switch(
             fmt,
             "hr_cum_current" = {
@@ -164,7 +164,7 @@ process_mb <- function(uuid, val, fmt, ds,
     "7a5ef226-2244-47e0-b964-28c2dc06d5ae" = {
       switch(
         val,
-        "vaccine_administration" = {
+        "vaccine_total_doses" = {
           switch(
             fmt,
             "prov_cum_current" = {
@@ -181,7 +181,7 @@ process_mb <- function(uuid, val, fmt, ds,
     "a5801472-42ae-409e-aedd-9bf92831434a" = {
       switch(
         val,
-        "vaccine_administration" = {
+        "vaccine_total_doses" = {
           switch(
             fmt,
             "prov_ts" = {
@@ -200,7 +200,7 @@ process_mb <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
-        "vaccine_completion" = {
+        "vaccine_dose_2" = {
           switch(
             fmt,
             "prov_ts" = {

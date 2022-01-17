@@ -13,9 +13,9 @@
 #'  \item active
 #'  \item testing
 #'  \item vaccine_distribution
-#'  \item vaccine_administration
+#'  \item vaccine_total_doses
 #'  \item vaccine_first_doses
-#'  \item vaccine_completion
+#'  \item vaccine_dose_2
 #'  \item vaccine_additional_doses
 #'  \item hospitalizations
 #'  \item icu
@@ -38,9 +38,11 @@ process_dataset <- function(uuid,
                               "active",
                               "testing",
                               "vaccine_distribution",
-                              "vaccine_administration",
-                              "vaccine_first_doses",
-                              "vaccine_completion",
+                              "vaccine_total_doses",
+                              "vaccine_dose_1",
+                              "vaccine_dose_2",
+                              "vaccine_dose_3",
+                              "vaccine_dose_4",
                               "vaccine_additional_doses",
                               "hospitalizations",
                               "icu"
@@ -62,6 +64,13 @@ process_dataset <- function(uuid,
     stop("Specified UUID does not exist in datasets.json.")
   }
 
+  # for backwards compatibility: rename val
+  val <- dplyr::case_when(
+    val == "vaccine_administration" ~ "vaccine_total_doses",
+    val == "vaccine_completion" ~ "vaccine_dose_2",
+    TRUE ~ val
+  )
+
   # check value
   match.arg(
     val,
@@ -71,9 +80,11 @@ process_dataset <- function(uuid,
                 "active",
                 "testing",
                 "vaccine_distribution",
-                "vaccine_administration",
-                "vaccine_first_doses",
-                "vaccine_completion",
+                "vaccine_total_doses",
+                "vaccine_dose_1",
+                "vaccine_dose_2",
+                "vaccine_dose_3",
+                "vaccine_dose_4",
                 "vaccine_additional_doses",
                 "hospitalizations",
                 "icu"),

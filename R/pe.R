@@ -78,7 +78,7 @@ process_pe <- function(uuid, val, fmt, ds,
       switch(
         val,
         # sheet = "Total Doses"
-        "vaccine_administration" = {
+        "vaccine_total_doses" = {
           switch(
             fmt,
             "prov_cum_current" = {
@@ -94,7 +94,7 @@ process_pe <- function(uuid, val, fmt, ds,
           )
         },
         # sheet = "Partially or Fully"
-        "vaccine_first_doses" = {
+        "vaccine_dose_1" = {
           switch(
             fmt,
             "prov_cum_current" = {
@@ -108,7 +108,7 @@ process_pe <- function(uuid, val, fmt, ds,
           )
         },
         # sheet = "Fully Immunized"
-        "vaccine_completion" = {
+        "vaccine_dose_2" = {
             switch(
               fmt,
               "prov_cum_current" = {
