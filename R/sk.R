@@ -269,7 +269,7 @@ process_sk <- function(uuid, val, fmt, ds,
     "28d7f978-9a7b-4933-a520-41b073868d05" = {
       switch(
         val,
-        "vaccine_additional_doses" = {
+        "vaccine_dose_3" = {
           switch(
             fmt,
             "prov_cum_current" = {
@@ -277,10 +277,27 @@ process_sk <- function(uuid, val, fmt, ds,
                 rvest::html_table(header = TRUE) %>%
                 {.[[grep("w/ 3rd Dose", .)[1]]]} %>%
                 dplyr::filter(.data$`Age Range` == "Total") %>%
-                dplyr::select(.data$`w/ 3rd Dose`, .data$`w/ 4th Dose`) %>%
+                dplyr::pull(.data$`w/ 3rd Dose`) %>%
                 as.character() %>%
                 readr::parse_number() %>%
-                {data.frame(value = sum(.))} %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_dose_4" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                rvest::html_table(header = TRUE) %>%
+                {.[[grep("w/ 4th Dose", .)[1]]]} %>%
+                dplyr::filter(.data$`Age Range` == "Total") %>%
+                dplyr::pull(.data$`w/ 4th Dose`) %>%
+                as.character() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
