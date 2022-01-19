@@ -91,20 +91,9 @@ process_ns <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    "70214276-8616-488c-b53a-b514608e3146" = {
+    "d025e7c2-b0bd-48b8-a30f-1ae240e78e7e" = {
       switch(
         val,
-        "vaccine_distribution" = {
-          switch(
-            fmt,
-            "prov_cum_current" = {
-              ds$features$attributes %>%
-                dplyr::transmute(value = .data$dose_rec) %>%
-                helper_cum_current(loc = "prov", val, prov, date_current)
-            },
-            e_fmt()
-          )
-        },
         "vaccine_total_doses" = {
           switch(
             fmt,
@@ -116,28 +105,34 @@ process_ns <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
-        "vaccine_dose_2" = {
+        "vaccine_dose_1" = {
           switch(
             fmt,
             "prov_cum_current" = {
-              # April 21, 2021: https://novascotia.ca/news/release/?id=20210421003
-              # 230,801 doses admin / 33,356 fully vaccinated
-              # dashboard: 15.5% only one dose, 3.4% two doses
-              # 33,356 * (100 / 3.4) = 981058.8
-              # this confirms NS is using 2019 pop for coverage calcs: 971,395
               ds$features$attributes %>%
-                dplyr::transmute(value = round(.data$prct_pop_2 / 100 * 971395)) %>%
+                dplyr::transmute(value = .data$dose_1) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
           )
         },
-        "vaccine_additional_doses" = {
+        "vaccine_dose_2" = {
           switch(
             fmt,
             "prov_cum_current" = {
               ds$features$attributes %>%
-                dplyr::transmute(value = round(.data$prct_pop_3 / 100 * 971395)) %>%
+                dplyr::transmute(value = .data$dose_2) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_dose_3" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::transmute(value = .data$dose_3) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
