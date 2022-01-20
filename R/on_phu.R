@@ -741,7 +741,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    # North Bay
+    # North Bay Parry Sound
     "3178dd11-17af-4478-a72e-e1a35d7d1b2d" = {
       hr <- "North Bay Parry Sound"
       switch(
