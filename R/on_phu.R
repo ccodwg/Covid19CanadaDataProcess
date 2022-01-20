@@ -138,64 +138,6 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    # Chatham-Kent
-    "fe08035c-2c03-4960-a642-bde1fe18c857" = {
-      hr <- "Chatham-Kent"
-      switch(
-        val,
-        "cases" = {
-          switch(
-            fmt,
-            "hr_cum_current" = {
-              ds %>%
-                rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>%
-                {.[grep("Cases", .)]} %>%
-                `[`(2) %>%
-                readr::parse_number() %>%
-                data.frame(value = .) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current, hr)
-            },
-            e_fmt()
-          )
-        },
-        "mortality" = {
-          switch(
-            fmt,
-            "hr_cum_current" = {
-              ds %>%
-                rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>%
-                {.[c(grep("Total COVID Deaths", .), grep("Total COVID Deaths", .)+1)]} %>% # Extract value in the adjacent vector element to the value label
-                stringr::str_c(collapse = " ") %>%
-                stringr::str_replace_all(., "\\.", "") %>% # Need to remove periods or it throws a parsing error %>%
-                readr::parse_number() %>%
-                data.frame(value = .) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current, hr)
-            },
-            e_fmt()
-          )
-        },
-        # "recovered" = {
-        #   switch(
-        #     fmt,
-        #     "hr_cum_current" = {
-        #       ds %>%
-        #         rvest::html_elements(".card") %>%
-        #         rvest::html_attr("aria-label") %>%
-        #         {.[c(grep("Total Resolved Cases", .), grep("Total Resolved Cases", .)+1)]} %>% # Extract value in the adjacent vector element to the value label
-        #         stringr::str_c(collapse = " ") %>%
-        #         stringr::str_replace_all(., "\\.", "") %>% # Need to remove periods or it throws a parsing error %>%
-        #         readr::parse_number() %>%
-        #         data.frame(value = .) %>%
-        #         helper_cum_current(loc = "hr", val, prov, date_current, hr)
-        #     },
-        #     e_fmt()
-        #   )
-        # },
-        e_val()
-      )
-    },
     # Durham
     "ba7b0d74-5fe2-41d8-aadb-6320ff9acb21" = {
       hr <- "Durham"
@@ -242,62 +184,6 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 {.[grep("Total Resolved", rvest::html_attr(., "aria-label"))][1]} %>%
                 rvest::html_element(".card") %>%
                 rvest::html_attr("aria-label") %>%
-                readr::parse_number() %>%
-                data.frame(value = .) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current, hr)
-            },
-            e_fmt()
-          )
-        },
-        e_val()
-      )
-    },
-    # Eastern
-    "cd1db4e8-c4e5-4b24-86a5-2294281919c6" = {
-      hr <- "Eastern"
-      switch(
-        val,
-        "cases" = {
-          switch(
-            fmt,
-            "hr_cum_current" = {
-              ds %>%
-                rvest::html_element(".stats") %>%
-                rvest::html_elements(".card") %>%
-                {.[[grep("Total Cumulative Cases", .)[1]]]} %>%
-                rvest::html_text2() %>%
-                readr::parse_number() %>%
-                data.frame(value = .) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current, hr)
-            },
-            e_fmt()
-          )
-        },
-        "mortality" = {
-          switch(
-            fmt,
-            "hr_cum_current" = {
-              ds %>%
-                rvest::html_element(".stats") %>%
-                rvest::html_elements(".card") %>%
-                {.[[grep("Total Deceased", .)[1]]]} %>%
-                rvest::html_text2() %>%
-                readr::parse_number() %>%
-                data.frame(value = .) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current, hr)
-            },
-            e_fmt()
-          )
-        },
-        "recovered" = {
-          switch(
-            fmt,
-            "hr_cum_current" = {
-              ds %>%
-                rvest::html_element(".stats") %>%
-                rvest::html_elements(".card") %>%
-                {.[[grep("Total Resolved", .)[1]]]} %>%
-                rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
