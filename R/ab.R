@@ -222,6 +222,24 @@ process_ab <- function(uuid, val, fmt, ds,
     "d3b170a7-bb86-4bb0-b362-2adc5e6438c2" = {
       switch(
         val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_table() %>%
+                `[[`(1) %>%
+                # filter to zone info
+                dplyr::slice(-c(1, 2)) %>%
+                dplyr::transmute(
+                  sub_region_1 = .data$Location,
+                  value = readr::parse_number(.data$`Confirmed\n\t\t\tcases`)
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
         "mortality" = {
           switch(
             fmt,
