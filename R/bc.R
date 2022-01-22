@@ -59,6 +59,21 @@ process_bc <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "active" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$HA_Name, .data$ActiveCases) %>%
+                dplyr::rename(
+                  sub_region_1 = .data$HA_Name,
+                  value = .data$ActiveCases
+                ) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
         e_val()
       )
     },
