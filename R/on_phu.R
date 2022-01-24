@@ -562,29 +562,6 @@ process_on_phu <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    # Hastings Prince Edward
-    "22c51a16-63d6-470c-8b8a-54ae243883b5" = {
-      hr <- "Hastings Prince Edward"
-      switch(
-        val,
-        "cases" = {
-          switch(
-            fmt,
-            "hr_cum_current" = {
-              ds %>%
-                rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>%
-                {.[grep("Total", .)][1]} %>%
-                readr::parse_number() %>%
-                data.frame(value = .) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current, hr)
-            },
-            e_fmt()
-          )
-        },
-        e_val()
-      )
-    },
     # Lambton
     "8d0cf226-b9b7-4fc3-8100-a4f56dec6792" = {
       hr <- "Lambton"
