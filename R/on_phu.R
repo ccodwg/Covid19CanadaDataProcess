@@ -1275,7 +1275,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_elements(".InfographicEditor-Contents-Item") %>%
-                {.[grep("^Cumulative Confirmed Cases", rvest::html_text2(.))]} %>%
+                {.[grep("^Cumulative\nConfirmed Cases", rvest::html_text2(.))]} %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
@@ -1290,7 +1290,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_elements(".InfographicEditor-Contents-Item") %>%
-                {.[grep("^Deceased", rvest::html_text2(.))]} %>%
+                {.[grep("^Cumulative\nDeceased Cases", rvest::html_text2(.))]} %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
@@ -1303,12 +1303,23 @@ process_on_phu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_cum_current" = {
-              ds %>%
+              total_cases <- ds %>%
                 rvest::html_elements(".InfographicEditor-Contents-Item") %>%
-                {.[grep("^Resolved Cases", rvest::html_text2(.))]} %>%
+                {.[grep("^Cumulative\nConfirmed Cases", rvest::html_text2(.))]} %>%
                 rvest::html_text2() %>%
-                readr::parse_number() %>%
-                data.frame(value = .) %>%
+                readr::parse_number()
+              deaths <- ds %>%
+                rvest::html_elements(".InfographicEditor-Contents-Item") %>%
+                {.[grep("^Cumulative\nDeceased Cases", rvest::html_text2(.))]} %>%
+                rvest::html_text2() %>%
+                readr::parse_number()
+              active_cases <- ds %>%
+                rvest::html_elements(".InfographicEditor-Contents-Item") %>%
+                {.[grep("^Active Lab-Confirmed Cases", rvest::html_text2(.))]} %>%
+                rvest::html_text2() %>%
+                sub("-", " ", .) %>% # the "-" throws off parse_number()
+                readr::parse_number()
+              data.frame(value = total_cases - deaths - active_cases) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
