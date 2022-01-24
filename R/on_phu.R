@@ -1487,7 +1487,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
       )
     },
     # Windsor-Essex
-    "01574538-062f-4a41-9dd5-8fdb72a0fe03" = {
+    "fb6ccf1c-498f-40d0-b70c-8fce37603be1" = {
       hr <- "Windsor-Essex"
       switch(
         val,
@@ -1496,13 +1496,11 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".text-center") %>%
-                rvest::html_text(trim = TRUE) %>%
-                {.[[grep("Confirmed Cases", .)[1]]]} %>%
+                rvest::html_elements(".card") %>%
+                {.[[grep("Min of Total Cases", rvest::html_attr(., "aria-label"))]]} %>%
+                rvest::html_attr("aria-label") %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -1513,13 +1511,11 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_elements(".text-center") %>%
-                rvest::html_text(trim = TRUE) %>%
-                {.[[grep("Deaths", .)[1]]]} %>%
+                rvest::html_elements(".card") %>%
+                {.[[grep("First Total Deaths", rvest::html_attr(., "aria-label"))]]} %>%
+                rvest::html_attr("aria-label") %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -1529,14 +1525,22 @@ process_on_phu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_cum_current" = {
-              ds %>%
-                rvest::html_elements(".text-center") %>%
-                rvest::html_text(trim = TRUE) %>%
-                {.[[grep("Resolved Cases", .)[1]]]} %>%
-                readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+              total_cases <- ds %>%
+                rvest::html_elements(".card") %>%
+                {.[[grep("Min of Total Cases", rvest::html_attr(., "aria-label"))]]} %>%
+                rvest::html_attr("aria-label") %>%
+                readr::parse_number()
+              deaths <- ds %>%
+                rvest::html_elements(".card") %>%
+                {.[[grep("First Total Deaths", rvest::html_attr(., "aria-label"))]]} %>%
+                rvest::html_attr("aria-label") %>%
+                readr::parse_number()
+              active_cases <- ds %>%
+                rvest::html_elements(".card") %>%
+                {.[[grep("Active Cases", rvest::html_attr(., "aria-label"))]]} %>%
+                rvest::html_attr("aria-label") %>%
+                readr::parse_number()
+              data.frame(value = total_cases - deaths - active_cases) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
