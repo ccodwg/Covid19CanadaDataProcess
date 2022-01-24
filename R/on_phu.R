@@ -611,7 +611,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_elements(".textRun") %>%
-                {.[16]} %>%
+                {.[14]} %>%
                 rvest::html_text2() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
