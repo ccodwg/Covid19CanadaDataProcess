@@ -1186,9 +1186,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table() %>%
-                {.[[grep("Cases1", .)[1]]]} %>%
-                {dplyr::filter(., grepl("Cases1", .[[1]]))} %>%
-                dplyr::pull(.data$`Current / Actuellement`) %>%
+                {.[[grep("Total cases", .)[1]]]} %>%
+                {dplyr::filter(., grepl("Total cases", .[[1]]))} %>%
+                dplyr::pull(.data$`Current1 / Actuellement`) %>%
                 sub(" ", "", .) %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
@@ -1205,7 +1205,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_table() %>%
                 {.[[grep("Deceased", .)[1]]]} %>%
                 {dplyr::filter(., grepl("Deceased", .[[1]]))} %>%
-                dplyr::pull(.data$`Current / Actuellement`) %>%
+                dplyr::pull(.data$`Current1 / Actuellement`) %>%
                 sub(" ", "", .) %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
@@ -1222,14 +1222,14 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_table() %>%
                 {.[[grep("Resolved cases", .)[1]]]} %>%
                 {dplyr::filter(., grepl("Resolved cases", .[[1]]))} %>%
-                dplyr::pull(.data$`Current / Actuellement`) %>%
+                dplyr::pull(.data$`Current1 / Actuellement`) %>%
                 sub(" ", "", .) %>%
                 readr::parse_number()
               deceased <- ds %>%
                 rvest::html_table() %>%
                 {.[[grep("Deceased", .)[1]]]} %>%
                 {dplyr::filter(., grepl("Deceased", .[[1]]))} %>%
-                dplyr::pull(.data$`Current / Actuellement`) %>%
+                dplyr::pull(.data$`Current1 / Actuellement`) %>%
                 sub(" ", "", .) %>%
                 readr::parse_number()
               data.frame(value = resolved - deceased) %>%
