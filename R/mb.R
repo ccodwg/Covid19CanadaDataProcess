@@ -244,6 +244,60 @@ process_mb <- function(uuid, val, fmt, ds,
     "8cb83971-19f0-4dfc-b832-69efc1036ddd" = {
       switch(
         val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$Area, .data$Total_Cases) %>%
+                dplyr::filter(.data$Area %in% mb_rha) %>%
+                dplyr::rename(sub_region_1 = .data$Area,
+                              value = .data$Total_Cases) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$Area, .data$Deaths) %>%
+                dplyr::filter(.data$Area %in% mb_rha) %>%
+                dplyr::rename(sub_region_1 = .data$Area,
+                              value = .data$Deaths) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$Area, .data$Recovered) %>%
+                dplyr::filter(.data$Area %in% mb_rha) %>%
+                dplyr::rename(sub_region_1 = .data$Area,
+                              value = .data$Recovered) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "testing" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::filter(.data$Area == "All") %>%
+                dplyr::transmute(value = .data$Total_Tests) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
         "hospitalizations" = {
           switch(
             fmt,
