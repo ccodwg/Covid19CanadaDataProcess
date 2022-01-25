@@ -112,18 +112,26 @@ process_nu <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 rvest::html_table(header = TRUE) %>%
-                {.[[grep("Total persons vaccinated with at least one dose in Nunavut", .)[1]]]} %>%
-                dplyr::select(
-                  .data$`Total persons vaccinated with at least one dose in Nunavut`,
-                  .data$`Total persons vaccinated with two doses in Nunavut`
-                  ) %>%
-                dplyr::transmute(
-                  dose_1 = readr::parse_number(as.character(.data$`Total persons vaccinated with at least one dose in Nunavut`)),
-                  dose_2 = readr::parse_number(as.character(.data$`Total persons vaccinated with two doses in Nunavut`))
-                ) %>%
-                dplyr::transmute(
-                  value = .data$dose_1 + .data$dose_2
-                ) %>%
+                {.[[grep("one dose", .)[1]]]} %>%
+                dplyr::select(dplyr::matches("one dose|two doses|three doses")) %>%
+                dplyr::mutate(dplyr::across(.fns = function(x) readr::parse_number(as.character(x)))) %>%
+                dplyr::transmute(value = rowSums(.)) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_dose_1" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                rvest::html_table(header = TRUE) %>%
+                {.[[grep("one dose", .)[1]]]} %>%
+                dplyr::select(dplyr::matches("one dose")) %>%
+                as.character() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
@@ -135,16 +143,30 @@ process_nu <- function(uuid, val, fmt, ds,
            "prov_cum_current" = {
              ds %>%
                rvest::html_table(header = TRUE) %>%
-               {.[[grep("Total persons vaccinated with two doses in Nunavut", .)[1]]]} %>%
-               dplyr::select(.data$`Total persons vaccinated with two doses in Nunavut`) %>%
+               {.[[grep("two doses", .)[1]]]} %>%
+               dplyr::select(dplyr::matches("two doses")) %>%
                as.character() %>%
                readr::parse_number() %>%
-               data.frame(
-                 value = .
-               ) %>%
+               data.frame(value = .) %>%
                helper_cum_current(loc = "prov", val, prov, date_current)
            },
            e_fmt()
+          )
+        },
+        "vaccine_dose_3" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                rvest::html_table(header = TRUE) %>%
+                {.[[grep("three doses", .)[1]]]} %>%
+                dplyr::select(dplyr::matches("three doses")) %>%
+                as.character() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
           )
         },
         e_val()
