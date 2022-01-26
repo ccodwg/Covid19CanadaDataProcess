@@ -427,15 +427,20 @@ process_on_phu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_cum_current" = {
-              ds %>%
-                rvest::html_elements(".card") %>%
-                {.[grep("ProbConf", .)][1]} %>%
-                rvest::html_text2() %>%
-                stringr::str_extract("(\\d+|\\d{1,3}(,\\d{3})*)(\\.\\d+)? were confirmed cases") %>%
+              headers <- ds %>%
+                rvest::html_element(".columnHeaders") %>%
+                rvest::html_children() %>%
+                rvest::html_children() %>%
+                rvest::html_text2()
+              cells <- ds %>%
+                rvest::html_elements(".bodyCells") %>%
+                rvest::html_children() %>%
+                rvest::html_children() %>%
+                rvest::html_children() %>%
+                rvest::html_text2()
+              cells[grep("Total", headers)][1] %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -445,17 +450,20 @@ process_on_phu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_cum_current" = {
-              ds %>%
-                rvest::html_element(".bodyCells") %>%
-                rvest::html_element("div") %>%
-                rvest::html_element("div") %>%
+              headers <- ds %>%
+                rvest::html_element(".columnHeaders") %>%
                 rvest::html_children() %>%
-                `[`(7) %>%
-                rvest::html_text2() %>%
+                rvest::html_children() %>%
+                rvest::html_text2()
+              cells <- ds %>%
+                rvest::html_elements(".bodyCells") %>%
+                rvest::html_children() %>%
+                rvest::html_children() %>%
+                rvest::html_children() %>%
+                rvest::html_text2()
+              cells[grep("Deceased", headers)][1] %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -465,23 +473,20 @@ process_on_phu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_cum_current" = {
-              resolved <- ds %>%
-                rvest::html_element(".bodyCells") %>%
-                rvest::html_element("div") %>%
-                rvest::html_element("div") %>%
+              headers <- ds %>%
+                rvest::html_element(".columnHeaders") %>%
                 rvest::html_children() %>%
-                `[`(5) %>%
-                rvest::html_text2() %>%
-                readr::parse_number()
-              probable_cases <- ds %>%
-                rvest::html_elements(".card") %>%
-                {.[grep("ProbConf", .)][1]} %>%
-                rvest::html_text2() %>%
-                stringr::str_extract("(\\d+|\\d{1,3}(,\\d{3})*)(\\.\\d+)? were probable cases") %>%
-                readr::parse_number()
-              data.frame(
-                value = resolved - probable_cases
-              ) %>%
+                rvest::html_children() %>%
+                rvest::html_text2()
+              cells <- ds %>%
+                rvest::html_elements(".bodyCells") %>%
+                rvest::html_children() %>%
+                rvest::html_children() %>%
+                rvest::html_children() %>%
+                rvest::html_text2()
+              cells[grep("Resolved", headers)][1] %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
