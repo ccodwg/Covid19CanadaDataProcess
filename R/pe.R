@@ -33,6 +33,25 @@ process_pe <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "mortality" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                rvest::html_table() %>%
+                `[[`(1) %>%
+                dplyr::filter(grepl("deaths", .data$X1)) %>%
+                dplyr::select(2) %>%
+                as.character() %>%
+                readr::parse_number() %>%
+              data.frame(
+                value = .
+              ) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
         "recovered" = {
           switch(
             fmt,
@@ -78,7 +97,7 @@ process_pe <- function(uuid, val, fmt, ds,
       switch(
         val,
         # sheet = "Total Doses"
-        "vaccine_total_doses" = {
+        "vaccine_administration" = {
           switch(
             fmt,
             "prov_cum_current" = {
@@ -94,7 +113,7 @@ process_pe <- function(uuid, val, fmt, ds,
           )
         },
         # sheet = "Partially or Fully"
-        "vaccine_dose_1" = {
+        "vaccine_first_doses" = {
           switch(
             fmt,
             "prov_cum_current" = {
@@ -108,7 +127,7 @@ process_pe <- function(uuid, val, fmt, ds,
           )
         },
         # sheet = "Fully Immunized"
-        "vaccine_dose_2" = {
+        "vaccine_completion" = {
             switch(
               fmt,
               "prov_cum_current" = {
