@@ -1360,7 +1360,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
               active_cases <- ds %>%
                 rvest::html_table(header = TRUE) %>%
                 {.[grep("Current active cases", .)][[1]]} %>%
-                dplyr::transmute(value = readr::parse_number(as.character(.[["Current active cases"]])))
+                dplyr::transmute(value = readr::parse_number(as.character(dplyr::select(., dplyr::starts_with("Current active cases")))))
               data.frame(total_cases - deaths - active_cases) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
