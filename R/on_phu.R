@@ -803,9 +803,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_table() %>%
                 {.[unlist(lapply(., nrow)) != 0]} %>%
-                {.[[grep("Case Description", .)[1]]]} %>%
-                dplyr::filter(.data$`Case Description` == "NWHU deceased cases") %>%
-                dplyr::pull(.data$Total) %>%
+                {.[[grep("NWHU deceased cases", .)[1]]]} %>%
+                dplyr::pull(2) %>%
                 as.character() %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
@@ -829,9 +828,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
               deceased <- ds %>%
                 rvest::html_table() %>%
                 {.[unlist(lapply(., nrow)) != 0]} %>%
-                {.[[grep("Case Description", .)[1]]]} %>%
-                dplyr::filter(.data$`Case Description` == "NWHU deceased cases") %>%
-                dplyr::pull(.data$Total) %>%
+                {.[[grep("NWHU deceased cases", .)[1]]]} %>%
+                dplyr::pull(2) %>%
                 as.character() %>%
                 readr::parse_number()
               data.frame(value = resolved - deceased) %>%
