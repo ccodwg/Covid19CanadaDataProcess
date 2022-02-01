@@ -86,9 +86,8 @@ process_bc <- function(uuid, val, fmt, ds,
             "prov_cum_current" = {
               ds %>%
                 dplyr::filter(.data$Region == "BC") %>%
-                dplyr::slice_tail(n = 1) %>%
-                dplyr::select(.data$Total_Tests) %>%
-                dplyr::rename(value = .data$Total_Tests) %>%
+                dplyr::pull(.data$New_Tests) %>%
+                {data.frame(value = sum(.))} %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
