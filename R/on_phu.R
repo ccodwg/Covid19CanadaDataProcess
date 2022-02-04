@@ -1318,11 +1318,13 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_table(header = TRUE) %>%
-                {.[grep("Positive cases", .)][[1]]} %>%
-                dplyr::select(2, 3) %>%
-                dplyr::mutate(dplyr::across(.fns = function(x) readr::parse_number(as.character(x)))) %>%
-                dplyr::transmute(value = rowSums(.)) %>%
+                rvest::html_table(header = FALSE) %>%
+                `[[`(1) %>%
+                dplyr::filter(.data$X1 %in% c("Mar\r\n  2020 to Dec 2021", "Since\r\n  Jan 1, 2022 (mostly high\r\n  risk*)")) %>%
+                dplyr::mutate(X2 = readr::parse_number(as.character(.data$X2))) %>%
+                dplyr::pull(.data$X2) %>%
+                sum() %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -1333,9 +1335,12 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                rvest::html_table(header = TRUE) %>%
-                {.[grep("Total deaths", .)][[1]]} %>%
-                dplyr::transmute(value = readr::parse_number(as.character(.[["Total deaths"]]))) %>%
+                rvest::html_table(header = FALSE) %>%
+                `[[`(1) %>%
+                dplyr::filter(.data$X1 == "Total deaths") %>%
+                dplyr::mutate(X2 = readr::parse_number(as.character(.data$X2))) %>%
+                dplyr::pull(.data$X2) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -1346,19 +1351,26 @@ process_on_phu <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               total_cases <- ds %>%
-                rvest::html_table(header = TRUE) %>%
-                {.[grep("Positive cases", .)][[1]]} %>%
-                dplyr::select(2, 3) %>%
-                dplyr::mutate(dplyr::across(.fns = function(x) readr::parse_number(as.character(x)))) %>%
-                dplyr::transmute(value = rowSums(.))
+                rvest::html_table(header = FALSE) %>%
+                `[[`(1) %>%
+                dplyr::filter(.data$X1 %in% c("Mar\r\n  2020 to Dec 2021", "Since\r\n  Jan 1, 2022 (mostly high\r\n  risk*)")) %>%
+                dplyr::mutate(X2 = readr::parse_number(as.character(.data$X2))) %>%
+                dplyr::pull(.data$X2) %>%
+                sum()
               deaths <- ds %>%
-                rvest::html_table(header = TRUE) %>%
-                {.[grep("Total deaths", .)][[1]]} %>%
-                dplyr::transmute(value = readr::parse_number(as.character(.[["Total deaths"]])))
+                rvest::html_table(header = FALSE) %>%
+                `[[`(1) %>%
+                dplyr::filter(.data$X1 == "Total deaths") %>%
+                dplyr::mutate(X2 = readr::parse_number(as.character(.data$X2))) %>%
+                dplyr::pull(.data$X2) %>%
+                data.frame(value = .)
               active_cases <- ds %>%
-                rvest::html_table(header = TRUE) %>%
-                {.[grep("Current active cases", .)][[1]]} %>%
-                dplyr::transmute(value = readr::parse_number(as.character(dplyr::select(., dplyr::starts_with("Current active cases")))))
+                rvest::html_table(header = FALSE) %>%
+                `[[`(1) %>%
+                dplyr::filter(.data$X1 == "Current\r\n  active cases2(mostly\r\n  high risk*)") %>%
+                dplyr::mutate(X2 = readr::parse_number(as.character(.data$X2))) %>%
+                dplyr::pull(.data$X2) %>%
+                data.frame(value = .)
               data.frame(total_cases - deaths - active_cases) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
