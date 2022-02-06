@@ -1020,11 +1020,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_elements("li") %>%
                 rvest::html_text(trim = TRUE) %>%
-                {.[[grep("Number of Cases", .)[1]]]} %>%
+                {.[[grep("Total cases", .)[1]]]} %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -1039,9 +1037,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_text(trim = TRUE) %>%
                 {.[[grep("Deaths", .)[1]]]} %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
@@ -1051,14 +1047,22 @@ process_on_phu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_cum_current" = {
-              ds %>%
+              total_cases <- ds %>%
                 rvest::html_elements("li") %>%
                 rvest::html_text(trim = TRUE) %>%
-                {.[[grep("Recovered", .)[1]]]} %>%
-                readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                {.[[grep("Total cases", .)[1]]]} %>%
+                readr::parse_number()
+              mortality <- ds %>%
+                rvest::html_elements("li") %>%
+                rvest::html_text(trim = TRUE) %>%
+                {.[[grep("Deaths", .)[1]]]} %>%
+                readr::parse_number()
+              active_cases <- ds %>%
+                rvest::html_elements("li") %>%
+                rvest::html_text(trim = TRUE) %>%
+                {.[[grep("Active cases", .)[1]]]} %>%
+                readr::parse_number()
+              data.frame(value = total_cases - mortality - active_cases) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
