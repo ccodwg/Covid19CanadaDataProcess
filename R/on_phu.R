@@ -1035,7 +1035,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_elements("li") %>%
                 rvest::html_text(trim = TRUE) %>%
-                {.[[grep("Deaths", .)[1]]]} %>%
+                {.[[grep("Total deaths", .)[1]]]} %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
@@ -1055,7 +1055,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
               mortality <- ds %>%
                 rvest::html_elements("li") %>%
                 rvest::html_text(trim = TRUE) %>%
-                {.[[grep("Deaths", .)[1]]]} %>%
+                {.[[grep("Total deaths", .)[1]]]} %>%
                 readr::parse_number()
               active_cases <- ds %>%
                 rvest::html_elements("li") %>%
