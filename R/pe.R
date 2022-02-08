@@ -25,9 +25,7 @@ process_pe <- function(uuid, val, fmt, ds,
                 dplyr::select(2) %>%
                 as.character() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
@@ -44,9 +42,7 @@ process_pe <- function(uuid, val, fmt, ds,
                 dplyr::select(2) %>%
                 as.character() %>%
                 readr::parse_number() %>%
-              data.frame(
-                value = .
-              ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
@@ -59,13 +55,11 @@ process_pe <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_table() %>%
                 `[[`(1) %>%
-                dplyr::filter(grepl("Recovered cases", .data$X1)) %>%
+                dplyr::filter(grepl("Resolved cases", .data$X1)) %>%
                 dplyr::select(2) %>%
                 as.character() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
@@ -82,9 +76,7 @@ process_pe <- function(uuid, val, fmt, ds,
                 dplyr::select(2) %>%
                 as.character() %>%
                 readr::parse_number() %>%
-                data.frame(
-                  value = .
-                ) %>%
+                data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
             },
             e_fmt()
