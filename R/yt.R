@@ -151,23 +151,159 @@ process_yt <- function(uuid, val, fmt, ds,
           )
         },
         "vaccine_additional_doses" = {
-          ds %>%
-            rvest::html_elements("table") %>%
-            {.[[grep("Total % vaccinated", .)[1]]]} %>%
-            rvest::html_table(header = FALSE) %>%
-            dplyr::filter(.data$X1 == "3rd shot") %>%
-            dplyr::select(2) %>%
-            as.character() %>%
-            readr::parse_number() %>%
-            data.frame(
-              value = .
-            ) %>%
-            helper_cum_current(loc = "prov", val, prov, date_current)
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                rvest::html_elements("table") %>%
+                {.[[grep("Total % vaccinated", .)[1]]]} %>%
+                rvest::html_table(header = FALSE) %>%
+                dplyr::filter(.data$X1 == "3rd shot") %>%
+                dplyr::select(2) %>%
+                as.character() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "9c29c29f-fd38-45d5-a471-9bfb95abb683" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::filter(.data$Metric == "Confirmed Yukon Resident Cases Total") %>%
+                {data.frame(value = readr::parse_number(as.character(.$number)))} %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::filter(.data$Metric == "Confirmed Yukon Resident Cases Deceased") %>%
+                {data.frame(value = readr::parse_number(as.character(.$number)))} %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::filter(.data$Metric == "Confirmed Yukon Resident Cases Resolved") %>%
+                {data.frame(value = readr::parse_number(as.character(.$number)))} %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "active" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              # note that total cases seems to be less than active + recovered + deceased
+              ds$features$attributes %>%
+                dplyr::filter(.data$Metric == "Cases Total Active") %>%
+                {data.frame(value = readr::parse_number(as.character(.$number)))} %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "4a33ab2c-32a4-4630-8f6b-2bac2b1ce7ca" = {
+      switch(
+        val,
+        "testing" = {
+          match.arg(testing_type, c("n_tests_completed"), several.ok = FALSE)
+          switch(
+            fmt,
+            "prov_ts" = {
+              if (testing_type == "n_tests_completed") {
+                ds$features$attributes %>%
+                  dplyr::transmute(
+                    date = lubridate::date(
+                      lubridate::with_tz(as.POSIXct(.data$DATE_RESULTED / 1000, origin = "1970-01-01"),
+                                         tz = "UTC")),
+                    value = .data$n_tests) %>%
+                  helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+              }
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "387473c7-bcb9-4712-82fb-cd0355793cdc" = {
+      switch(
+        val,
+        "vaccine_total_doses" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::filter(.data$ageGroup == "Total") %>%
+                dplyr::transmute(value = .data$dose1 + .data$dose2 + .data$dose3) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_dose_1" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::filter(.data$ageGroup == "Total") %>%
+                dplyr::transmute(value = .data$dose1) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_dose_2" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::filter(.data$ageGroup == "Total") %>%
+                dplyr::transmute(value = .data$dose2) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_dose_3" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds$features$attributes %>%
+                dplyr::filter(.data$ageGroup == "Total") %>%
+                dplyr::transmute(value = .data$dose3) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
         },
         e_val()
       )
     },
     e_uuid()
   )
-
 }
