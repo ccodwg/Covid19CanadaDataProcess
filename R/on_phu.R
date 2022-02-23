@@ -684,7 +684,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>% {.[[grep("CasesCount", .)[1]]]} %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("Total cases", .)[1]]]} %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
@@ -698,7 +699,8 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>% {.[[grep("Number of deaths", .)[1]]]} %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("Number of deaths", .)[1]]]} %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
@@ -710,11 +712,22 @@ process_on_phu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_cum_current" = {
-              ds %>%
+              total_cases <- ds %>%
                 rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>% {.[[grep("Count_RecoveredCases", .)[1]]]} %>%
-                readr::parse_number() %>%
-                data.frame(value = .) %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("Total cases", .)[1]]]} %>%
+                readr::parse_number()
+              deaths <- ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("Number of deaths", .)[1]]]} %>%
+                readr::parse_number()
+              active_cases <- ds %>%
+                rvest::html_elements(".card") %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("Active cases", .)[1]]]} %>%
+                readr::parse_number()
+              data.frame(value = total_cases - deaths - active_cases) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
             },
             e_fmt()
