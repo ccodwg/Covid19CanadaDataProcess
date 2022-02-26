@@ -1,0 +1,28 @@
+Package: Covid19CanadaDataProcess
+Title: Process Canadian COVID-19 Data
+Version: 0.2.0
+Authors@R:
+    person(given = "Jean-Paul R.",
+           family = "Soucy",
+           role = c("aut", "cre"),
+           email = "jeanpaul.r.soucy@gmail.com",
+           comment = c(ORCID = "0000-0002-8422-2326"))
+Description: This is a supplementary package to Covid19CanadaData (https://github.com/ccodwg/Covid19CanadaData)
+    used to process the ingested data into a common format.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    Covid19CanadaData,
+    dplyr,
+    tidyr,
+    lubridate,
+    magick,
+    magrittr,
+    methods,
+    readr,
+    rlang,
+    rvest,
+    stringr
+Remotes: ccodwg/Covid19CanadaData
+RoxygenNote: 7.1.2
