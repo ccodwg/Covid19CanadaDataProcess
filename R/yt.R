@@ -304,6 +304,48 @@ process_yt <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "8eb9a22f-a2c0-4bdb-8f6c-ef8134901efe" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$REPORT_DATE_RECEIVED / 1000, origin = "1970-01-01"),
+                                       tz = "UTC")),
+                  value = .data$DAILY_CASES) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "2fb9f970-04e0-4502-ae4a-67ec866dcad9" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$HOSPITAL_ADMISSION_DATE5 / 1000, origin = "1970-01-01"),
+                                       tz = "UTC")),
+                  value = .data$DAILY_HOSP) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
