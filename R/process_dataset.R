@@ -20,6 +20,7 @@
 #'  \item vaccine_dose_4
 #'  \item vaccine_additional_doses
 #'  \item hospitalizations
+#'  \item hospitalizations_cum
 #'  \item icu
 #' }
 #'
@@ -47,6 +48,7 @@ process_dataset <- function(uuid,
                               "vaccine_dose_4",
                               "vaccine_additional_doses",
                               "hospitalizations",
+                              "hospitalizations_cum",
                               "icu"
                             ),
                             fmt,

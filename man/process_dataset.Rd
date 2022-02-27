@@ -9,7 +9,7 @@ process_dataset(
   val = c("cases", "mortality", "recovered", "active", "testing",
     "vaccine_distribution", "vaccine_total_doses", "vaccine_dose_1", "vaccine_dose_2",
     "vaccine_dose_3", "vaccine_dose_4", "vaccine_additional_doses", "hospitalizations",
-    "icu"),
+    "hospitalizations_cum", "icu"),
   fmt,
   ds,
   ...
@@ -52,6 +52,7 @@ The currently supported values are the following:
  \item vaccine_dose_4
  \item vaccine_additional_doses
  \item hospitalizations
+ \item hospitalizations_cum
  \item icu
 }
 }

@@ -41,6 +41,7 @@ The currently supported values are the following:
  \item vaccine_dose_4
  \item vaccine_additional_doses
  \item hospitalizations
+ \item hospitalizations_cum
  \item icu
 }
 }
