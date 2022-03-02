@@ -1152,7 +1152,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_cum_current" = {
-              ds %>% rvest::html_table() %>% {.[[1]]} %>%
+              ds %>% rvest::html_table(header = FALSE) %>% {.[[1]]} %>%
                 dplyr::filter(.$X1=="Total # of Confirmed Cases") %>%
                 {.[2]} %>% as.character() %>%
                 readr::parse_number() %>%
@@ -1166,7 +1166,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_cum_current" = {
-              ds %>% rvest::html_table() %>% {.[[1]]} %>%
+              ds %>% rvest::html_table(header = FALSE) %>% {.[[1]]} %>%
                 dplyr::filter(.$X1=="Total # of Deaths") %>%
                 {.[2]} %>%
                 as.character() %>%
@@ -1181,7 +1181,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "hr_cum_current" = {
-              ds %>% rvest::html_table() %>% {.[[1]]} %>%
+              ds %>% rvest::html_table(header = FALSE) %>% {.[[1]]} %>%
                 dplyr::filter(.$X1=="Total # of Resolved Cases") %>%
                 {.[2]} %>%
                 as.character() %>%
