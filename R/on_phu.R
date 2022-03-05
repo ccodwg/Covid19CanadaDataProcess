@@ -58,14 +58,12 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table(header = TRUE) %>%
-                {.[[grep("Resolved", .)[1]]]} %>%
-                dplyr::rename("column_1" = 1) %>% # avoid zero-length variable name error in some circumstances
-                {dplyr::filter(., .[[1]] == "Deceased" | .[[1]] == "Resolved")} %>%
-                # rename first column so it is easier to reference
-                dplyr::rename("Name" = 1) %>%
+                {.[[grep("Resolved Cases", .)[1]]]} %>%
+                dplyr::rename("Name" = 1) %>% # avoid zero-length variable name error in some circumstances
+                {dplyr::filter(., .[[1]] == "Deceased" | .[[1]] == "Resolved Cases")} %>%
                 dplyr::select(.data$Name, .data$Current) %>%
                 dplyr::mutate(Current = readr::parse_number(as.character(.data$Current))) %>%
-                {.[.$Name == "Resolved", "Current"] - .[.$Name == "Deceased", "Current"]} %>%
+                {.[.$Name == "Resolved Cases", "Current"] - .[.$Name == "Deceased", "Current"]} %>%
                 dplyr::pull() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
