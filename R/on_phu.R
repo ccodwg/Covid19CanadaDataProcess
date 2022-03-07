@@ -22,9 +22,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table(header = TRUE) %>%
-                {.[[grep("Confirmed cases", .)[1]]]} %>%
-                dplyr::rename("column_1" = 1) %>% # avoid zero-length variable name error in some circumstances
-                {dplyr::filter(., .[[1]] == "Confirmed cases")} %>%
+                {.[[grep("Confirmed Cases in 2022", ., ignore.case = TRUE)[1]]]} %>%
+                dplyr::rename("Name" = 1) %>% # avoid zero-length variable name error in some circumstances
+                dplyr::filter(., .data$Name == "Confirmed Cases") %>%
                 dplyr::select(.data$Current) %>%
                 as.character() %>%
                 readr::parse_number() %>%
@@ -40,9 +40,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table(header = TRUE) %>%
-                {.[[grep("Deceased", .)[1]]]} %>%
-                dplyr::rename("column_1" = 1) %>% # avoid zero-length variable name error in some circumstances
-                {dplyr::filter(., .[[1]] == "Deceased")} %>%
+                {.[[grep("Confirmed Cases in 2022", ., ignore.case = TRUE)[1]]]} %>%
+                dplyr::rename("Name" = 1) %>% # avoid zero-length variable name error in some circumstances
+                dplyr::filter(.data$Name == "Deceased") %>%
                 dplyr::select(.data$Current) %>%
                 as.character() %>%
                 readr::parse_number() %>%
@@ -58,12 +58,12 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_table(header = TRUE) %>%
-                {.[[grep("Resolved Cases", .)[1]]]} %>%
+                {.[[grep("Confirmed Cases in 2022", .)[1]]]} %>%
                 dplyr::rename("Name" = 1) %>% # avoid zero-length variable name error in some circumstances
-                {dplyr::filter(., .[[1]] == "Deceased" | .[[1]] == "Resolved Cases")} %>%
+                dplyr::filter(.data$Name %in% c("Deceased", "Resolved")) %>%
                 dplyr::select(.data$Name, .data$Current) %>%
                 dplyr::mutate(Current = readr::parse_number(as.character(.data$Current))) %>%
-                {.[.$Name == "Resolved Cases", "Current"] - .[.$Name == "Deceased", "Current"]} %>%
+                {.[.$Name == "Resolved", "Current"] - .[.$Name == "Deceased", "Current"]} %>%
                 dplyr::pull() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
