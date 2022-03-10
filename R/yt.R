@@ -346,6 +346,50 @@ process_yt <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "7698e84c-f43f-4a83-828a-1d26e21467b9" = {
+      switch(
+        val,
+        # THE CASES BY VACCINATION STATUS CHART ARE UPDATED WEEKLY ON MONDAYS (EXCLUDING HOLIDAYS). THE DATE SHOWN IS THE LAST DATE PRIOR TO REPORTING (i.e. SUNDAY). DETAILED DEFINITIONS AT: https://covid-19-data-dashboard.service.yukon.ca/
+        "cases" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$EPI_WEEK_DATE / 1000, origin = "1970-01-01"), tz = "UTC")),
+                  date = date - 7,
+                  value = .data$TOTAL_CASES) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "af6ea226-0325-4800-bac2-9239dd507b49" = {
+      switch(
+        val,
+        # THE CASES BY VACCINATION STATUS CHART ARE UPDATED WEEKLY ON MONDAYS (EXCLUDING HOLIDAYS). THE DATE SHOWN IS THE LAST DATE PRIOR TO REPORTING (i.e. SUNDAY). DETAILED DEFINITIONS AT: https://covid-19-data-dashboard.service.yukon.ca/
+        "cases" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$EPI_WEEK_DATE / 1000, origin = "1970-01-01"), tz = "UTC")),
+                  date = date - 7,
+                  value = .data$TOTAL_CASES) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }

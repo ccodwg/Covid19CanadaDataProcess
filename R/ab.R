@@ -299,6 +299,68 @@ process_ab <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "3ced816d-8524-4875-bd69-61fb5603b596" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::select(Date.reported.to.Alberta.Health, Active.cases) %>%
+                dplyr::mutate(
+                  value = readr::parse_number(as.character(.$Active.cases))
+                ) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::select(Date.reported.to.Alberta.Health, Number.of.deaths) %>%
+                dplyr::mutate(
+                  value = readr::parse_number(as.character(.$Number.of.deaths))
+                ) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::select(Date.reported.to.Alberta.Health, Currently.hospitalized) %>%
+                dplyr::mutate(
+                  value = readr::parse_number(as.character(.$Currently.hospitalized))
+                ) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::select(Date.reported.to.Alberta.Health, Currently.in.ICU) %>%
+                dplyr::mutate(
+                  value = readr::parse_number(as.character(.$Currently.in.ICU))
+                ) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
