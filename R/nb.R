@@ -265,6 +265,76 @@ process_nb <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "40d93d2b-5c85-4592-b844-fb78b5ae5cec" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$DATE, .data$Active) %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$DATE / 1000, origin = "1970-01-01"),
+                                       tz = "America/Halifax")),
+                  value = .data$Active) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$DATE, .data$Deaths) %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$DATE / 1000, origin = "1970-01-01"),
+                                       tz = "America/Halifax")),
+                  value = .data$Deaths) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$DATE, .data$Hospitalizations) %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$DATE / 1000, origin = "1970-01-01"),
+                                       tz = "America/Halifax")),
+                  value = .data$Hospitalizations) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::select(.data$DATE, .data$ICU) %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$DATE / 1000, origin = "1970-01-01"),
+                                       tz = "America/Halifax")),
+                  value = .data$ICU) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
