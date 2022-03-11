@@ -379,8 +379,8 @@ process_yt <- function(uuid, val, fmt, ds,
               ds$features$attributes %>%
                 dplyr::transmute(
                   date = lubridate::date(
-                    lubridate::with_tz(as.POSIXct(.data$EPI_WEEK_DATE / 1000, origin = "1970-01-01"), tz = "UTC")),
-                  date = date - 7,
+                    lubridate::with_tz(as.POSIXct(.data$EPI_WEEK_DATE / 1000, origin = "1970-01-01"), tz = "UTC"))-7,
+                  # Subtract one week in the above date-time conversion because EPI_WEEK_DATE reports the Sunday of the week in which cases were reported (i.e. cases are typically reported on the Monday after a given week but EPI_WEEK_DATE reports the next Sunday which is the end of the week in which cases were reported)
                   value = .data$TOTAL_CASES) %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
