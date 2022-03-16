@@ -248,70 +248,71 @@ process_nl <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    "34f45670-34ed-415c-86a6-e14d77fcf6db" = {
+    "13a35524-89bf-46a2-afc5-d88ef81bfa82" = {
       switch(
         val,
         "cases" = {
           switch(
             fmt,
-            "hr_cum_current" = {
+            "prov_ts" = {
               ds$features$attributes %>%
-                dplyr::transmute(
-                  sub_region_1 = .data$Name,
-                  value = .data$Total_Case
+                dplyr::mutate(
+                  date_of_update = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$date_of_update / 1000, origin = "1970-01-01"), tz = "UTC"))
                 ) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current)
+                dplyr::select(.data$date_of_update, .data$joinfield, .data$active_cases) %>%
+                dplyr::arrange(.data$date_of_update, .data$active_cases) %>%
+                dplyr::rename(
+                  sub_region_1 = .data$joinfield,
+                  date = .data$date_of_update,
+                  value = .data$active_cases
+                ) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
             },
             e_fmt()
           )
         },
         "mortality" = {
-          ds$features$attributes %>%
-            dplyr::transmute(
-              sub_region_1 = .data$Name,
-              value = .data$Deaths
-            ) %>%
-            helper_cum_current(loc = "hr", val, prov, date_current)
-        },
-        "recovered" = {
-          ds$features$attributes %>%
-            dplyr::transmute(
-              sub_region_1 = .data$Name,
-              value = .data$Recover
-            ) %>%
-            helper_cum_current(loc = "hr", val, prov, date_current)
-        },
-        "active" = {
-          ds$features$attributes %>%
-            dplyr::transmute(
-              sub_region_1 = .data$Name,
-              value = .data$Active_Case
-            ) %>%
-            helper_cum_current(loc = "hr", val, prov, date_current)
-        },
-        "testing" = {
-          ds$features$attributes %>%
-            dplyr::transmute(
-              sub_region_1 = .data$Name,
-              value = .data$Tests
-            ) %>%
-            helper_cum_current(loc = "hr", val, prov, date_current)
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::mutate(
+                  date_of_update = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$date_of_update / 1000, origin = "1970-01-01"), tz = "UTC"))
+                ) %>%
+                dplyr::select(.data$date_of_update, .data$joinfield, .data$total_deaths) %>%
+                dplyr::arrange(.data$date_of_update, .data$total_deaths) %>%
+                dplyr::rename(
+                  sub_region_1 = .data$joinfield,
+                  date = .data$date_of_update,
+                  value = .data$total_deaths
+                ) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
         },
         "hospitalizations" = {
-          ds$features$attributes %>%
-            dplyr::transmute(
-              sub_region_1 = .data$Name,
-              value = .data$Hospital
-            ) %>%
-            helper_cum_current(loc = "hr", val, prov, date_current)
-        },
-        "icu" = {
-          ds$features$attributes %>%
-            dplyr::transmute(
-              sub_region_1 = .data$Name,
-              value = .data$ICU
-            ) %>%
-            helper_cum_current(loc = "hr", val, prov, date_current)
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::mutate(
+                  date_of_update = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$date_of_update / 1000, origin = "1970-01-01"), tz = "UTC"))
+                ) %>%
+                dplyr::select(.data$date_of_update, .data$joinfield, .data$currently_hospitalized) %>%
+                dplyr::arrange(.data$date_of_update, .data$currently_hospitalized) %>%
+                dplyr::rename(
+                  sub_region_1 = .data$joinfield,
+                  date = .data$date_of_update,
+                  value = .data$currently_hospitalized
+                ) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
         },
         e_val()
       )

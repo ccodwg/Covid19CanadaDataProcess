@@ -222,6 +222,33 @@ process_bc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "4f9dc8b7-7b42-450e-a741-a0f6a621d2af" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ds$features$attributes %>%
+                dplyr::filter(.data$HSDA == "All" & .data$HA != "All") %>%
+                dplyr::mutate(Date = lubridate::date(
+                  lubridate::with_tz(as.POSIXct(.data$Date / 1000, origin = "1970-01-01"),
+                                     tz = "UTC")),) %>%
+                dplyr::select( .data$Date, .data$HA, .data$Cases_Reported) %>%
+                dplyr::arrange(.data$HA, .data$Date) %>%
+                dplyr::rename(
+                  sub_region_1 = .data$HA,
+                  date = .data$Date,
+                  value = .data$Cases_Reported
+                ) %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
