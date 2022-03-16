@@ -134,7 +134,7 @@ process_can <- function(uuid, val, fmt, ds,
                   province = "CAN") %>%
                 dplyr::rename(
                   value = .data$new) %>%
-                helper_ts_can(val, convert_to_cum = FALSE)
+                helper_ts_can(val, convert_to_cum = TRUE)
             },
             e_fmt()
           )

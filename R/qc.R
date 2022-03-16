@@ -455,9 +455,9 @@ process_qc <- function(uuid, val, fmt, ds,
               ## https://www.quebec.ca/sante/problemes-de-sante/a-z/coronavirus-2019/situation-coronavirus-quebec/
               ds %>%
                 dplyr::mutate(value = rowSums(.[c("CHSLD","RPA","Domicile.et.Inconnu","RI.et.Autres")]),
-                              date = as.Date(.data$Date.de.décès)) %>%
+                              date = as.Date(.data[["Date.de.d\u00E9c\u00E8s"]])) %>%
                 dplyr::select(.data$date, .data$value) %>%
-                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
             },
             e_fmt()
           )
@@ -469,6 +469,20 @@ process_qc <- function(uuid, val, fmt, ds,
       switch(
         val,
         "cases" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::filter(.data$Date!="Date inconnue") %>%
+                dplyr::select(.data$Date, .data$Nb_Cas_Cumulatif) %>%
+                dplyr::mutate(Date = as.Date(.data$Date)) %>%
+                dplyr::rename(date = .data$Date, value = .data$Nb_Cas_Cumulatif) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "active" = {
           switch(
             fmt,
             "prov_ts" = {
@@ -493,7 +507,7 @@ process_qc <- function(uuid, val, fmt, ds,
                 dplyr::select(.data$Date, .data$Nb_Nvx_Deces_Total) %>%
                 dplyr::mutate(Date = as.Date(.data$Date)) %>%
                 dplyr::rename(date = .data$Date, value = .data$Nb_Nvx_Deces_Total) %>%
-                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
             },
             e_fmt()
           )
@@ -511,7 +525,7 @@ process_qc <- function(uuid, val, fmt, ds,
               # change in how hospitalizations were counted starting April 19th 2020
               # https://www.inspq.qc.ca/covid-19/donnees/methodologie?accordeon=hospitalisations1&ancre=hospitalisations-en-cours
               # these are stored as separate data columns and thus need to merge
-              ds[-c(1:23),] %>%
+              ds[-c(1:23), ] %>%
                 dplyr::mutate(date = as.Date(.data$Tuiles.de.l.accueil,"%d/%m/%Y"),
                               value = as.numeric(paste0(.data$X,.data$X.2))) %>%
                 dplyr::select(.data$date, .data$value) %>%
@@ -524,7 +538,7 @@ process_qc <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_ts" = {
-              ds[-c(1:23),] %>%
+              ds[-c(1:23), ] %>%
                 dplyr::select(.data$Tuiles.de.l.accueil, .data$X.1) %>%
                 dplyr::rename(date = .data$Tuiles.de.l.accueil,
                               value = .data$X.1) %>%

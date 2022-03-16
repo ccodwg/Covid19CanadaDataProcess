@@ -307,11 +307,23 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds %>%
-                dplyr::select(Date.reported.to.Alberta.Health, Active.cases) %>%
-                dplyr::mutate(
-                  value = readr::parse_number(as.character(.$Active.cases))
-                ) %>%
+                dplyr::transmute(
+                  date = .data$Date.reported.to.Alberta.Health,
+                  value = .data$Number.of.cases) %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        "active" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  date = .data$Date.reported.to.Alberta.Health,
+                  value = .data$Active.cases) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
@@ -321,10 +333,9 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds %>%
-                dplyr::select(Date.reported.to.Alberta.Health, Number.of.deaths) %>%
-                dplyr::mutate(
-                  value = readr::parse_number(as.character(.$Number.of.deaths))
-                ) %>%
+                dplyr::transmute(
+                  date = .data$Date.reported.to.Alberta.Health,
+                  value = .data$Number.of.deaths) %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
             },
             e_fmt()
@@ -335,11 +346,10 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds %>%
-                dplyr::select(Date.reported.to.Alberta.Health, Currently.hospitalized) %>%
-                dplyr::mutate(
-                  value = readr::parse_number(as.character(.$Currently.hospitalized))
-                ) %>%
-                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+                dplyr::transmute(
+                  date = .data$Date.reported.to.Alberta.Health,
+                  value = .data$Currently.hospitalized) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
@@ -349,11 +359,10 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds %>%
-                dplyr::select(Date.reported.to.Alberta.Health, Currently.in.ICU) %>%
-                dplyr::mutate(
-                  value = readr::parse_number(as.character(.$Currently.in.ICU))
-                ) %>%
-                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+                dplyr::transmute(
+                  date = .data$Date.reported.to.Alberta.Health,
+                  value = .data$Currently.in.ICU) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )

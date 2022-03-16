@@ -233,7 +233,7 @@ process_bc <- function(uuid, val, fmt, ds,
                 dplyr::filter(.data$HSDA == "All" & .data$HA != "All") %>%
                 dplyr::mutate(Date = lubridate::date(
                   lubridate::with_tz(as.POSIXct(.data$Date / 1000, origin = "1970-01-01"),
-                                     tz = "UTC")),) %>%
+                                     tz = "America/Vancouver"))) %>%
                 dplyr::select( .data$Date, .data$HA, .data$Cases_Reported) %>%
                 dplyr::arrange(.data$HA, .data$Date) %>%
                 dplyr::rename(

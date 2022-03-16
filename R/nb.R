@@ -273,6 +273,22 @@ process_nb <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds$features$attributes %>%
+                dplyr::select(.data$DATE, .data$Total) %>%
+                dplyr::transmute(
+                  date = lubridate::date(
+                    lubridate::with_tz(as.POSIXct(.data$DATE / 1000, origin = "1970-01-01"),
+                                       tz = "America/Halifax")),
+                  value = .data$Total) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "active" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
                 dplyr::select(.data$DATE, .data$Active) %>%
                 dplyr::transmute(
                   date = lubridate::date(
