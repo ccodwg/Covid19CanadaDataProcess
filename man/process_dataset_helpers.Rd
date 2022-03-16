@@ -5,6 +5,7 @@
 \alias{helper_cum_current}
 \alias{helper_ts}
 \alias{helper_ts_can}
+\alias{phac_prov}
 \title{Helper functions for process_dataset}
 \usage{
 helper_cum_current(
@@ -19,6 +20,8 @@ helper_cum_current(
 helper_ts(.data, loc = c("prov", "hr"), val, prov, convert_to_cum = FALSE)
 
 helper_ts_can(.data, val, convert_to_cum = FALSE)
+
+phac_prov(.data, mode = c("to_phac", "from_phac"))
 }
 \arguments{
 \item{.data}{The dataset to be processed.}
@@ -34,6 +37,10 @@ helper_ts_can(.data, val, convert_to_cum = FALSE)
 \item{hr}{The health region, if providing data for one specific health region only. Used for ON PHU data only.}
 
 \item{convert_to_cum}{Convert values to cumulative values? Default: FALSE.}
+
+\item{mode}{One of "to_phac" or "from_phac". Convert between abbreviated
+province names (e.g., ON) or the full province names used by PHAC
+(e.g., Ontario).}
 }
 \description{
 Helper functions for \code{\link{process_dataset}}

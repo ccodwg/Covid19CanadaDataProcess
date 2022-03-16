@@ -204,6 +204,54 @@ helper_ts_can <- function(.data, val, convert_to_cum = FALSE) {
     dplyr::mutate(value = as.integer(.data$value))
 }
 
+# process_dataset: province abbreviation to province name (PHAC) or vice versa
+#' @param .data The dataset to be processed.
+#' @param mode One of "to_phac" or "from_phac". Convert between abbreviated
+#' province names (e.g., ON) or the full province names used by PHAC
+#' (e.g., Ontario).
+#' @rdname process_dataset_helpers
+#' @export
+phac_prov <- function(.data, mode = c("to_phac", "from_phac")) {
+  match.arg(mode, choices = c("to_phac", "from_phac"), several.ok = FALSE)
+  if (mode == "to_phac") {
+    dplyr::case_when(
+      # p == "CAN" ~ "Canada", # to use, must strip beginning of phrase
+      p == "NL" ~ "Newfoundland and Labrador",
+      p == "PE" ~ "Prince Edward Island",
+      p == "NS" ~ "Nova Scotia",
+      p == "NB" ~ "New Brunswick",
+      p == "QC" ~ "Quebec",
+      p == "ON" ~ "Ontario",
+      p == "MB" ~ "Manitoba",
+      p == "SK" ~ "Saskatchewan",
+      p == "AB" ~ "Alberta",
+      p == "BC" ~ "British Columbia",
+      p == "YT" ~ "Yukon",
+      p == "NT" ~ "Northwest Territories",
+      p == "NU" ~ "Nunavut"#,
+      # p == "" ~ "Federal allocation", # to use, must strip anything after (e.g., footnote)
+    )
+  } else {
+    dplyr::case_when(
+      p == "Canada" ~ "CAN",
+      p == "Newfoundland and Labrador" ~ "NL",
+      p == "Prince Edward Island" ~ "PE",
+      p == "Nova Scotia" ~ "NS",
+      p == "New Brunswick" ~ "NB",
+      p == "Quebec" ~ "QC",
+      p == "Ontario" ~ "ON",
+      p == "Manitoba" ~ "MB",
+      p == "Saskatchewan" ~ "SK",
+      p == "Alberta" ~ "AB",
+      p == "British Columbia" ~ "BC",
+      p == "Yukon" ~ "YT",
+      p == "Northwest Territories" ~ "NT",
+      p == "Nunavut" ~ "NU",
+      p == "Repatriated travellers" ~ "RT"
+    )
+  }
+}
+
 #' Error functions for process_dataset
 #'
 #' Error functions for \code{\link{process_dataset}}
