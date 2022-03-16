@@ -32,7 +32,7 @@ process_ab <- function(uuid, val, fmt, ds,
                       .data$Date.reported == max(.data$Date.reported) ~ n_unknown,
                     .data$Alberta.Health.Services.Zone == "Unknown" ~ as.integer(0),
                     TRUE ~ .data$n
-                    )) %>%
+                  )) %>%
                 dplyr::rename(
                   sub_region_1 = .data$Alberta.Health.Services.Zone,
                   date = .data$Date.reported,
@@ -290,7 +290,7 @@ process_ab <- function(uuid, val, fmt, ds,
                 dplyr::filter(!grepl("In", .$Location)) %>%
                 dplyr::select(.data$Location, .data$`In intensive\n\t\t\tcare***`) %>%
                 dplyr::transmute(sub_region_1 = .data$Location,
-                              value = readr::parse_number(.data$`In intensive\n\t\t\tcare***`)) %>%
+                                 value = readr::parse_number(.data$`In intensive\n\t\t\tcare***`)) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()

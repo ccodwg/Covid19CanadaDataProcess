@@ -160,6 +160,28 @@ process_can <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "558ccc64-799f-4329-95a4-f944dac21eb1" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "can_ts" = {
+              ds %>%
+                dplyr::select(.data$new, .data$date) %>%
+                dplyr::mutate(
+                  date = as.Date(.data$date),
+                  province = "CAN") %>%
+                dplyr::rename(
+                  value = .data$new) %>%
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }

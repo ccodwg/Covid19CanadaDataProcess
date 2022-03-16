@@ -443,6 +443,100 @@ process_qc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    ## N.B. Use the `sep = ";"` argument when loading the ds using `dl_dataset` for code-writing purposes
+    "d7f9cb92-a83a-4cd3-b955-762410b2cf5c" = {
+      switch(
+        val,
+        "mortality" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ## by living situation
+              ## https://www.quebec.ca/sante/problemes-de-sante/a-z/coronavirus-2019/situation-coronavirus-quebec/
+              ds %>%
+                dplyr::mutate(value = rowSums(.[c("CHSLD","RPA","Domicile.et.Inconnu","RI.et.Autres")]),
+                              date = as.Date(.data$Date.de.décès)) %>%
+                dplyr::select(.data$date, .data$value) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "d546a7f6-27ac-4305-bad6-b04435211e79" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::filter(.data$Date!="Date inconnue") %>%
+                dplyr::select(.data$Date, .data$Nb_Cas_Actifs) %>%
+                dplyr::mutate(Date = as.Date(.data$Date)) %>%
+                dplyr::rename(date = .data$Date, value = .data$Nb_Cas_Actifs) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              # these data are identical to UUID: d7f9cb92-a83a-4cd3-b955-762410b2cf5c
+              # Nb_Nvx_Deces_Total == total across groups in UUID above
+              ds %>%
+                dplyr::filter(.data$Date!="Date inconnue") %>%
+                dplyr::select(.data$Date, .data$Nb_Nvx_Deces_Total) %>%
+                dplyr::mutate(Date = as.Date(.data$Date)) %>%
+                dplyr::rename(date = .data$Date, value = .data$Nb_Nvx_Deces_Total) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "b78d46c8-9a56-4b75-94c5-4ace36e014f5" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              # change in how hospitalizations were counted starting April 19th 2020
+              # https://www.inspq.qc.ca/covid-19/donnees/methodologie?accordeon=hospitalisations1&ancre=hospitalisations-en-cours
+              # these are stored as separate data columns and thus need to merge
+              ds[-c(1:23),] %>%
+                dplyr::mutate(date = as.Date(.data$Tuiles.de.l.accueil,"%d/%m/%Y"),
+                              value = as.numeric(paste0(.data$X,.data$X.2))) %>%
+                dplyr::select(.data$date, .data$value) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds[-c(1:23),] %>%
+                dplyr::select(.data$Tuiles.de.l.accueil, .data$X.1) %>%
+                dplyr::rename(date = .data$Tuiles.de.l.accueil,
+                              value = .data$X.1) %>%
+                dplyr::mutate(date = as.Date(.data$date,"%d/%m/%Y")) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
