@@ -522,13 +522,14 @@ process_qc <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_ts" = {
-              # change in how hospitalizations were counted starting April 19th 2020
+              # change in how hospitalizations were counted starting 2020-04-19 (data are stored in separate columns and merged)
               # https://www.inspq.qc.ca/covid-19/donnees/methodologie?accordeon=hospitalisations1&ancre=hospitalisations-en-cours
-              # these are stored as separate data columns and thus need to merge
-              ds[-c(1:23), ] %>%
-                dplyr::mutate(date = as.Date(.data$Tuiles.de.l.accueil,"%d/%m/%Y"),
-                              value = as.numeric(paste0(.data$X,.data$X.2))) %>%
-                dplyr::select(.data$date, .data$value) %>%
+              colnames(ds) <- ds[23, ]
+              ds[-c(1:23), 1:4] %>%
+                dplyr::transmute(
+                  date = as.Date(.data$Date, "%d/%m/%Y"),
+                  value = as.integer(ifelse(.data$Hospits == "", .data$`Hospits (ancien)`, .data$Hospits))) %>%
+                dplyr::filter(!is.na(.data$value)) %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
@@ -538,11 +539,12 @@ process_qc <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_ts" = {
-              ds[-c(1:23), ] %>%
-                dplyr::select(.data$Tuiles.de.l.accueil, .data$X.1) %>%
-                dplyr::rename(date = .data$Tuiles.de.l.accueil,
-                              value = .data$X.1) %>%
-                dplyr::mutate(date = as.Date(.data$date,"%d/%m/%Y")) %>%
+              colnames(ds) <- ds[23, ]
+              ds[-c(1:23), 1:4] %>%
+                dplyr::transmute(
+                  date = as.Date(.data$Date, "%d/%m/%Y"),
+                  value = as.integer(.data$SI)) %>%
+                dplyr::filter(!is.na(.data$value)) %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
