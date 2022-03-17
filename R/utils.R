@@ -205,13 +205,13 @@ helper_ts_can <- function(.data, val, convert_to_cum = FALSE) {
 }
 
 # process_dataset: province abbreviation to province name (PHAC) or vice versa
-#' @param .data The dataset to be processed.
+#' @param p The column to be processed.
 #' @param mode One of "to_phac" or "from_phac". Convert between abbreviated
 #' province names (e.g., ON) or the full province names used by PHAC
 #' (e.g., Ontario).
 #' @rdname process_dataset_helpers
 #' @export
-phac_prov <- function(.data, mode = c("to_phac", "from_phac")) {
+phac_prov <- function(p, mode = c("to_phac", "from_phac")) {
   match.arg(mode, choices = c("to_phac", "from_phac"), several.ok = FALSE)
   if (mode == "to_phac") {
     dplyr::case_when(
