@@ -919,7 +919,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>% {.[[grep("Total cases", .)[1]]]} %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("Case Count CCM2", .)[1]]]} %>%
+                sub("Case Count CCM2", "", .) %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
@@ -933,8 +935,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>% {.[[grep("Case Count Recovered1", .)[3]]]} %>%
-                gsub("Recovered1","",.) %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("Case Count Recovered1", .)[3]]]} %>%
+                sub("Case Count Recovered1","", .) %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
@@ -948,8 +951,9 @@ process_on_phu <- function(uuid, val, fmt, ds,
             "hr_cum_current" = {
               ds %>%
                 rvest::html_elements(".card") %>%
-                rvest::html_attr("aria-label") %>% {.[[grep("Case Count Recovered1", .)[1]]]} %>%
-                gsub("Recovered1","",.) %>%
+                rvest::html_attr("aria-label") %>%
+                {.[[grep("Case Count Recovered1", .)[1]]]} %>%
+                sub("Case Count Recovered1","", .) %>%
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current, hr)
