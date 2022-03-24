@@ -233,7 +233,7 @@ process_ab <- function(uuid, val, fmt, ds,
                 dplyr::slice(-c(1, 2)) %>%
                 dplyr::transmute(
                   sub_region_1 = .data$Location,
-                  value = readr::parse_number(.data$`Confirmed\n\t\t\tcases`)
+                  value = readr::parse_number(.data$`Confirmed cases`)
                 ) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current)
             },
