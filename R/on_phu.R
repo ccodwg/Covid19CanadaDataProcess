@@ -965,6 +965,56 @@ process_on_phu <- function(uuid, val, fmt, ds,
       )
     },
     # Peterborough
+    "821645cf-acbb-49d1-ae28-0e65037c61bf" = {
+      hr <- "Peterborough"
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements("#case_total") %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements("#fatal_cases") %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds %>%
+                rvest::html_elements("#resolved_cases") %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "hr", val, prov, date_current, hr)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # old page
     "c3aa6a5e-2ff5-4158-83ab-dcde251bc365" = {
       hr <- "Peterborough"
       switch(
