@@ -68,6 +68,54 @@ process_nt <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "9ed0f5cd-2c45-40a1-94c9-25b0c9df8f48" = {
+      switch(
+        val,
+        "cases" = {
+         switch(
+           fmt,
+           "prov_cum_current" = {
+             ds %>%
+               rvest::html_element("#confirmed") %>%
+               rvest::html_text2() %>%
+               readr::parse_number() %>%
+               data.frame(value = .) %>%
+               helper_cum_current(loc = "prov", val, prov, date_current)
+           },
+           e_fmt()
+         )
+        },
+        "mortality" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                rvest::html_element("#cases_deaths") %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        "recovered" = {
+          switch(
+            fmt,
+            "prov_cum_current" = {
+              ds %>%
+                rvest::html_element("#recovered") %>%
+                rvest::html_text2() %>%
+                readr::parse_number() %>%
+                data.frame(value = .) %>%
+                helper_cum_current(loc = "prov", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     "66fbe91e-34c0-4f7f-aa94-cf6c14db0158" = {
       switch(
         val,
