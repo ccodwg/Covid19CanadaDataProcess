@@ -82,8 +82,61 @@ process_nt <- function(uuid, val, fmt, ds,
                data.frame(value = .) %>%
                helper_cum_current(loc = "prov", val, prov, date_current)
            },
+           "subhr_cum_current_residents_nonresidents" = {
+             hr <- "Northwest Territories" # in the CCODWG dataset, this would be "NWT"
+             # special format - includes values for residents and non-residents
+             ds %>%
+               rvest::html_table(header = FALSE) %>%
+               `[[`(1) %>%
+               dplyr::slice(-1, -2) %>%
+               dplyr::rename(
+                 sub_region_2 = .data$X1,
+                 active = .data$X2,
+                 cases_cumulative_residents = .data$X3,
+                 cases_cumulative_nonresidents = .data$X4
+               ) %>%
+               dplyr::select(
+                 .data$sub_region_2,
+                 .data$cases_cumulative_residents,
+                 .data$cases_cumulative_nonresidents
+               ) %>%
+               tidyr::pivot_longer(
+                 cols = !.data$sub_region_2,
+                 names_to = "name"
+               ) %>%
+               helper_cum_current(loc = "subhr", val = NULL, prov, date_current, hr)
+           },
            e_fmt()
          )
+        },
+        "active" = {
+          switch(
+            fmt,
+            "subhr_current" = {
+              hr <- "Northwest Territories" # in the CCODWG dataset, this would be "NWT"
+              # special format - includes values for residents and non-residents
+              ds %>%
+                rvest::html_table(header = FALSE) %>%
+                `[[`(1) %>%
+                dplyr::slice(-1, -2) %>%
+                dplyr::rename(
+                  sub_region_2 = .data$X1,
+                  active = .data$X2,
+                  cases_cumulative_residents = .data$X3,
+                  cases_cumulative_nonresidents = .data$X4
+                ) %>%
+                dplyr::select(
+                  .data$sub_region_2,
+                  .data$active
+                ) %>%
+                tidyr::pivot_longer(
+                  cols = !.data$sub_region_2,
+                  names_to = "name"
+                ) %>%
+                helper_cum_current(loc = "subhr", val = NULL, prov, date_current, hr)
+            },
+            e_fmt()
+          )
         },
         "mortality" = {
           switch(
@@ -185,70 +238,6 @@ process_nt <- function(uuid, val, fmt, ds,
                 readr::parse_number() %>%
                 data.frame(value = .) %>%
                 helper_cum_current(loc = "prov", val, prov, date_current)
-            },
-            e_fmt()
-          )
-        },
-        e_val()
-      )
-    },
-    "9ed0f5cd-2c45-40a1-94c9-25b0c9df8f48" = {
-      hr <- "Northwest Territories" # in the CCODWG dataset, this would be "NWT"
-      switch(
-        val,
-        "cases" = {
-          # special format - includes values for residents and non-residents
-          switch(
-            fmt,
-            "subhr_cum_current_residents_nonresidents" = {
-              ds %>%
-                rvest::html_table(header = FALSE) %>%
-                `[[`(1) %>%
-                dplyr::slice(-1, -2) %>%
-                dplyr::rename(
-                  sub_region_2 = .data$X1,
-                  active = .data$X2,
-                  cases_cumulative_residents = .data$X3,
-                  cases_cumulative_nonresidents = .data$X4
-                ) %>%
-                dplyr::select(
-                  .data$sub_region_2,
-                  .data$cases_cumulative_residents,
-                  .data$cases_cumulative_nonresidents
-                ) %>%
-                tidyr::pivot_longer(
-                  cols = !.data$sub_region_2,
-                  names_to = "name"
-                ) %>%
-                helper_cum_current(loc = "subhr", val = NULL, prov, date_current, hr)
-            },
-            e_fmt()
-            )
-          },
-        "active" = {
-          # special format - includes values for residents and non-residents
-          switch(
-            fmt,
-            "subhr_current" = {
-              ds %>%
-                rvest::html_table(header = FALSE) %>%
-                `[[`(1) %>%
-                dplyr::slice(-1, -2) %>%
-                dplyr::rename(
-                  sub_region_2 = .data$X1,
-                  active = .data$X2,
-                  cases_cumulative_residents = .data$X3,
-                  cases_cumulative_nonresidents = .data$X4
-                ) %>%
-                dplyr::select(
-                  .data$sub_region_2,
-                  .data$active
-                ) %>%
-                tidyr::pivot_longer(
-                  cols = !.data$sub_region_2,
-                  names_to = "name"
-                ) %>%
-                helper_cum_current(loc = "subhr", val = NULL, prov, date_current, hr)
             },
             e_fmt()
           )
