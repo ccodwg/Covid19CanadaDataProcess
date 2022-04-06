@@ -24,6 +24,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_table(header = TRUE) %>%
                 {.[[grep("Confirmed Cases in 2022", ., ignore.case = TRUE)[1]]]} %>%
                 dplyr::rename("Name" = 1) %>% # avoid zero-length variable name error in some circumstances
+                dplyr::mutate(Name = gsub("\\*", "", .data$Name)) %>% # strip "*" from metric names
                 dplyr::filter(., .data$Name == "Confirmed Cases") %>%
                 dplyr::select(.data$Current) %>%
                 as.character() %>%
@@ -42,6 +43,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_table(header = TRUE) %>%
                 {.[[grep("Confirmed Cases in 2022", ., ignore.case = TRUE)[1]]]} %>%
                 dplyr::rename("Name" = 1) %>% # avoid zero-length variable name error in some circumstances
+                dplyr::mutate(Name = gsub("\\*", "", .data$Name)) %>% # strip "*" from metric names
                 dplyr::filter(.data$Name == "Deceased") %>%
                 dplyr::select(.data$Current) %>%
                 as.character() %>%
@@ -60,6 +62,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
                 rvest::html_table(header = TRUE) %>%
                 {.[[grep("Confirmed Cases in 2022", .)[1]]]} %>%
                 dplyr::rename("Name" = 1) %>% # avoid zero-length variable name error in some circumstances
+                dplyr::mutate(Name = gsub("\\*", "", .data$Name)) %>% # strip "*" from metric names
                 dplyr::filter(.data$Name %in% c("Deceased", "Resolved")) %>%
                 dplyr::select(.data$Name, .data$Current) %>%
                 dplyr::mutate(Current = readr::parse_number(as.character(.data$Current))) %>%
