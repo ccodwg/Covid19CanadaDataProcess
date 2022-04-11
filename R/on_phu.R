@@ -1392,7 +1392,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
               ds %>%
                 rvest::html_table(header = FALSE) %>%
                 `[[`(1) %>%
-                dplyr::filter(.data$X1 %in% c("Mar 2020 to Dec 2021", "Since Jan 1, 2022 (mostly high risk*)")) %>%
+                dplyr::filter(grepl("Mar 2020 to Dec 2021|Since Jan 1, 2022", .data$X1)) %>%
                 dplyr::mutate(X2 = readr::parse_number(as.character(.data$X2))) %>%
                 dplyr::pull(.data$X2) %>%
                 sum() %>%
@@ -1425,7 +1425,7 @@ process_on_phu <- function(uuid, val, fmt, ds,
               total_cases <- ds %>%
                 rvest::html_table(header = FALSE) %>%
                 `[[`(1) %>%
-                dplyr::filter(.data$X1 %in% c("Mar 2020 to Dec 2021", "Since Jan 1, 2022 (mostly high risk*)")) %>%
+                dplyr::filter(grepl("Mar 2020 to Dec 2021|Since Jan 1, 2022", .data$X1)) %>%
                 dplyr::mutate(X2 = readr::parse_number(as.character(.data$X2))) %>%
                 dplyr::pull(.data$X2) %>%
                 sum()
