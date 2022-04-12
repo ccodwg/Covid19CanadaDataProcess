@@ -17,6 +17,35 @@ process_sk <- function(uuid, val, fmt, ds,
         "cases" = {
           switch(
             fmt,
+            "hr_ts" = {
+              total <- ds$tabs$chart$data[[1]]$data[[1]] %>%
+                dplyr::transmute(
+                  date = lubridate::date(as.POSIXct(.data$time, origin = "1970-01-01", tz = "UTC")),
+                  value = as.integer(.data$value)
+                )
+              hr_names <- ds$tabs$chart$data[[3]]$seriesTitle
+              hr_data <- ds$tabs$chart$data[[3]]$data
+              hr <- lapply(seq_along(hr_data), function(x) {
+                hr_data[[x]] %>%
+                  dplyr::transmute(
+                    sub_region_1 = hr_names[x],
+                    date = lubridate::date(as.POSIXct(.data$time, origin = "1970-01-01", tz = "UTC")),
+                    value = as.integer(.data$value)
+                )
+              }) %>% dplyr::bind_rows()
+              hr_sum <- hr %>%
+                dplyr::group_by(.data$date) %>%
+                dplyr::select(.data$date, .data$value) %>%
+                dplyr::summarize(value = sum(.data$value))
+              not_assigned <- data.frame(
+                sub_region_1 = "Not Assigned",
+                date = hr_sum$date,
+                value = total$value - hr_sum$value
+              )
+              dat <- dplyr::bind_rows(hr, not_assigned)
+              dat %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
+            },
             "hr_cum_current" = {
               # get HR data
               dat <- ds$tabs$tables[[1]]$body[[2]]$cells[1:13] %>%
@@ -34,7 +63,7 @@ process_sk <- function(uuid, val, fmt, ds,
             # append missing HR data (diff between SK total and sum of HRs)
             dat <- dat %>%
               dplyr::add_row(
-                sub_region_1 = "Not Reported",
+                sub_region_1 = "Not Assigned",
                 value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][2]) -
                   sum(dat$value)
             )
@@ -64,7 +93,7 @@ process_sk <- function(uuid, val, fmt, ds,
               # append missing HR data (diff between SK total and sum of HRs)
               dat <- dat %>%
                 dplyr::add_row(
-                  sub_region_1 = "Not Reported",
+                  sub_region_1 = "Not Assigned",
                   value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][7]) -
                     sum(dat$value)
                 )
@@ -94,7 +123,7 @@ process_sk <- function(uuid, val, fmt, ds,
               # append missing HR data (diff between SK total and sum of HRs)
               dat <- dat %>%
                 dplyr::add_row(
-                  sub_region_1 = "Not Reported",
+                  sub_region_1 = "Not Assigned",
                   value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][6]) -
                     sum(dat$value)
                 )
@@ -176,7 +205,7 @@ process_sk <- function(uuid, val, fmt, ds,
               # append missing HR data (diff between SK total and sum of HRs)
               dat <- dat %>%
                 dplyr::add_row(
-                  sub_region_1 = "Not Reported",
+                  sub_region_1 = "Not Assigned",
                   value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][4]) -
                     sum(dat$value)
                 )
@@ -205,7 +234,7 @@ process_sk <- function(uuid, val, fmt, ds,
               # append missing HR data (diff between SK total and sum of HRs)
               dat <- dat %>%
                 dplyr::add_row(
-                  sub_region_1 = "Not Reported",
+                  sub_region_1 = "Not Assigned",
                   value = as.integer(ds$tabs$tables[[1]]$body[[2]]$cells[[14]][[1]][3]) -
                     sum(dat$value)
                 )
@@ -326,7 +355,7 @@ process_sk <- function(uuid, val, fmt, ds,
                 dplyr::filter(.data$sub_region_1 != "Total Saskatchewan") %>%
                 {dplyr::add_row(
                   .,
-                  sub_region_1 = "Not Reported",
+                  sub_region_1 = "Not Assigned",
                   value = total_sk - sum(.$value))}
               # final processing
               dat %>% helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
@@ -351,7 +380,7 @@ process_sk <- function(uuid, val, fmt, ds,
                 dplyr::filter(.data$sub_region_1 != "Total Saskatchewan") %>%
                 {dplyr::add_row(
                   .,
-                  sub_region_1 = "Not Reported",
+                  sub_region_1 = "Not Assigned",
                   value = total_sk - sum(.$value))}
               # final processing
               dat %>% helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
