@@ -27,7 +27,7 @@ helper_cum_current <- function(.data, loc = c("prov", "hr", "subhr"),
   # replace "name" with "val" if "val" is supplied
   if (!is.null(val)) d <- dplyr::mutate(d, name = val)
   if (loc == "prov") {
-    d %>%
+    d <- d %>%
       dplyr::select(
         .data$name,
         .data$province,
@@ -38,7 +38,7 @@ helper_cum_current <- function(.data, loc = c("prov", "hr", "subhr"),
         .data$province,
         .data$name)
   } else if (loc == "hr") {
-    d %>%
+    d <- d %>%
       {if (!is.null(hr)) {
         dplyr::mutate(., sub_region_1 = hr)
     } else {.}} %>%
@@ -54,7 +54,7 @@ helper_cum_current <- function(.data, loc = c("prov", "hr", "subhr"),
         .data$sub_region_1,
         .data$name)
     } else {
-      d %>%
+      d <- d %>%
         dplyr::mutate(sub_region_1 = hr) %>%
         dplyr::select(
           .data$name,
@@ -69,7 +69,11 @@ helper_cum_current <- function(.data, loc = c("prov", "hr", "subhr"),
           .data$sub_region_1,
           .data$sub_region_2,
           .data$name)
-  }
+    }
+  # convert column names, if applicable
+  d <- convert_col_names(d)
+  # return dataset
+  d
 }
 
 #' process_dataset: Common processing for fmt = ts
@@ -87,7 +91,7 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
   date_seq <- seq.Date(from = min(.data$date), to = max(.data$date), by = "day")
   date_n <- length(date_seq)
   if (loc == "prov") {
-    dplyr::mutate(
+    d <- dplyr::mutate(
       .data,
       name = val,
       province = prov,
@@ -119,7 +123,7 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
   } else {
     sub_region_1_names <- sort(unique(.data$sub_region_1))
     sub_region_1_n <- length(sub_region_1_names)
-    dplyr::mutate(
+    d <- dplyr::mutate(
       .data,
       name = val,
       province = prov,
@@ -155,6 +159,10 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
       dplyr::ungroup() %>%
       dplyr::mutate(value = as.integer(.data$value))
   }
+  # convert column names, if applicable
+  d <- convert_col_names(d)
+  # return dataset
+  d
 }
 
 #' process_dataset: Common processing for fmt = ts for data with multiple provinces (e.g., Canada-wide data)
@@ -270,3 +278,24 @@ e_val <- function() stop("The specified value cannot be extracted from this UUID
 #' process_dataset: Report value cannot be extracted with specified output format
 #' @rdname process_dataset_e
 e_fmt <- function() stop("The specified output format is not available for this value.")
+
+#' Convert column names from the old format to the new format
+#' @param x A data frame.
+#' @return A data frame with renamed columns, if applicable.
+#' @noRd
+convert_col_names <- function(x) {
+  col_names <- c(
+    # unchanged names
+    name = "name",
+    sub_region_1 = "sub_region_1",
+    sub_region_2 = "sub_region_2",
+    date = "date",
+    value = "value",
+    value_daily = "value_daily",
+    # changed names
+    region = "region",
+    province = "region"
+  )
+  names(x) <- col_names[names(x)]
+  x
+}
