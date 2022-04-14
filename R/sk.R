@@ -335,17 +335,93 @@ process_sk <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "927b7ff1-c2e5-4074-80ab-35015022a8e6" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              icu <- ds$tabs$chart$data[[1]]$data[seq(1, 11, 2)] %>%
+                dplyr::bind_rows() %>%
+                dplyr::transmute(
+                  date =  lubridate::date(as.POSIXct(.data$time, origin = "1970-01-01", tz = "UTC")),
+                  value = .data$value
+                ) %>%
+                dplyr::group_by(.data$date) %>%
+                dplyr::summarize(value = sum(.data$value, na.rm = TRUE))
+              inpatient <- ds$tabs$chart$data[[1]]$data[seq(2, 12, 2)] %>%
+                dplyr::bind_rows() %>%
+                dplyr::transmute(
+                  date = lubridate::date(as.POSIXct(.data$time, origin = "1970-01-01", tz = "UTC")),
+                  value = .data$value
+                ) %>%
+                dplyr::group_by(.data$date) %>%
+                dplyr::summarize(value = sum(.data$value, na.rm = TRUE))
+              data.frame(
+                date = inpatient$date,
+                value = inpatient$value + icu$value
+              ) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$tabs$chart$data[[1]]$data[seq(1, 11, 2)] %>%
+                dplyr::bind_rows() %>%
+                dplyr::transmute(
+                  date =  lubridate::date(as.POSIXct(.data$time, origin = "1970-01-01", tz = "UTC")),
+                  value = .data$value
+                ) %>%
+                dplyr::group_by(.data$date) %>%
+                dplyr::summarize(value = sum(.data$value, na.rm = TRUE)) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     "6e5dd7b2-c6b8-4fd0-8236-ef34873233d2" = {
       switch(
         val,
         "hospitalizations" = {
           switch(
             fmt,
+            "prov_ts" = {
+              icu <- ds$tabs$chart$data[[1]]$data[seq(1, 25, 2)] %>%
+                dplyr::bind_rows() %>%
+                dplyr::transmute(
+                  date =  lubridate::date(as.POSIXct(.data$time, origin = "1970-01-01", tz = "UTC")),
+                  value = .data$value
+                ) %>%
+                dplyr::group_by(.data$date) %>%
+                dplyr::summarize(value = sum(.data$value, na.rm = TRUE))
+              inpatient <- ds$tabs$chart$data[[1]]$data[seq(2, 26, 2)] %>%
+                dplyr::bind_rows() %>%
+                dplyr::transmute(
+                  date =  lubridate::date(as.POSIXct(.data$time, origin = "1970-01-01", tz = "UTC")),
+                  value = .data$value
+                ) %>%
+                dplyr::group_by(.data$date) %>%
+                dplyr::summarize(value = sum(.data$value, na.rm = TRUE))
+              data.frame(
+                date = inpatient$date,
+                value = inpatient$value + icu$value
+              ) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
             "hr_ts" = {
               dat <- do.call(rbind.data.frame, ds$tabs$tables[[1]]$body[[2]]$cells) %>%
                 {data.frame(matrix(unlist(.), ncol = 3, byrow = TRUE))} %>%
                 dplyr::filter(!is.na(.data$X1)) %>%
-                dplyr::transmute(sub_region_1 = .data$X1, value = .data$X2) %>%
+                # hosp = inpatient + icu
+                dplyr::transmute(sub_region_1 = .data$X1, value = .data$X2 + .data$X3) %>%
                 dplyr::mutate(value = as.integer(.data$value))
               # append missing HR data (diff between SK total and sum of HRs)
               total_sk <- dat %>%
@@ -366,6 +442,17 @@ process_sk <- function(uuid, val, fmt, ds,
         "icu" = {
           switch(
             fmt,
+            "prov_ts" = {
+              ds$tabs$chart$data[[1]]$data[seq(1, 25, 2)] %>%
+                dplyr::bind_rows() %>%
+                dplyr::transmute(
+                  date =  lubridate::date(as.POSIXct(.data$time, origin = "1970-01-01", tz = "UTC")),
+                  value = .data$value
+                ) %>%
+                dplyr::group_by(.data$date) %>%
+                dplyr::summarize(value = sum(.data$value, na.rm = TRUE)) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
             "hr_ts" = {
               dat <- do.call(rbind.data.frame, ds$tabs$tables[[1]]$body[[2]]$cells) %>%
                 {data.frame(matrix(unlist(.), ncol = 3, byrow = TRUE))} %>%
