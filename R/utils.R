@@ -183,9 +183,10 @@ helper_ts_can <- function(.data, val, convert_to_cum = FALSE) {
     name = val,
     value = as.integer(.data$value)
   ) %>%
-    dplyr::arrange(.data$name, .data$province, .data$date) %>%
+    dplyr::rename(region = .data$province) %>%
+    dplyr::arrange(.data$name, .data$region, .data$date) %>%
     {if (convert_to_cum) {
-      dplyr::group_by(., .data$province) %>%
+      dplyr::group_by(., .data$region) %>%
         dplyr::mutate(., value = cumsum(.data$value)) %>%
         dplyr::ungroup()
     } else {
@@ -194,18 +195,18 @@ helper_ts_can <- function(.data, val, convert_to_cum = FALSE) {
     dplyr::right_join(
       data.frame(
         name = val,
-        province = rep(provs, each = date_n),
+        region = rep(provs, each = date_n),
         date = rep(date_seq, times = prov_n)
       ),
-      by = c("name", "province", "date")
+      by = c("name", "region", "date")
     ) %>%
     dplyr::select(
       .data$name,
-      .data$province,
+      .data$region,
       .data$date,
       .data$value) %>%
-    dplyr::arrange(.data$name, .data$province, .data$date) %>%
-    dplyr::group_by(.data$province) %>%
+    dplyr::arrange(.data$name, .data$region, .data$date) %>%
+    dplyr::group_by(.data$region) %>%
     tidyr::fill(.data$value, .direction = "down") %>%
     tidyr::replace_na(list(value = 0)) %>%
     dplyr::ungroup() %>%
