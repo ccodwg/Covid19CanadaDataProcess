@@ -173,17 +173,16 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
 #' @export
 helper_ts_can <- function(.data, val, convert_to_cum = FALSE) {
   if (!inherits(.data$date, "Date")) {stop("Make sure the date variable is formatted as Date.")}
-  if (!"province" %in% names(.data)) {stop("Make sure your province column is named 'province'.")}
+  if (!"region" %in% names(.data)) {stop("Make sure your province column is named 'region'.")}
   date_seq <- seq.Date(from = min(.data$date), to = max(.data$date), by = "day")
   date_n <- length(date_seq)
-  provs <- sort(unique(.data$province))
+  provs <- sort(unique(.data$region))
   prov_n <- length(provs)
   dplyr::mutate(
     .data,
     name = val,
     value = as.integer(.data$value)
   ) %>%
-    dplyr::rename(region = .data$province) %>%
     dplyr::arrange(.data$name, .data$region, .data$date) %>%
     {if (convert_to_cum) {
       dplyr::group_by(., .data$region) %>%

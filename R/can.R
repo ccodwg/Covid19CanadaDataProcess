@@ -21,7 +21,7 @@ process_can <- function(uuid, val, fmt, ds,
                   date = as.Date(.data$date),
                   prname = phac_prov(.data$prname, "from_phac")) %>%
                 dplyr::rename(
-                  province = .data$prname,
+                  region = .data$prname,
                   value = .data$numtotal) %>%
                 helper_ts_can(val, convert_to_cum = FALSE)
             },
@@ -38,7 +38,7 @@ process_can <- function(uuid, val, fmt, ds,
                   date = as.Date(.data$date),
                   prname = phac_prov(.data$prname, "from_phac")) %>%
                 dplyr::rename(
-                  province = .data$prname,
+                  region = .data$prname,
                   value = .data$numdeaths) %>%
                 helper_ts_can(val, convert_to_cum = FALSE)
             },
@@ -55,7 +55,7 @@ process_can <- function(uuid, val, fmt, ds,
                   date = as.Date(.data$date),
                   prname = phac_prov(.data$prname, "from_phac")) %>%
                 dplyr::rename(
-                  province = .data$prname,
+                  region = .data$prname,
                   value = .data$numrecover) %>%
                 helper_ts_can(val, convert_to_cum = FALSE)
             },
@@ -74,7 +74,7 @@ process_can <- function(uuid, val, fmt, ds,
                     date = as.Date(.data$date),
                     prname = phac_prov(.data$prname, "from_phac")) %>%
                   dplyr::rename(
-                    province = .data$prname,
+                    region = .data$prname,
                     value = .data$numtested) %>%
                   helper_ts_can(val, convert_to_cum = FALSE)
               } else if (testing_type == "n_tests_completed") {
@@ -84,7 +84,7 @@ process_can <- function(uuid, val, fmt, ds,
                     date = as.Date(.data$date),
                     prname = phac_prov(.data$prname, "from_phac")) %>%
                   dplyr::rename(
-                    province = .data$prname,
+                    region = .data$prname,
                     value = .data$numtests) %>%
                   helper_ts_can(val, convert_to_cum = FALSE)
               }
@@ -131,7 +131,7 @@ process_can <- function(uuid, val, fmt, ds,
                 dplyr::select(.data$new, .data$date) %>%
                 dplyr::mutate(
                   date = as.Date(.data$date),
-                  province = "CAN") %>%
+                  region = "CAN") %>%
                 dplyr::rename(
                   value = .data$new) %>%
                 helper_ts_can(val, convert_to_cum = TRUE)
