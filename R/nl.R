@@ -375,6 +375,47 @@ process_nl <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "b19daaca-6b32-47f5-944f-c69eebd63c07" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              # this dataset has daily case values for a narrow date range
+              # special case since no way to derive cumulative values
+              ds <- ds$features$attributes %>%
+                dplyr::transmute(
+                  region = "NL",
+                  date = lubridate::date(as.POSIXct(.data$Date_ / 1000, origin = "1970-01-01",
+                  tz = "America/St_Johns")),
+                  value_daily = .data$Cases
+                )
+              # arrange, fix some dates according to how they are shown on dashboard
+              ds[ds$date == "2022-05-05", ][1, "date"] <- as.Date("2022-03-05") # 2022-05-05 should be 2022-03-05
+              # throw error if this date is repeated (i.e., if they fix it in the future)
+              if (nrow(ds[ds$date == as.Date("2022-03-05"), ]) != 1) {stop("Please fix date processing!")}
+              ds <- ds %>%
+                dplyr::filter(!is.na(.data$value_daily)) %>%
+                dplyr::arrange(.data$date)
+              ds[1:7, "date"] <- ds[1:7, "date"] - 1
+              # fill in time series
+              ds <- ds %>%
+                dplyr::right_join(
+                  data.frame(
+                    region = "NL",
+                    date = seq.Date(from = min(ds$date), to = max(ds$date), by = "day")
+                  ), by = c("region", "date")
+                ) %>%
+                tidyr::replace_na(list(value_daily = 0)) %>%
+                dplyr::arrange(.data$date)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
