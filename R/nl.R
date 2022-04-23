@@ -408,7 +408,13 @@ process_nl <- function(uuid, val, fmt, ds,
                   ), by = c("region", "date")
                 ) %>%
                 tidyr::replace_na(list(value_daily = 0)) %>%
-                dplyr::arrange(.data$date)
+                dplyr::arrange(.data$date) %>%
+                dplyr::transmute(
+                  name = "cases",
+                  region = .data$region,
+                  date = .data$date,
+                  value_daily = .data$value_daily
+                )
             },
             e_fmt()
           )
