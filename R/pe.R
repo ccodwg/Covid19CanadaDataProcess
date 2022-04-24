@@ -105,6 +105,7 @@ process_pe <- function(uuid, val, fmt, ds,
           )
         },
         # sheet = "Partially or Fully"
+        # sheet = "Partially or Fully 5-11"
         "vaccine_dose_1" = {
           switch(
             fmt,
@@ -119,6 +120,7 @@ process_pe <- function(uuid, val, fmt, ds,
           )
         },
         # sheet = "Fully Immunized"
+        # sheet = "Fully Immunized 5-11"
         "vaccine_dose_2" = {
             switch(
               fmt,
