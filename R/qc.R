@@ -338,7 +338,9 @@ process_qc <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                dplyr::slice(1:20) %>%
+                # get region rows
+                dplyr::filter(grepl("\\d{2} - ", .data$Categorie) |
+                                .data$Categorie %in% c("R\u00E9gion inconnue", "Hors Qu\u00E9bec")) %>%
                 # strip numbers from region names
                 dplyr::mutate(
                   Categorie = ifelse(
@@ -363,7 +365,9 @@ process_qc <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                dplyr::slice(1:20) %>%
+                # get region rows
+                dplyr::filter(grepl("\\d{2} - ", .data$Categorie) |
+                                .data$Categorie %in% c("R\u00E9gion inconnue", "Hors Qu\u00E9bec")) %>%
                 # strip numbers from region names
                 dplyr::mutate(
                   Categorie = ifelse(
@@ -388,7 +392,9 @@ process_qc <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                dplyr::slice(1:20) %>%
+                # get region rows
+                dplyr::filter(grepl("\\d{2} - ", .data$Categorie) |
+                                .data$Categorie %in% c("R\u00E9gion inconnue", "Hors Qu\u00E9bec")) %>%
                 # strip numbers from region names
                 dplyr::mutate(
                   Categorie = ifelse(
