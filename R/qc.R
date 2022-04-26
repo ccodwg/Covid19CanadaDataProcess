@@ -21,6 +21,7 @@ process_qc <- function(uuid, val, fmt, ds,
               ds %>%
                 dplyr::filter(
                   .data$Regroupement == "R\u00E9gion" & # unicode
+                    grepl("^RSS", .data$Croisement) & # gets rid of strange lines "Te" and "Un"
                     .data$Croisement != "RSS99" & # all of Quebec
                     .data$Date != "Date inconnue"
                 ) %>%
@@ -46,6 +47,7 @@ process_qc <- function(uuid, val, fmt, ds,
               ds %>%
                 dplyr::filter(
                   .data$Regroupement == "R\u00E9gion" & # unicode
+                    grepl("^RSS", .data$Croisement) & # gets rid of strange lines "Te" and "Un"
                     .data$Croisement != "RSS99" & # all of Quebec
                     .data$Date != "Date inconnue"
                 ) %>%
@@ -71,6 +73,7 @@ process_qc <- function(uuid, val, fmt, ds,
               ds %>%
                 dplyr::filter(
                   .data$Regroupement == "R\u00E9gion" & # unicode
+                    grepl("^RSS", .data$Croisement) & # gets rid of strange lines "Te" and "Un"
                     .data$Croisement != "RSS99" & # all of Quebec
                     .data$Date != "Date inconnue"
                 ) %>%
@@ -105,6 +108,7 @@ process_qc <- function(uuid, val, fmt, ds,
                 ds %>%
                   dplyr::filter(
                     .data$Regroupement == "R\u00E9gion" & # unicode
+                      grepl("^RSS", .data$Croisement) & # gets rid of strange lines "Te" and "Un"
                       .data$Croisement != "RSS99" & # all of Quebec
                       .data$Date != "Date inconnue"
                   ) %>%
@@ -123,6 +127,7 @@ process_qc <- function(uuid, val, fmt, ds,
                 ds %>%
                   dplyr::filter(
                     .data$Regroupement == "R\u00E9gion" & # unicode
+                      grepl("^RSS", .data$Croisement) & # gets rid of strange lines "Te" and "Un"
                       .data$Croisement != "RSS99" & # all of Quebec
                       .data$Date != "Date inconnue"
                   ) %>%
