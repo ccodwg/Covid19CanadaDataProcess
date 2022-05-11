@@ -34,6 +34,10 @@ The currently supported values are the following:
  \item active
  \item testing
  \item vaccine_distribution
+ \item vaccine_coverage_dose_1
+ \item vaccine_coverage_dose_2
+ \item vaccine_coverage_dose_3
+ \item vaccine_coverage_dose_4
  \item vaccine_total_doses
  \item vaccine_dose_1
  \item vaccine_dose_2

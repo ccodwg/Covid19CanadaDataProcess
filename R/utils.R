@@ -166,23 +166,29 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
 }
 
 #' process_dataset: Common processing for fmt = ts for data with multiple provinces (e.g., Canada-wide data)
-#' @param .data The dataset to be processed.
+#' @param d The dataset to be processed.
 #' @param val The value.
 #' @param convert_to_cum Convert values to cumulative values? Default: FALSE.
+#' @param val_numeric Is the value a float (versus an integer)? Default: FALSE.
 #' @rdname process_dataset_helpers
 #' @export
-helper_ts_can <- function(.data, val, convert_to_cum = FALSE) {
-  if (!inherits(.data$date, "Date")) {stop("Make sure the date variable is formatted as Date.")}
-  if (!"region" %in% names(.data)) {stop("Make sure your province column is named 'region'.")}
-  date_seq <- seq.Date(from = min(.data$date), to = max(.data$date), by = "day")
+helper_ts_can <- function(d, val, convert_to_cum = FALSE, val_numeric = FALSE) {
+  if (!inherits(d$date, "Date")) {stop("Make sure the date variable is formatted as Date.")}
+  if (!"region" %in% names(d)) {stop("Make sure your province column is named 'region'.")}
+  date_seq <- seq.Date(from = min(d$date), to = max(d$date), by = "day")
   date_n <- length(date_seq)
-  provs <- sort(unique(.data$region))
+  provs <- sort(unique(d$region))
   prov_n <- length(provs)
-  dplyr::mutate(
-    .data,
-    name = val,
-    value = as.integer(.data$value)
-  ) %>%
+  d <- d %>%
+    dplyr::mutate(name = val)
+  if (val_numeric) {
+    d <- d %>%
+      dplyr::mutate(value = as.numeric(.data$value))
+  } else {
+    d <- d %>%
+      dplyr::mutate(value = as.integer(.data$value))
+  }
+  d <- d %>%
     dplyr::arrange(.data$name, .data$region, .data$date) %>%
     {if (convert_to_cum) {
       dplyr::group_by(., .data$region) %>%
@@ -208,8 +214,16 @@ helper_ts_can <- function(.data, val, convert_to_cum = FALSE) {
     dplyr::group_by(.data$region) %>%
     tidyr::fill(.data$value, .direction = "down") %>%
     tidyr::replace_na(list(value = 0)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(value = as.integer(.data$value))
+    dplyr::ungroup()
+  if (val_numeric) {
+    d <- d %>%
+      dplyr::mutate(value = as.numeric(.data$value))
+  } else {
+    d <- d %>%
+      dplyr::mutate(value = as.integer(.data$value))
+  }
+  # return data
+  d
 }
 
 # process_dataset: province abbreviation to province name (PHAC) or vice versa

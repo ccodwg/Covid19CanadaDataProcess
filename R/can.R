@@ -8,6 +8,60 @@ process_can <- function(uuid, val, fmt, ds,
   # process datasets
   switch(
     uuid,
+    "d0bfcd85-9552-47a5-a699-aa6fe4815e00" = {
+      switch(
+        val,
+        "vaccine_coverage_dose_1" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  date = as.Date(.data$week_end),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = .data$proptotal_atleast1dose) %>%
+                helper_ts_can(val, convert_to_cum = FALSE, val_numeric = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_coverage_dose_2" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  date = as.Date(.data$week_end),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = .data$proptotal_fully) %>%
+                # fix values
+                dplyr::mutate(
+                  value = dplyr::case_when(
+                    .data$value == "" ~ "0",
+                    .data$value == "<0.01" ~ "0",
+                    TRUE ~ .data$value)) %>%
+                helper_ts_can(val, convert_to_cum = FALSE, val_numeric = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_coverage_dose_3" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  date = as.Date(.data$week_end),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = .data$proptotal_additional) %>%
+                helper_ts_can(val, convert_to_cum = FALSE, val_numeric = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     "f7db31d0-6504-4a55-86f7-608664517bdb" = {
       switch(
         val,

@@ -19,7 +19,7 @@ helper_cum_current(
 
 helper_ts(.data, loc = c("prov", "hr"), val, prov, convert_to_cum = FALSE)
 
-helper_ts_can(.data, val, convert_to_cum = FALSE)
+helper_ts_can(d, val, convert_to_cum = FALSE, val_numeric = FALSE)
 
 phac_prov(p, mode = c("to_phac", "from_phac"))
 }
@@ -37,6 +37,10 @@ phac_prov(p, mode = c("to_phac", "from_phac"))
 \item{hr}{The health region, if providing data for one specific health region only. Used for ON PHU data only.}
 
 \item{convert_to_cum}{Convert values to cumulative values? Default: FALSE.}
+
+\item{d}{The dataset to be processed.}
+
+\item{val_numeric}{Is the value a float (versus an integer)? Default: FALSE.}
 
 \item{p}{The column to be processed.}
 
