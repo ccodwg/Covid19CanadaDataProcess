@@ -53,7 +53,21 @@ process_can <- function(uuid, val, fmt, ds,
                 dplyr::transmute(
                   date = as.Date(.data$week_end),
                   region = phac_prov(.data$prename, "from_phac"),
-                  value = .data$proptotal_additional) %>%
+                  value = .data$proptotal_1additional) %>%
+                helper_ts_can(val, convert_to_cum = FALSE, val_numeric = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_coverage_dose_4" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  date = as.Date(.data$week_end),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = .data$proptotal_2nd_additional) %>%
                 helper_ts_can(val, convert_to_cum = FALSE, val_numeric = TRUE)
             },
             e_fmt()
