@@ -240,6 +240,76 @@ process_can <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "c4631a95-cb44-4d21-ae39-f1ad54daf814" = {
+      switch(
+        val,
+        "vaccine_administration_total_doses" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                # filter out error rows
+                dplyr::filter(!.data$numtotal_all_administered == "#REF!" & !.data$numtotal_dose1_administered == "(19.7)39605") %>%
+                dplyr::transmute(
+                  date = as.Date(.data$as_of_date),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = as.integer(ifelse(.data$numtotal_all_administered == "", 0, readr::parse_number(as.character(.data$numtotal_all_administered))))) %>%
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_1" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                # filter out error rows
+                dplyr::filter(!.data$numtotal_all_administered == "#REF!" & !.data$numtotal_dose1_administered == "(19.7)39605") %>%
+                dplyr::transmute(
+                  date = as.Date(.data$as_of_date),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = as.integer(ifelse(.data$numtotal_dose1_administered == "", 0, readr::parse_number(as.character(.data$numtotal_dose1_administered))))) %>%
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_2" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                # filter out error rows
+                dplyr::filter(!.data$numtotal_all_administered == "#REF!" & !.data$numtotal_dose1_administered == "(19.7)39605") %>%
+                dplyr::transmute(
+                  date = as.Date(.data$as_of_date),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = as.integer(ifelse(.data$numtotal_dose2_administered == "", 0, readr::parse_number(as.character(.data$numtotal_dose2_administered))))) %>%
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_3" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                # filter out error rows
+                dplyr::filter(!.data$numtotal_all_administered == "#REF!" & !.data$numtotal_dose1_administered == "(19.7)39605") %>%
+                dplyr::transmute(
+                  date = as.Date(.data$as_of_date),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = as.integer(ifelse(.data$numtotal_dose3_administered == "", 0, readr::parse_number(as.character(.data$numtotal_dose3_administered))))) %>%
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     "fa3f2917-6553-438c-9a6f-2af8d077f47f" = {
       switch(
         val,
