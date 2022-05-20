@@ -73,6 +73,83 @@ process_can <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "vaccine_administration_total_doses" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::rowwise() %>%
+                dplyr::transmute(
+                  date = as.Date(.data$week_end),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = sum(
+                    .data$numtotal_atleast1dose,
+                    .data$numtotal_fully,
+                    .data$numtotal_1additional,
+                    .data$num18plus_2nd_additional,
+                    na.rm = TRUE)) %>%
+                dplyr::ungroup() %>%
+                helper_ts_can(val, convert_to_cum = FALSE, val_numeric = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_1" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  date = as.Date(.data$week_end),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = .data$numtotal_atleast1dose) %>%
+                helper_ts_can(val, convert_to_cum = FALSE, val_numeric = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_2" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  date = as.Date(.data$week_end),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = .data$numtotal_fully) %>%
+                helper_ts_can(val, convert_to_cum = FALSE, val_numeric = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_3" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  date = as.Date(.data$week_end),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = .data$numtotal_1additional) %>%
+                helper_ts_can(val, convert_to_cum = FALSE, val_numeric = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_4" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  date = as.Date(.data$week_end),
+                  region = phac_prov(.data$prename, "from_phac"),
+                  value = .data$numtotal_2nd_additional) %>%
+                helper_ts_can(val, convert_to_cum = FALSE, val_numeric = FALSE)
+            },
+            e_fmt()
+          )
+        },
         e_val()
       )
     },

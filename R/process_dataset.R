@@ -18,6 +18,7 @@
 #'  \item vaccine_coverage_dose_3
 #'  \item vaccine_coverage_dose_4
 #'  \item vaccine_coverage_dose_5
+#'  \item vaccine_administration_total_doses
 #'  \item vaccine_administration_dose_1
 #'  \item vaccine_administration_dose_2
 #'  \item vaccine_administration_dose_3
@@ -55,12 +56,13 @@ process_dataset <- function(uuid,
                               "vaccine_coverage_dose_2",
                               "vaccine_coverage_dose_3",
                               "vaccine_coverage_dose_4",
-                              "vaccine_total_doses",
-                              "vaccine_dose_1",
-                              "vaccine_dose_2",
-                              "vaccine_dose_3",
-                              "vaccine_dose_4",
-                              "vaccine_additional_doses",
+                              "vaccine_coverage_dose_5",
+                              "vaccine_administration_total_doses",
+                              "vaccine_administration_dose_1",
+                              "vaccine_administration_dose_2",
+                              "vaccine_administration_dose_3",
+                              "vaccine_administration_dose_4",
+                              "vaccine_administration_dose_5",
                               "hospitalizations",
                               "hospitalizations_cum",
                               "icu"
@@ -102,6 +104,13 @@ process_dataset <- function(uuid,
                 "vaccine_coverage_dose_2",
                 "vaccine_coverage_dose_3",
                 "vaccine_coverage_dose_4",
+                "vaccine_coverage_dose_5",
+                "vaccine_administration_total_doses",
+                "vaccine_administration_dose_1",
+                "vaccine_administration_dose_2",
+                "vaccine_administration_dose_3",
+                "vaccine_administration_dose_4",
+                "vaccine_administration_dose_5",
                 "vaccine_total_doses",
                 "vaccine_dose_1",
                 "vaccine_dose_2",
