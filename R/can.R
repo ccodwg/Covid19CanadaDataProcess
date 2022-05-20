@@ -248,12 +248,10 @@ process_can <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds %>%
-                # filter out error rows
-                dplyr::filter(!.data$numtotal_all_administered == "#REF!" & !.data$numtotal_dose1_administered == "(19.7)39605") %>%
                 dplyr::transmute(
                   date = as.Date(.data$as_of_date),
                   region = phac_prov(.data$prename, "from_phac"),
-                  value = as.integer(ifelse(.data$numtotal_all_administered == "", 0, readr::parse_number(as.character(.data$numtotal_all_administered))))) %>%
+                  value = as.integer(ifelse(.data$numtotal_all_administered == "", 0, .data$numtotal_all_administered))) %>%
                 helper_ts_can(val, convert_to_cum = FALSE)
             },
             e_fmt()
@@ -264,12 +262,10 @@ process_can <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds %>%
-                # filter out error rows
-                dplyr::filter(!.data$numtotal_all_administered == "#REF!" & !.data$numtotal_dose1_administered == "(19.7)39605") %>%
                 dplyr::transmute(
                   date = as.Date(.data$as_of_date),
                   region = phac_prov(.data$prename, "from_phac"),
-                  value = as.integer(ifelse(.data$numtotal_dose1_administered == "", 0, readr::parse_number(as.character(.data$numtotal_dose1_administered))))) %>%
+                  value = as.integer(ifelse(.data$numtotal_dose1_administered == "", 0, .data$numtotal_dose1_administered))) %>%
                 helper_ts_can(val, convert_to_cum = FALSE)
             },
             e_fmt()
@@ -280,12 +276,10 @@ process_can <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds %>%
-                # filter out error rows
-                dplyr::filter(!.data$numtotal_all_administered == "#REF!" & !.data$numtotal_dose1_administered == "(19.7)39605") %>%
                 dplyr::transmute(
                   date = as.Date(.data$as_of_date),
                   region = phac_prov(.data$prename, "from_phac"),
-                  value = as.integer(ifelse(.data$numtotal_dose2_administered == "", 0, readr::parse_number(as.character(.data$numtotal_dose2_administered))))) %>%
+                  value = as.integer(ifelse(.data$numtotal_dose2_administered == "", 0, .data$numtotal_dose2_administered))) %>%
                 helper_ts_can(val, convert_to_cum = FALSE)
             },
             e_fmt()
@@ -296,12 +290,10 @@ process_can <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds %>%
-                # filter out error rows
-                dplyr::filter(!.data$numtotal_all_administered == "#REF!" & !.data$numtotal_dose1_administered == "(19.7)39605") %>%
                 dplyr::transmute(
                   date = as.Date(.data$as_of_date),
                   region = phac_prov(.data$prename, "from_phac"),
-                  value = as.integer(ifelse(.data$numtotal_dose3_administered == "", 0, readr::parse_number(as.character(.data$numtotal_dose3_administered))))) %>%
+                  value = as.integer(ifelse(.data$numtotal_dose3_administered == "", 0, .data$numtotal_dose3_administered))) %>%
                 helper_ts_can(val, convert_to_cum = FALSE)
             },
             e_fmt()
