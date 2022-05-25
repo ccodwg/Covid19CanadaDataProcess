@@ -19,10 +19,10 @@ process_ab <- function(uuid, val, fmt, ds,
             "hr_ts" = {
               ds %>%
                 dplyr::transmute(
-                  sub_region_1 = ifelse(
-                    .data$Alberta.Health.Services.Zone == "",
-                    "Unknown",
-                    .data$Alberta.Health.Services.Zone
+                  sub_region_1 = dplyr::case_when(
+                    .data$Alberta.Health.Services.Zone == "" ~ "Unknown",
+                    is.na(.data$Alberta.Health.Services.Zone) ~ "Unknown",
+                    TRUE ~ .data$Alberta.Health.Services.Zone
                   ),
                   date = as.Date(.data$Date.reported)) %>%
                 dplyr::count(.data$sub_region_1, .data$date, name = "value") %>%
@@ -36,12 +36,14 @@ process_ab <- function(uuid, val, fmt, ds,
             fmt,
             "hr_cum_current" = {
               ds %>%
-                dplyr::filter(.data$Case.status == "Died") %>%
-                dplyr::count(.data$Alberta.Health.Services.Zone) %>%
-                dplyr::rename(
-                  sub_region_1 = .data$Alberta.Health.Services.Zone,
-                  value = .data$n
-                ) %>%
+                dplyr::filter(.data$Death.status == "Died") %>%
+                dplyr::transmute(
+                  sub_region_1 = dplyr::case_when(
+                    .data$Alberta.Health.Services.Zone == "" ~ "Unknown",
+                    is.na(.data$Alberta.Health.Services.Zone) ~ "Unknown",
+                    TRUE ~ .data$Alberta.Health.Services.Zone
+                  )) %>%
+                dplyr::count(.data$sub_region_1, name = "value") %>%
                 helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
