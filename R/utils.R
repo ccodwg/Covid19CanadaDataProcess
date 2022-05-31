@@ -170,11 +170,21 @@ helper_ts <- function(.data, loc = c("prov", "hr"),
 #' @param val The value.
 #' @param convert_to_cum Convert values to cumulative values? Default: FALSE.
 #' @param val_numeric Is the value a float (versus an integer)? Default: FALSE.
+#' @param keep_update If there is an `update` column, should it be kept? Default: FALSE.
 #' @rdname process_dataset_helpers
 #' @export
-helper_ts_can <- function(d, val, convert_to_cum = FALSE, val_numeric = FALSE) {
+helper_ts_can <- function(d, val, convert_to_cum = FALSE, val_numeric = FALSE, keep_update = FALSE) {
+  # check date column type and existence of region column
   if (!inherits(d$date, "Date")) {stop("Make sure the date variable is formatted as Date.")}
   if (!"region" %in% names(d)) {stop("Make sure your province column is named 'region'.")}
+  # check existence of updated column
+  if (keep_update) {
+    if (!"update" %in% names(d)) {
+      warning("No column called 'update', ignoring 'keep_update = TRUE'...")
+      keep_update <- FALSE
+    }
+  }
+  # data processing
   date_seq <- seq.Date(from = min(d$date), to = max(d$date), by = "day")
   date_n <- length(date_seq)
   provs <- sort(unique(d$region))
@@ -204,12 +214,24 @@ helper_ts_can <- function(d, val, convert_to_cum = FALSE, val_numeric = FALSE) {
         date = rep(date_seq, times = prov_n)
       ),
       by = c("name", "region", "date")
-    ) %>%
-    dplyr::select(
-      .data$name,
-      .data$region,
-      .data$date,
-      .data$value) %>%
+    )
+  if (keep_update) {
+    d <- d %>%
+      dplyr::select(
+        .data$name,
+        .data$region,
+        .data$date,
+        .data$value,
+        .data$update)
+  } else {
+    d <- d %>%
+      dplyr::select(
+        .data$name,
+        .data$region,
+        .data$date,
+        .data$value)
+  }
+  d <- d %>%
     dplyr::arrange(.data$name, .data$region, .data$date) %>%
     dplyr::group_by(.data$region) %>%
     tidyr::fill(.data$value, .direction = "down") %>%

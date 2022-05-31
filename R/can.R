@@ -161,14 +161,14 @@ process_can <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds %>%
-                dplyr::select(.data$prname, .data$date, .data$numtotal) %>%
+                dplyr::select(.data$prname, .data$date, .data$numtotal, .data$update) %>%
                 dplyr::mutate(
                   date = as.Date(.data$date),
                   prname = phac_prov(.data$prname, "from_phac")) %>%
                 dplyr::rename(
                   region = .data$prname,
                   value = .data$numtotal) %>%
-                helper_ts_can(val, convert_to_cum = FALSE)
+                helper_ts_can(val, convert_to_cum = FALSE, keep_update = TRUE)
             },
             e_fmt()
           )
@@ -178,14 +178,14 @@ process_can <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds %>%
-                dplyr::select(.data$prname, .data$date, .data$numdeaths) %>%
+                dplyr::select(.data$prname, .data$date, .data$numdeaths, .data$update) %>%
                 dplyr::mutate(
                   date = as.Date(.data$date),
                   prname = phac_prov(.data$prname, "from_phac")) %>%
                 dplyr::rename(
                   region = .data$prname,
                   value = .data$numdeaths) %>%
-                helper_ts_can(val, convert_to_cum = FALSE)
+                helper_ts_can(val, convert_to_cum = FALSE, keep_update = TRUE)
             },
             e_fmt()
           )

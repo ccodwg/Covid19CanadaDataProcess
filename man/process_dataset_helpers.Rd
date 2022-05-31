@@ -19,7 +19,13 @@ helper_cum_current(
 
 helper_ts(.data, loc = c("prov", "hr"), val, prov, convert_to_cum = FALSE)
 
-helper_ts_can(d, val, convert_to_cum = FALSE, val_numeric = FALSE)
+helper_ts_can(
+  d,
+  val,
+  convert_to_cum = FALSE,
+  val_numeric = FALSE,
+  keep_update = FALSE
+)
 
 phac_prov(p, mode = c("to_phac", "from_phac"))
 }
@@ -41,6 +47,8 @@ phac_prov(p, mode = c("to_phac", "from_phac"))
 \item{d}{The dataset to be processed.}
 
 \item{val_numeric}{Is the value a float (versus an integer)? Default: FALSE.}
+
+\item{keep_update}{If there is an `update` column, should it be kept? Default: FALSE.}
 
 \item{p}{The column to be processed.}
 
