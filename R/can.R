@@ -153,6 +153,28 @@ process_can <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "366ce221-c1c9-4f41-a917-8ff4648f6a40" = {
+      switch(
+        val,
+        "testing" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  region = phac_prov(.data$prname, "from_phac"),
+                  date = as.Date(.data$date),
+                  value = .data$numtests_total,
+                  .data$update
+                ) %>%
+                helper_ts_can(val, convert_to_cum = FALSE, keep_update = TRUE)
+              },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     "f7db31d0-6504-4a55-86f7-608664517bdb" = {
       switch(
         val,
@@ -203,36 +225,6 @@ process_can <- function(uuid, val, fmt, ds,
                   region = .data$prname,
                   value = .data$numrecover) %>%
                 helper_ts_can(val, convert_to_cum = FALSE)
-            },
-            e_fmt()
-          )
-        },
-        "testing" = {
-          match.arg(testing_type, c("n_people_tested", "n_tests_completed"))
-          switch(
-            fmt,
-            "prov_ts" = {
-              if (testing_type == "n_people_tested") {
-                ds %>%
-                  dplyr::select(.data$prname, .data$date, .data$numtested) %>%
-                  dplyr::mutate(
-                    date = as.Date(.data$date),
-                    prname = phac_prov(.data$prname, "from_phac")) %>%
-                  dplyr::rename(
-                    region = .data$prname,
-                    value = .data$numtested) %>%
-                  helper_ts_can(val, convert_to_cum = FALSE)
-              } else if (testing_type == "n_tests_completed") {
-                ds %>%
-                  dplyr::select(.data$prname, .data$date, .data$numtests) %>%
-                  dplyr::mutate(
-                    date = as.Date(.data$date),
-                    prname = phac_prov(.data$prname, "from_phac")) %>%
-                  dplyr::rename(
-                    region = .data$prname,
-                    value = .data$numtests) %>%
-                  helper_ts_can(val, convert_to_cum = FALSE)
-              }
             },
             e_fmt()
           )
