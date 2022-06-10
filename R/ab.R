@@ -206,6 +206,26 @@ process_ab <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "testing" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                rvest::html_elements("script") %>%
+                {.[which(rvest::html_attr(., "data-for") == "htmlwidget-1c2f041cb39c009c0b5e")]} %>%
+                rvest::html_text2() %>%
+                jsonlite::fromJSON() %>%
+                {
+                  data.frame(
+                    date = as.Date(unlist(.$x$data$x)),
+                    value = as.integer(unlist(.$x$data$y))
+                  )
+                } %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
         e_val()
       )
     },
