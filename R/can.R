@@ -183,13 +183,12 @@ process_can <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds %>%
-                dplyr::select(.data$prname, .data$date, .data$numtotal, .data$update) %>%
-                dplyr::mutate(
+                dplyr::transmute(
+                  region = phac_prov(.data$prname, "from_phac"),
                   date = as.Date(.data$date),
-                  prname = phac_prov(.data$prname, "from_phac")) %>%
-                dplyr::rename(
-                  region = .data$prname,
-                  value = .data$numtotal) %>%
+                  value = as.integer(.data$numcases_total),
+                  update = .data$update
+                ) %>%
                 helper_ts_can(val, convert_to_cum = FALSE, keep_update = TRUE)
             },
             e_fmt()
@@ -200,31 +199,13 @@ process_can <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds %>%
-                dplyr::select(.data$prname, .data$date, .data$numdeaths, .data$update) %>%
-                dplyr::mutate(
+                dplyr::transmute(
+                  region = phac_prov(.data$prname, "from_phac"),
                   date = as.Date(.data$date),
-                  prname = phac_prov(.data$prname, "from_phac")) %>%
-                dplyr::rename(
-                  region = .data$prname,
-                  value = .data$numdeaths) %>%
+                  value = as.integer(.data$numdeaths_total),
+                  update = .data$update
+                ) %>%
                 helper_ts_can(val, convert_to_cum = FALSE, keep_update = TRUE)
-            },
-            e_fmt()
-          )
-        },
-        "recovered" = {
-          switch(
-            fmt,
-            "prov_ts" = {
-              ds %>%
-                dplyr::select(.data$prname, .data$date, .data$numrecover) %>%
-                dplyr::mutate(
-                  date = as.Date(.data$date),
-                  prname = phac_prov(.data$prname, "from_phac")) %>%
-                dplyr::rename(
-                  region = .data$prname,
-                  value = .data$numrecover) %>%
-                helper_ts_can(val, convert_to_cum = FALSE)
             },
             e_fmt()
           )
