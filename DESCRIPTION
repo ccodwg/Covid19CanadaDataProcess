@@ -15,7 +15,7 @@ LazyData: true
 Imports:
     Covid19CanadaData,
     dplyr,
-    tidyr,
+    jsonlite,
     lubridate,
     magick,
     magrittr,
@@ -23,6 +23,7 @@ Imports:
     readr,
     rlang,
     rvest,
-    stringr
+    stringr,
+    tidyr
 Remotes: ccodwg/Covid19CanadaData
 RoxygenNote: 7.2.0
