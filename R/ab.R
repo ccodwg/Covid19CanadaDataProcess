@@ -210,9 +210,15 @@ process_ab <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_ts" = {
+              # retrieve htmlwidget id name
+              id <- ds %>%
+                rvest::html_elements(
+                  xpath = "//p[@class='caption' and contains(text(), 'Tests performed for COVID-19 in Alberta by day.')]//preceding::div[@class='plotly html-widget']") %>%
+                {.[length(.)]} %>%
+                rvest::html_attr("id")
               ds %>%
                 rvest::html_elements("script") %>%
-                {.[which(rvest::html_attr(., "data-for") == "htmlwidget-1c2f041cb39c009c0b5e")]} %>%
+                {.[which(rvest::html_attr(., "data-for") == id)]} %>%
                 rvest::html_text2() %>%
                 jsonlite::fromJSON() %>%
                 {
