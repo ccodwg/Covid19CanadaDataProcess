@@ -82,6 +82,21 @@ process_nt <- function(uuid, val, fmt, ds,
                data.frame(value = .) %>%
                helper_cum_current(loc = "prov", val, prov, date_current)
            },
+           "prov_cum_current_residents_plus_oot" = {
+             ds %>%
+               {
+                 rvest::html_element(., "#confirmedNT") %>%
+                   rvest::html_element("h3") %>%
+                   rvest::html_text2() %>%
+                   readr::parse_number() +
+                   rvest::html_element(., "#confirmedNTOOT") %>%
+                   rvest::html_element("h3") %>%
+                   rvest::html_text2() %>%
+                   readr::parse_number()
+               } %>%
+               data.frame(value = .) %>%
+               helper_cum_current(loc = "prov", val, prov, date_current)
+           },
            "subhr_cum_current_residents_nonresidents" = {
              hr <- "Northwest Territories" # in the CCODWG dataset, this would be "NWT"
              # special format - includes values for residents and non-residents
