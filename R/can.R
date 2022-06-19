@@ -186,9 +186,10 @@ process_can <- function(uuid, val, fmt, ds,
                 dplyr::transmute(
                   region = phac_prov(.data$prname, "from_phac"),
                   date = as.Date(.data$date),
-                  value = as.integer(.data$numcases_total)
+                  value = as.integer(.data$numcases_total),
+                  update = as.integer(1)
                 ) %>%
-                helper_ts_can(val, convert_to_cum = FALSE)
+                helper_ts_can(val, convert_to_cum = FALSE, keep_update = TRUE)
             },
             e_fmt()
           )
@@ -201,9 +202,10 @@ process_can <- function(uuid, val, fmt, ds,
                 dplyr::transmute(
                   region = phac_prov(.data$prname, "from_phac"),
                   date = as.Date(.data$date),
-                  value = as.integer(.data$numdeaths_total)
+                  value = as.integer(.data$numdeaths_total),
+                  update = as.integer(1)
                 ) %>%
-                helper_ts_can(val, convert_to_cum = FALSE)
+                helper_ts_can(val, convert_to_cum = FALSE, keep_update = TRUE)
             },
             e_fmt()
           )
