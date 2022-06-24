@@ -190,20 +190,22 @@ process_can <- function(uuid, val, fmt, ds,
                   value = as.integer(.data$numcases_total),
                   update = .data$update
                 )
-              # update column begins as all NA for Canada, repatriated travellers
-              # convert to same format as others
-              # some PTs may have all 0s by mistake
-              locs <- table(ds$region, ds$update, useNA = "always")
-              locs <- rownames(locs[locs[, "1"] != 1, ])
-              locs <- locs[!is.na(locs)]
-              ds[ds$date == max(ds$date) & ds$region %in% locs, "update"] <- 1
-              ds[ds$date != max(ds$date) & ds$region %in% locs, "update"] <- 0
+              # update column is all NAs for Canada, repatriated travellers
+              # some other columns may be all 0s
+              # convert them to columns of all 1s
+              update_table <- table(ds$region, ds$update, useNA = "always")
+              all_0 <- rownames(update_table[update_table[, "1"] == 0, ])
+              all_0 <- all_0[!is.na(all_0)]
+              ds[ds$region %in% all_0, "update"] <- 1
+              # if update column is 0 for all values but one, fill in 1s for all dates before the first
+              only_1 <- rownames(update_table[update_table[, "1"] == 1, ])
+              for (loc in only_1) {
+                date_max <- ds[ds$region == loc & ds$update == 1, "date", drop = TRUE]
+                ds[ds$region == loc, "update"] <- ifelse(ds[ds$region == loc, "date"] <= date_max, 1, 0)
+              }
               ds %>%
-                # filter up to most recently updated date
-                dplyr::group_by(.data$region) %>%
-                dplyr::slice(1:match(TRUE, .data$update == 1)) %>%
-                dplyr::ungroup() %>%
-                dplyr::mutate(update = as.integer(1)) %>%
+                # filter out update == 0
+                dplyr::filter(.data$update == 1) %>%
                 helper_ts_can(val, convert_to_cum = FALSE, keep_update = TRUE)
             },
             e_fmt()
@@ -221,20 +223,22 @@ process_can <- function(uuid, val, fmt, ds,
                   value = as.integer(.data$numdeaths_total),
                   update = .data$update
                 )
-              # update column begins as all NA for Canada, repatriated travellers
-              # convert to same format as others
-              # some PTs may have all 0s by mistake
-              locs <- table(ds$region, ds$update, useNA = "always")
-              locs <- rownames(locs[locs[, "1"] != 1, ])
-              locs <- locs[!is.na(locs)]
-              ds[ds$date == max(ds$date) & ds$region %in% locs, "update"] <- 1
-              ds[ds$date != max(ds$date) & ds$region %in% locs, "update"] <- 0
+              # update column is all NAs for Canada, repatriated travellers
+              # some other columns may be all 0s
+              # convert them to columns of all 1s
+              update_table <- table(ds$region, ds$update, useNA = "always")
+              all_0 <- rownames(update_table[update_table[, "1"] == 0, ])
+              all_0 <- all_0[!is.na(all_0)]
+              ds[ds$region %in% all_0, "update"] <- 1
+              # if update column is 0 for all values but one, fill in 1s for all dates before the first
+              only_1 <- rownames(update_table[update_table[, "1"] == 1, ])
+              for (loc in only_1) {
+                date_max <- ds[ds$region == loc & ds$update == 1, "date", drop = TRUE]
+                ds[ds$region == loc, "update"] <- ifelse(ds[ds$region == loc, "date"] <= date_max, 1, 0)
+              }
               ds %>%
-                # filter up to most recently updated date
-                dplyr::group_by(.data$region) %>%
-                dplyr::slice(1:match(TRUE, .data$update == 1)) %>%
-                dplyr::ungroup() %>%
-                dplyr::mutate(update = as.integer(1)) %>%
+                # filter out update == 0
+                dplyr::filter(.data$update == 1) %>%
                 helper_ts_can(val, convert_to_cum = FALSE, keep_update = TRUE)
             },
             e_fmt()
