@@ -182,13 +182,28 @@ process_can <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_ts" = {
-              ds %>%
+              ds <- ds %>%
+                # select variables
                 dplyr::transmute(
                   region = phac_prov(.data$prname, "from_phac"),
                   date = as.Date(.data$date),
                   value = as.integer(.data$numcases_total),
-                  update = as.integer(1)
-                ) %>%
+                  update = .data$update
+                )
+              # update column begins as all NA for Canada, repatriated travellers
+              # convert to same format as others
+              # some PTs may have all 0s by mistake
+              locs <- table(ds$region, ds$update, useNA = "always")
+              locs <- rownames(locs[locs[, "1"] != 1, ])
+              locs <- locs[!is.na(locs)]
+              ds[ds$date == max(ds$date) & ds$region %in% locs, "update"] <- 1
+              ds[ds$date != max(ds$date) & ds$region %in% locs, "update"] <- 0
+              ds %>%
+                # filter up to most recently updated date
+                dplyr::group_by(.data$region) %>%
+                dplyr::slice(1:match(TRUE, .data$update == 1)) %>%
+                dplyr::ungroup() %>%
+                dplyr::mutate(update = as.integer(1)) %>%
                 helper_ts_can(val, convert_to_cum = FALSE, keep_update = TRUE)
             },
             e_fmt()
@@ -198,13 +213,28 @@ process_can <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_ts" = {
-              ds %>%
+              ds <- ds %>%
+                # select variables
                 dplyr::transmute(
                   region = phac_prov(.data$prname, "from_phac"),
                   date = as.Date(.data$date),
                   value = as.integer(.data$numdeaths_total),
-                  update = as.integer(1)
-                ) %>%
+                  update = .data$update
+                )
+              # update column begins as all NA for Canada, repatriated travellers
+              # convert to same format as others
+              # some PTs may have all 0s by mistake
+              locs <- table(ds$region, ds$update, useNA = "always")
+              locs <- rownames(locs[locs[, "1"] != 1, ])
+              locs <- locs[!is.na(locs)]
+              ds[ds$date == max(ds$date) & ds$region %in% locs, "update"] <- 1
+              ds[ds$date != max(ds$date) & ds$region %in% locs, "update"] <- 0
+              ds %>%
+                # filter up to most recently updated date
+                dplyr::group_by(.data$region) %>%
+                dplyr::slice(1:match(TRUE, .data$update == 1)) %>%
+                dplyr::ungroup() %>%
+                dplyr::mutate(update = as.integer(1)) %>%
                 helper_ts_can(val, convert_to_cum = FALSE, keep_update = TRUE)
             },
             e_fmt()
