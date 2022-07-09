@@ -362,7 +362,7 @@ process_can <- function(uuid, val, fmt, ds,
         "wastewater_copies_per_ml" = {
           switch(
             fmt,
-            "can_ts" = {
+            "subhr_ts" = {
               ds %>%
                 dplyr::transmute(
                   name = "wastewater_copies_per_ml",
