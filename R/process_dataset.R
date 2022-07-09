@@ -33,6 +33,7 @@
 #'  \item hospitalizations
 #'  \item hospitalizations_cum
 #'  \item icu
+#'  \item wastewater_copies_per_ml
 #' }
 #'
 #' @param uuid The UUID of the dataset from datasets.json.
@@ -65,7 +66,8 @@ process_dataset <- function(uuid,
                               "vaccine_administration_dose_5",
                               "hospitalizations",
                               "hospitalizations_cum",
-                              "icu"
+                              "icu",
+                              "wastewater_copies_per_ml"
                             ),
                             fmt,
                             ds,
@@ -118,7 +120,8 @@ process_dataset <- function(uuid,
                 "vaccine_dose_4",
                 "vaccine_additional_doses",
                 "hospitalizations",
-                "icu"),
+                "icu",
+                "wastewater_copies_per_ml"),
     several.ok = FALSE
   )
 

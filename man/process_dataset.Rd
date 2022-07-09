@@ -12,7 +12,7 @@ process_dataset(
     "vaccine_administration_total_doses", "vaccine_administration_dose_1",
     "vaccine_administration_dose_2", "vaccine_administration_dose_3",
     "vaccine_administration_dose_4", "vaccine_administration_dose_5", "hospitalizations",
-    "hospitalizations_cum", "icu"),
+    "hospitalizations_cum", "icu", "wastewater_copies_per_ml"),
   fmt,
   ds,
   ...
@@ -68,5 +68,6 @@ The currently supported values are the following:
  \item hospitalizations
  \item hospitalizations_cum
  \item icu
+ \item wastewater_copies_per_ml
 }
 }

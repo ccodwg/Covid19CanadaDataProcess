@@ -54,6 +54,7 @@ The currently supported values are the following:
  \item hospitalizations
  \item hospitalizations_cum
  \item icu
+ \item wastewater_copies_per_ml
 }
 }
 \keyword{internal}

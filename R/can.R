@@ -356,6 +356,41 @@ process_can <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "ea3718c1-83f1-46a1-8b21-e25aebd1ebee" = {
+      switch(
+        val,
+        "wastewater_copies_per_ml" = {
+          switch(
+            fmt,
+            "can_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  name = "wastewater_copies_per_ml",
+                  date = as.Date(.data$Date),
+                  sub_region_1 = .data$region,
+                  region = dplyr::case_when(
+                    .data$region %in% c("Edmonton") ~ "AB",
+                    .data$region %in% c("Vancouver") ~ "BC",
+                    .data$region %in% c("Winnipeg") ~ "MB",
+                    .data$region %in% c("Newfoundland") ~ "NL",
+                    .data$region %in% c("Halifax") ~ "NS",
+                    .data$region %in% c("Toronto") ~ "ON",
+                    .data$region %in% c("PEI") ~ "PE",
+                    .data$region %in% c("Montreal") ~ "QC",
+                    .data$region %in% c("Regina") ~ "SK"
+                    ),
+                  sub_region_2 = .data$Location,
+                  value = .data$viral_load
+                  ) %>%
+                dplyr::select(.data$name, .data$date, .data$region, .data$sub_region_1, .data$sub_region_2, .data$value) %>%
+                dplyr::arrange(.data$name, .data$region, .data$sub_region_1, .data$sub_region_2, .data$date)
+              },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
