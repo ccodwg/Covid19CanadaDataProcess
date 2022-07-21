@@ -6,9 +6,9 @@
 \usage{
 process_dataset(
   uuid,
-  val = c("cases", "mortality", "recovered", "active", "testing",
-    "vaccine_distribution", "vaccine_coverage_dose_1", "vaccine_coverage_dose_2",
-    "vaccine_coverage_dose_3", "vaccine_coverage_dose_4", "vaccine_coverage_dose_5",
+  val = c("cases", "mortality", "recovered", "active", "testing", "vaccine_distribution",
+    "vaccine_coverage_dose_1", "vaccine_coverage_dose_2", "vaccine_coverage_dose_3",
+    "vaccine_coverage_dose_4", "vaccine_coverage_dose_5",
     "vaccine_administration_total_doses", "vaccine_administration_dose_1",
     "vaccine_administration_dose_2", "vaccine_administration_dose_3",
     "vaccine_administration_dose_4", "vaccine_administration_dose_5", "hospitalizations",
