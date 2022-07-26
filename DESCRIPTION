@@ -17,7 +17,6 @@ Imports:
     dplyr,
     jsonlite,
     lubridate,
-    magick,
     magrittr,
     methods,
     readr,
