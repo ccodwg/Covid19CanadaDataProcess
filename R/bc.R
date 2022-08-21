@@ -8,6 +8,22 @@ process_bc <- function(uuid, val, fmt, ds,
   # set defaults
   prov <- "BC"
 
+  # function: process cases for HA time series (derivatives of 4f9dc8b7-7b42-450e-a741-a0f6a621d2af)
+  ha_cases_timeseries <- function(ds, val, prov) {
+    ds$features$attributes %>%
+      dplyr::mutate(Date = lubridate::date(
+        lubridate::with_tz(as.POSIXct(.data$Date / 1000, origin = "1970-01-01"),
+                           tz = "America/Vancouver"))) %>%
+      dplyr::select( .data$Date, .data$HA, .data$Cases_Reported) %>%
+      dplyr::arrange(.data$HA, .data$Date) %>%
+      dplyr::rename(
+        sub_region_1 = .data$HA,
+        date = .data$Date,
+        value = .data$Cases_Reported
+      ) %>%
+      helper_ts(loc = "hr", val, prov, convert_to_cum = TRUE)
+  }
+
   # process datasets
   switch(
     uuid,
@@ -242,6 +258,86 @@ process_bc <- function(uuid, val, fmt, ds,
                   value = .data$Cases_Reported
                 ) %>%
                 helper_ts(loc = "hr", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Interior
+    "a8637b6c-babf-48cd-aeab-2f38c713f596" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ha_cases_timeseries(ds, val, prov)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Fraser
+    "f7cd5492-f23b-45a5-9d9b-118ac2b47529" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ha_cases_timeseries(ds, val, prov)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Vancouver Coastal
+    "1ad7ef1b-1b02-4d5c-aec2-4923ea100e97" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ha_cases_timeseries(ds, val, prov)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Vancouver Island
+    "89b48da6-bed9-4cd4-824c-8b6d82ffba24" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ha_cases_timeseries(ds, val, prov)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Northern
+    "def3aca2-3595-4d70-a5d2-d51f78912dda" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ha_cases_timeseries(ds, val, prov)
             },
             e_fmt()
           )
