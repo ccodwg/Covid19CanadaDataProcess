@@ -345,6 +345,22 @@ process_bc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    # Out of Canada
+    "c0ab9514-92ea-4dda-b714-bab9985e58be" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ha_cases_timeseries(ds, val, prov)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
