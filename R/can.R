@@ -379,7 +379,7 @@ process_can <- function(uuid, val, fmt, ds,
                     .data$region %in% c("Montreal") ~ "QC",
                     .data$region %in% c("Regina") ~ "SK"
                     ),
-                  sub_region_2 = .data$location,
+                  sub_region_2 = .data$Location,
                   value = .data$viral_load
                   ) %>%
                 dplyr::select(.data$name, .data$date, .data$region, .data$sub_region_1, .data$sub_region_2, .data$value) %>%
