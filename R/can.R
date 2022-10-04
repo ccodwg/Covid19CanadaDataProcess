@@ -86,7 +86,7 @@ process_can <- function(uuid, val, fmt, ds,
                     .data$numtotal_atleast1dose,
                     .data$numtotal_fully,
                     .data$numtotal_1additional,
-                    .data$num18plus_2nd_additional,
+                    .data$numtotal_2nd_additional,
                     na.rm = TRUE)) %>%
                 dplyr::ungroup() %>%
                 helper_ts_can(val, convert_to_cum = FALSE, val_numeric = FALSE)
