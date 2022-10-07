@@ -25,7 +25,7 @@ process_qc <- function(uuid, val, fmt, ds,
                     .data$Croisement != "RSS99" & # all of Quebec
                     .data$Date != "Date inconnue"
                 ) %>%
-                dplyr::select(.data$Nom, .data$Date, .data$cas_cum_tot_n) %>%
+                dplyr::select(.data$Nom, .data$Date, .data$psi_cum_pos_reinf_n) %>%
                 # clean RSS names and convert dates
                 dplyr::mutate(
                   Nom = sub("\\d{2} - ", "", .data$Nom),
@@ -33,7 +33,7 @@ process_qc <- function(uuid, val, fmt, ds,
                 dplyr::rename(
                   sub_region_1 = .data$Nom,
                   date = .data$Date,
-                  value = .data$cas_cum_tot_n
+                  value = .data$psi_cum_pos_reinf_n
                 ) %>%
                 helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
             },
