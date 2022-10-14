@@ -10,18 +10,23 @@ process_bc <- function(uuid, val, fmt, ds,
 
   # function: process cases for HA time series (derivatives of 4f9dc8b7-7b42-450e-a741-a0f6a621d2af)
   ha_cases_timeseries <- function(ds, val, prov) {
-    ds$features$attributes %>%
-      dplyr::mutate(Date = lubridate::date(
-        lubridate::with_tz(as.POSIXct(.data$Date / 1000, origin = "1970-01-01"),
-                           tz = "America/Vancouver"))) %>%
-      dplyr::select( .data$Date, .data$HA, .data$Cases_Reported) %>%
-      dplyr::arrange(.data$HA, .data$Date) %>%
-      dplyr::rename(
-        sub_region_1 = .data$HA,
-        date = .data$Date,
-        value = .data$Cases_Reported
-      ) %>%
-      helper_ts(loc = "hr", val, prov, convert_to_cum = TRUE)
+    # handle empty features list (i.e., if date range has no data yet)
+    if (identical(ds$features, list())) {
+      NULL
+    } else {
+      ds$features$attributes %>%
+        dplyr::mutate(Date = lubridate::date(
+          lubridate::with_tz(as.POSIXct(.data$Date / 1000, origin = "1970-01-01"),
+                             tz = "America/Vancouver"))) %>%
+        dplyr::select( .data$Date, .data$HA, .data$Cases_Reported) %>%
+        dplyr::arrange(.data$HA, .data$Date) %>%
+        dplyr::rename(
+          sub_region_1 = .data$HA,
+          date = .data$Date,
+          value = .data$Cases_Reported
+        ) %>%
+        helper_ts(loc = "hr", val, prov, convert_to_cum = TRUE)
+    }
   }
 
   # process datasets
@@ -265,7 +270,7 @@ process_bc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    # Interior
+    # Interior (up to 2022-10-08)
     "a8637b6c-babf-48cd-aeab-2f38c713f596" = {
       switch(
         val,
@@ -281,7 +286,7 @@ process_bc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    # Fraser
+    # Fraser (up to 2022-10-08)
     "f7cd5492-f23b-45a5-9d9b-118ac2b47529" = {
       switch(
         val,
@@ -297,7 +302,7 @@ process_bc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    # Vancouver Coastal
+    # Vancouver Coastal (up to 2022-10-08)
     "1ad7ef1b-1b02-4d5c-aec2-4923ea100e97" = {
       switch(
         val,
@@ -313,7 +318,7 @@ process_bc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    # Vancouver Island
+    # Vancouver Island (up to 2022-10-08)
     "89b48da6-bed9-4cd4-824c-8b6d82ffba24" = {
       switch(
         val,
@@ -329,7 +334,7 @@ process_bc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    # Northern
+    # Northern (up to 2022-10-08)
     "def3aca2-3595-4d70-a5d2-d51f78912dda" = {
       switch(
         val,
@@ -345,8 +350,104 @@ process_bc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    # Out of Canada
+    # Out of Canada (up to 2022-10-08)
     "c0ab9514-92ea-4dda-b714-bab9985e58be" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ha_cases_timeseries(ds, val, prov)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Interior (2022-10-09 and later)
+    "878c0e41-ec21-4bd5-87e8-3b4a5969de84" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ha_cases_timeseries(ds, val, prov)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Fraser (2022-10-09 and later)
+    "29c5a1e0-2f4d-409d-b10a-d6a62caad835" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ha_cases_timeseries(ds, val, prov)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Vancouver Coastal (2022-10-09 and later)
+    "635e4440-a4a3-457b-ac0f-7511f567afda" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ha_cases_timeseries(ds, val, prov)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Vancouver Island (2022-10-09 and later)
+    "2111db2e-f894-40ad-b7ad-aeea0c851a51" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ha_cases_timeseries(ds, val, prov)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Northern (2022-10-09 and later)
+    "b8aa2bec-cad8-45cf-901b-79f9f9aad545" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ha_cases_timeseries(ds, val, prov)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    # Out of Canada (2022-10-09 and later)
+    "f056e795-1502-43f2-b87d-603aac0edf05" = {
       switch(
         val,
         "cases" = {
