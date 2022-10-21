@@ -25,7 +25,10 @@ process_bc <- function(uuid, val, fmt, ds,
           date = .data$Date,
           value = .data$Cases_Reported
         ) %>%
-        helper_ts(loc = "hr", val, prov, convert_to_cum = TRUE)
+        # since time series are now split across multiple datasets for the
+        # same region, converting to cumulative values must now occur after all
+        # datasets have been joined
+        helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
     }
   }
 
