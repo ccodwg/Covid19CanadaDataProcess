@@ -363,7 +363,8 @@ process_can <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "subhr_ts" = {
-              ds %>%
+              # process data
+              ds <- ds %>%
                 dplyr::transmute(
                   name = "wastewater_copies_per_ml",
                   date = as.Date(.data$Date),
@@ -372,18 +373,26 @@ process_can <- function(uuid, val, fmt, ds,
                     .data$region %in% c("Edmonton") ~ "AB",
                     .data$region %in% c("Vancouver") ~ "BC",
                     .data$region %in% c("Winnipeg", "Brandon") ~ "MB",
+                    .data$region %in% c("Moncton") ~ "NB",
                     .data$region %in% c("St. John's") ~ "NL",
                     .data$region %in% c("Halifax") ~ "NS",
                     .data$region %in% c("Toronto") ~ "ON",
                     .data$region %in% c("City of Charlottetown & Town of Stratford", "Summerside") ~ "PE",
                     .data$region %in% c("Montreal") ~ "QC",
-                    .data$region %in% c("Regina") ~ "SK"
+                    .data$region %in% c("North Battleford", "Prince Albert", "Regina", "Saskatoon") ~ "SK"
                     ),
                   sub_region_2 = .data$Location,
                   value = .data$viral_load
                   ) %>%
-                dplyr::select(.data$name, .data$date, .data$region, .data$sub_region_1, .data$sub_region_2, .data$value) %>%
+                dplyr::select("name", "date", "region", "sub_region_1", "sub_region_2", "value") %>%
                 dplyr::arrange(.data$name, .data$region, .data$sub_region_1, .data$sub_region_2, .data$date)
+              # throw error if a new location has been added and is not classified yet
+              if (sum(is.na(ds$region)) > 0) {
+                stop("Unrecognized region in wastewater data. Please update the function.")
+              } else {
+                # return data
+                ds
+              }
               },
             e_fmt()
           )
