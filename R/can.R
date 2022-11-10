@@ -53,7 +53,7 @@ process_can <- function(uuid, val, fmt, ds,
                 dplyr::transmute(
                   date = as.Date(.data$week_end),
                   region = phac_prov(.data$prename, "from_phac"),
-                  value = .data$proptotal_1additional) %>%
+                  value = .data$proptotal_additional) %>%
                 helper_ts_can(val, convert_to_cum = FALSE, val_numeric = TRUE)
             },
             e_fmt()
