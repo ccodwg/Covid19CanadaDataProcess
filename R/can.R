@@ -85,7 +85,7 @@ process_can <- function(uuid, val, fmt, ds,
                   value = sum(
                     .data$numtotal_atleast1dose,
                     .data$numtotal_fully,
-                    .data$numtotal_1additional,
+                    .data$numtotal_additional,
                     .data$numtotal_2nd_additional,
                     na.rm = TRUE)) %>%
                 dplyr::ungroup() %>%
