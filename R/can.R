@@ -401,6 +401,40 @@ process_can <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "f1e1a857-fab8-4c25-a132-f474fab93622" = {
+      switch(
+        val,
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "can_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  date = as.Date(.data$Date),
+                  region = "CAN",
+                  value = .data$COVID_HOSP) %>%
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "can_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  date = as.Date(.data$Date),
+                  region = "CAN",
+                  value = .data$COVID_ICU) %>%
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
