@@ -171,6 +171,28 @@ process_ns <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "369d8d34-c8f7-4594-8e5c-7c4ccc00a7a4" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes %>%
+                dplyr::transmute(
+                  region = "NS",
+                  date = lubridate::date(as.POSIXct(.data$XCOLLDT / 1000, origin = "1970-01-01",
+                                                    tz = "America/Halifax")),
+                  value = .data$PCR
+                ) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
