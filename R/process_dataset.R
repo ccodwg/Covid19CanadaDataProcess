@@ -154,7 +154,14 @@ process_dataset <- function(uuid,
 
   # pass arguments to processing function
   dat_processed <- tryCatch(
-    process_fun(uuid, val, fmt, ds, prov, hr, date_current, testing_type),
+    {
+      # check dataset then run processing function
+      if (identical(ds, NA) | identical(ds, NULL)) {
+        stop("Expected dataset, got NA or NULL.")
+      } else {
+        process_fun(uuid, val, fmt, ds, prov, hr, date_current, testing_type)
+      }
+    },
     error = function(e) {
       uuid_id_name <- tryCatch(Covid19CanadaData::get_uuid(uuid)$id_name, error = function(e) return("Name unknown"))
       warn <- paste(uuid_id_name, uuid, val, fmt, sep = " / ")
