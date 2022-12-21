@@ -377,7 +377,7 @@ process_can <- function(uuid, val, fmt, ds,
                     .data$region %in% c("St. John's") ~ "NL",
                     .data$region %in% c("Halifax") ~ "NS",
                     .data$region %in% c("Toronto") ~ "ON",
-                    .data$region %in% c("City of Charlottetown & Town of Stratford", "Summerside") ~ "PE",
+                    .data$region %in% c("Alberton", "City of Charlottetown & Town of Stratford", "Summerside") ~ "PE",
                     .data$region %in% c("Montreal") ~ "QC",
                     .data$region %in% c("North Battleford", "Prince Albert", "Regina", "Saskatoon") ~ "SK",
                     .data$region %in% c("Haines Junction") ~ "YT"
