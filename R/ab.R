@@ -137,6 +137,27 @@ process_ab <- function(uuid, val, fmt, ds,
                 ) %>%
                 helper_cum_current(loc = "hr", val, prov, date_current)
             },
+            "hr_ts" = {
+              # retrieve htmlwidget id name
+              id <- ds %>%
+                rvest::html_elements(
+                  xpath = "//p[@class='caption' and contains(text(), 'Cumulative COVID-19 cases in Alberta by zone and date reported to Alberta Health.')]//preceding::div[@class='plotly html-widget']") %>%
+                {.[length(.)]} %>%
+                rvest::html_attr("id")
+              ds %>%
+                rvest::html_elements("script") %>%
+                {.[which(rvest::html_attr(., "data-for") == id)]} %>%
+                rvest::html_text2() %>%
+                jsonlite::fromJSON() %>%
+                {
+                  data.frame(
+                    sub_region_1 = rep(.$x$data$name, times = sapply(.$x$data$x, function(x) length(x))),
+                    date = as.Date(unlist(.$x$data$x)),
+                    value = as.integer(unlist(.$x$data$y))
+                  )
+                } %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
+            },
             e_fmt()
           )
         },
@@ -324,7 +345,7 @@ process_ab <- function(uuid, val, fmt, ds,
             "prov_ts" = {
               ds %>%
                 dplyr::transmute(
-                  date = .data$Date.reported.to.Alberta.Health,
+                  date = as.Date(.data$Date.reported.to.Alberta.Health),
                   value = .data$Number.of.cases) %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
             },
@@ -337,7 +358,7 @@ process_ab <- function(uuid, val, fmt, ds,
             "prov_ts" = {
               ds %>%
                 dplyr::transmute(
-                  date = .data$Date.reported.to.Alberta.Health,
+                  date = as.Date(.data$Date.reported.to.Alberta.Health),
                   value = .data$Active.cases) %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
@@ -350,7 +371,7 @@ process_ab <- function(uuid, val, fmt, ds,
             "prov_ts" = {
               ds %>%
                 dplyr::transmute(
-                  date = .data$Date.reported.to.Alberta.Health,
+                  date = as.Date(.data$Date.reported.to.Alberta.Health),
                   value = .data$Number.of.deaths) %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
             },
@@ -363,7 +384,7 @@ process_ab <- function(uuid, val, fmt, ds,
             "prov_ts" = {
               ds %>%
                 dplyr::transmute(
-                  date = .data$Date.reported.to.Alberta.Health,
+                  date = as.Date(.data$Date.reported.to.Alberta.Health),
                   value = .data$Currently.hospitalized) %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
@@ -376,9 +397,30 @@ process_ab <- function(uuid, val, fmt, ds,
             "prov_ts" = {
               ds %>%
                 dplyr::transmute(
-                  date = .data$Date.reported.to.Alberta.Health,
+                  date = as.Date(.data$Date.reported.to.Alberta.Health),
                   value = .data$Currently.in.ICU) %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "e7d94ff1-6029-4046-8f93-281d200912a9" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  sub_region_1 = .data$Region.name,
+                  date = as.Date(.data$Date),
+                  value = .data$Cumulative.cases
+                ) %>%
+                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
