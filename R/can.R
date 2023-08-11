@@ -413,6 +413,8 @@ process_can <- function(uuid, val, fmt, ds,
                   date = as.Date(.data$Date),
                   region = "CAN",
                   value = .data$COVID_HOSP) %>%
+                # remove row with value "(blank)", if present
+                dplyr::filter(!is.na(.data$date)) %>%
                 helper_ts_can(val, convert_to_cum = FALSE)
             },
             e_fmt()
@@ -427,6 +429,8 @@ process_can <- function(uuid, val, fmt, ds,
                   date = as.Date(.data$Date),
                   region = "CAN",
                   value = .data$COVID_ICU) %>%
+                # remove row with value "(blank)", if present
+                dplyr::filter(!is.na(.data$date)) %>%
                 helper_ts_can(val, convert_to_cum = FALSE)
             },
             e_fmt()
