@@ -39,12 +39,14 @@ The currently supported values are the following:
  \item vaccine_coverage_dose_3
  \item vaccine_coverage_dose_4
  \item vaccine_coverage_dose_5
+ \item vaccine_coverage_last_6_months
  \item vaccine_administration_total_doses
  \item vaccine_administration_dose_1
  \item vaccine_administration_dose_2
  \item vaccine_administration_dose_3
  \item vaccine_administration_dose_4
  \item vaccine_administration_dose_5
+ \item vaccine_administration_last_6_months
  \item vaccine_total_doses
  \item vaccine_dose_1
  \item vaccine_dose_2
@@ -53,7 +55,9 @@ The currently supported values are the following:
  \item vaccine_additional_doses
  \item hospitalizations
  \item hospitalizations_cum
+ \item hospitalizations_admissions
  \item icu
+ \item icu_admissions
  \item wastewater_copies_per_ml
 }
 }
