@@ -34,7 +34,7 @@
 #'  \item vaccine_additional_doses
 #'  \item hospitalizations
 #'  \item hospitalizations_cum
-#'  \item hospitalizations_admissions
+#'  \item hosp_admissions
 #'  \item icu
 #'  \item icu_admissions
 #'  \item wastewater_copies_per_ml
@@ -72,7 +72,7 @@ process_dataset <- function(uuid,
                               "vaccine_administration_last_6_months",
                               "hospitalizations",
                               "hospitalizations_cum",
-                              "hospitalizations_admissions",
+                              "hosp_admissions",
                               "icu",
                               "icu_admissions",
                               "wastewater_copies_per_ml"
@@ -131,7 +131,7 @@ process_dataset <- function(uuid,
                 "vaccine_additional_doses",
                 "hospitalizations",
                 "hospitalizations_cum",
-                "hospitalizations_admissions",
+                "hosp_admissions",
                 "icu",
                 "icu_admissions",
                 "wastewater_copies_per_ml"),

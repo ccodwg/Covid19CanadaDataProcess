@@ -55,7 +55,7 @@ The currently supported values are the following:
  \item vaccine_additional_doses
  \item hospitalizations
  \item hospitalizations_cum
- \item hospitalizations_admissions
+ \item hosp_admissions
  \item icu
  \item icu_admissions
  \item wastewater_copies_per_ml
