@@ -243,6 +243,12 @@ process_on <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_ts" = {
+              # drop dates where any region has negative or empty values for icu_former_covid
+              ds$icu_former_covid <- as.integer(ds$icu_former_covid)
+              bad_dates <- unique(ds[is.na(ds$icu_former_covid), "date", drop = TRUE])
+              ds <- ds[!ds$date %in% bad_dates, ]
+              # 2023-09-08 also seems to have some weird negative values for icu_former_covid but these get cancelled out
+              # by values in icu_current_covid column
               ds %>%
                 dplyr::select(.data$date, .data$icu_current_covid, .data$icu_former_covid) %>%
                 dplyr::mutate(date = as.Date(.data$date)) %>%
