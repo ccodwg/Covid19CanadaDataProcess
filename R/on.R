@@ -229,9 +229,9 @@ process_on <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_ts" = {
+              ds$date <- as.Date(ds$date, format = "%m/%d/%Y")
               ds %>%
                 dplyr::select(.data$date, .data$hospitalizations) %>%
-                dplyr::mutate(date = as.Date(.data$date)) %>%
                 dplyr::group_by(.data$date) %>%
                 dplyr::summarize(value = sum(.data$hospitalizations), .groups = "drop") %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
@@ -243,6 +243,7 @@ process_on <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_ts" = {
+              ds$date <- as.Date(ds$date, format = "%m/%d/%Y")
               # drop dates where any region has negative or empty values for icu_former_covid
               ds$icu_former_covid <- as.integer(ds$icu_former_covid)
               bad_dates <- unique(ds[is.na(ds$icu_former_covid), "date", drop = TRUE])
@@ -251,7 +252,6 @@ process_on <- function(uuid, val, fmt, ds,
               # by values in icu_current_covid column
               ds %>%
                 dplyr::select(.data$date, .data$icu_current_covid, .data$icu_former_covid) %>%
-                dplyr::mutate(date = as.Date(.data$date)) %>%
                 dplyr::group_by(.data$date) %>%
                 dplyr::summarize(value = sum(.data$icu_current_covid + .data$icu_former_covid),
                                  .groups = "drop") %>%
