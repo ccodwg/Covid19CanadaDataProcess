@@ -147,6 +147,44 @@ process_qc <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "hospitalizations" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::filter(
+                  .data$Regroupement == "R\u00E9gion" & # unicode
+                    .data$Croisement == "RSS99" & # all of Quebec
+                    .data$Date != "Date inconnue"
+                ) %>%
+                dplyr::transmute(
+                  date = as.Date(.data$Date),
+                  value = as.integer(.data$hos_act_tot_n)) %>%
+                dplyr::filter(!is.na(.data$value)) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "icu" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::filter(
+                  .data$Regroupement == "R\u00E9gion" & # unicode
+                    .data$Croisement == "RSS99" & # all of Quebec
+                    .data$Date != "Date inconnue"
+                ) %>%
+                dplyr::transmute(
+                  date = as.Date(.data$Date),
+                  value = as.integer(.data$hos_act_si_n)) %>%
+                dplyr::filter(!is.na(.data$value)) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
         e_val()
       )
     },
