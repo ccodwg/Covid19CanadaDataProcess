@@ -423,6 +423,31 @@ process_ab <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "2a11bbcc-7b43-47d1-952d-437cdc9b2ffb" = {
+      switch(
+        val,
+        "mortality" = {
+          switch(
+            fmt,
+            "hr_cum_current" = {
+              ds <- ds |>
+                rvest::html_element(xpath = "//text()[contains(., 'Laboratory-confirmed COVID-19 cases and severe outcomes in Alberta, 2023-2024')]/following::table[1]") |>
+                rvest::html_table()
+              names(ds)[1] <- "sub_region_1"
+              ds |>
+                dplyr::slice(-1) |>
+                dplyr::transmute(
+                  .data$sub_region_1,
+                  value = readr::parse_number(as.character(.data$`Deaths (n)`))
+                ) |>
+                helper_cum_current(loc = "hr", val, prov, date_current)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
