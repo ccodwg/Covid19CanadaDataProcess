@@ -47,12 +47,6 @@ The currently supported values are the following:
  \item vaccine_administration_dose_4
  \item vaccine_administration_dose_5
  \item vaccine_administration_last_6_months
- \item vaccine_total_doses
- \item vaccine_dose_1
- \item vaccine_dose_2
- \item vaccine_dose_3
- \item vaccine_dose_4
- \item vaccine_additional_doses
  \item hospitalizations
  \item hospitalizations_cum
  \item hosp_admissions

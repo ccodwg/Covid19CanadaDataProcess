@@ -6,16 +6,16 @@
 \usage{
 process_dataset(
   uuid,
-  val = c("cases", "mortality", "recovered", "active", "testing", "vaccine_distribution",
+  val = c("cases", "mortality", "recovered", "active", "testing",
     "vaccine_coverage_dose_1", "vaccine_coverage_dose_2", "vaccine_coverage_dose_3",
     "vaccine_coverage_dose_4", "vaccine_coverage_dose_5",
     "vaccine_coverage_last_6_months", "vaccine_administration_total_doses",
     "vaccine_administration_dose_1", "vaccine_administration_dose_2",
     "vaccine_administration_dose_3", "vaccine_administration_dose_4",
     "vaccine_administration_dose_5", "vaccine_administration_last_6_months",
-    "hospitalizations", 
-     "hospitalizations_cum", "hosp_admissions", "icu",
-    "icu_admissions", "wastewater_copies_per_ml"),
+    "vaccine_distribution_total_doses", 
+     "hospitalizations", "hospitalizations_cum",
+    "hosp_admissions", "icu", "icu_admissions", "wastewater_copies_per_ml"),
   fmt,
   ds,
   ...
@@ -64,12 +64,6 @@ The currently supported values are the following:
  \item vaccine_administration_dose_4
  \item vaccine_administration_dose_5
  \item vaccine_administration_last_6_months
- \item vaccine_total_doses
- \item vaccine_dose_1
- \item vaccine_dose_2
- \item vaccine_dose_3
- \item vaccine_dose_4
- \item vaccine_additional_doses
  \item hospitalizations
  \item hospitalizations_cum
  \item hosp_admissions

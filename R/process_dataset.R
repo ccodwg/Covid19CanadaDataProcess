@@ -26,12 +26,6 @@
 #'  \item vaccine_administration_dose_4
 #'  \item vaccine_administration_dose_5
 #'  \item vaccine_administration_last_6_months
-#'  \item vaccine_total_doses
-#'  \item vaccine_dose_1
-#'  \item vaccine_dose_2
-#'  \item vaccine_dose_3
-#'  \item vaccine_dose_4
-#'  \item vaccine_additional_doses
 #'  \item hospitalizations
 #'  \item hospitalizations_cum
 #'  \item hosp_admissions
@@ -56,7 +50,6 @@ process_dataset <- function(uuid,
                               "recovered",
                               "active",
                               "testing",
-                              "vaccine_distribution",
                               "vaccine_coverage_dose_1",
                               "vaccine_coverage_dose_2",
                               "vaccine_coverage_dose_3",
@@ -70,6 +63,7 @@ process_dataset <- function(uuid,
                               "vaccine_administration_dose_4",
                               "vaccine_administration_dose_5",
                               "vaccine_administration_last_6_months",
+                              "vaccine_distribution_total_doses",
                               "hospitalizations",
                               "hospitalizations_cum",
                               "hosp_admissions",
@@ -94,10 +88,26 @@ process_dataset <- function(uuid,
     stop("Specified UUID does not exist in datasets.json.")
   }
 
+  # warn about deprecated values:
+  if (val %in% c(
+    "vaccine_administration",
+    "vaccine_completion",
+    "vaccine_total_doses",
+    "vaccine_dose_1",
+    "vaccine_dose_2",
+    "vaccine_dose_3",
+    "vaccine_dose_4",
+    "vaccine_additional_doses",
+    "vaccine_distribution"
+  )) {
+    warning("Value has been deprecated: ", val)
+  }
+
   # for backwards compatibility: rename val
   val <- dplyr::case_when(
     val == "vaccine_administration" ~ "vaccine_total_doses",
     val == "vaccine_completion" ~ "vaccine_dose_2",
+    val == "vaccine_distribution" ~ "vaccine_distribution_total_doses",
     TRUE ~ val
   )
 
