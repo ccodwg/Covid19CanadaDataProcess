@@ -464,13 +464,13 @@ process_ab <- function(uuid, val, fmt, ds,
               hrs <- rep(d$x$data$name[1:5], each = length(dates[[1]]))
               data.frame(
                 sub_region_1 = hrs,
-                date = as.Date(unlist(dates)),
+                date = as.Date(unlist(dates)) + 6, # end of week
                 value = as.integer(unlist(vals))
               ) |> helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
-        }
+        },
         e_val()
       )
     },
