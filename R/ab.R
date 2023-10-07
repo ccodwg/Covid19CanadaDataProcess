@@ -448,6 +448,32 @@ process_ab <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "3e4fd9ff-48f9-4de1-a48a-97fd33b68337" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "hr_ts" = {
+              d <- ds |>
+                rvest::html_element(xpath = "//node()[contains(text(), 'Laboratory confirmed COVID-19 cases in Alberta by zone, 2019-2020 to 2023-2024')]/following::script[1]") |>
+                rvest::html_text2() |>
+                jsonlite::fromJSON()
+              dates <- d$x$data$x[1:5]
+              vals <- d$x$data$y[1:5]
+              hrs <- rep(d$x$data$name[1:5], each = length(dates[[1]]))
+              data.frame(
+                sub_region_1 = hrs,
+                date = as.Date(unlist(dates)),
+                value = as.integer(unlist(vals))
+              ) |> helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        }
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
