@@ -256,39 +256,6 @@ process_ab <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    "3e4fd9ff-48f9-4de1-a48a-97fd33b68337" = {
-      switch(
-        val,
-        "cases" = {
-          switch(
-            fmt,
-            "hr_ts" = {
-              # retrieve htmlwidget id name
-              id <- ds %>%
-                rvest::html_elements(
-                  xpath = "//p[contains(., 'Laboratory confirmed COVID-19 cases in Alberta by zone, 2023-2024')]/following-sibling::div[@class='plotly html-widget'][1]") %>%
-                {.[length(.)]} %>%
-                rvest::html_attr("id")
-              ds %>%
-                rvest::html_elements("script") %>%
-                {.[which(rvest::html_attr(., "data-for") == id)]} %>%
-                rvest::html_text2() %>%
-                jsonlite::fromJSON() %>%
-                {
-                  data.frame(
-                    sub_region_1 = rep(.$x$data$name, times = sapply(.$x$data$x, function(x) length(x))),
-                    date = as.Date(unlist(.$x$data$x)),
-                    value = as.integer(unlist(.$x$data$y))
-                  )
-                } %>%
-                helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
-            },
-            e_fmt()
-          )
-        },
-        e_val()
-      )
-    },
     "d3b170a7-bb86-4bb0-b362-2adc5e6438c2" = {
       switch(
         val,
