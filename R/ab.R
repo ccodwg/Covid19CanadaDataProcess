@@ -403,11 +403,13 @@ process_ab <- function(uuid, val, fmt, ds,
                 jsonlite::fromJSON()
               dates <- d$x$data$x
               vals <- d$x$data$y
+              # output daily data
               data.frame(
+                name = dplyr::all_of(val),
+                region = dplyr::all_of(prov),
                 date = as.Date(unlist(dates)) + 6, # end of week
-                value = as.integer(unlist(vals))) |>
-                dplyr::filter(.data$value != 0) |> # exclude future blank weeks
-                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+                value_daily = as.integer(unlist(vals))) |>
+                dplyr::filter(.data$value_daily != 0) # exclude future blank weeks
             },
             e_fmt()
           )
@@ -448,11 +450,14 @@ process_ab <- function(uuid, val, fmt, ds,
               dates <- d$x$data$x[1:5]
               vals <- d$x$data$y[1:5]
               hrs <- rep(d$x$data$name[1:5], each = length(dates[[1]]))
+              # output daily data
               data.frame(
+                name = dplyr::all_of(val),
+                region = dplyr::all_of(prov),
                 sub_region_1 = hrs,
                 date = as.Date(unlist(dates)) + 6, # end of week
-                value = as.integer(unlist(vals))
-              ) |> helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
+                value_daily = as.integer(unlist(vals))
+              )
             },
             e_fmt()
           )
