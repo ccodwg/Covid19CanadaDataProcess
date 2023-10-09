@@ -393,6 +393,25 @@ process_ab <- function(uuid, val, fmt, ds,
     "2a11bbcc-7b43-47d1-952d-437cdc9b2ffb" = {
       switch(
         val,
+        "cases" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              d <- ds |>
+                rvest::html_element(xpath = "//node()[contains(text(), 'Total weekly laboratory-confirmed COVID-19 cases in Alberta, 2023-2024')]/following::script[1]") |>
+                rvest::html_text2() |>
+                jsonlite::fromJSON()
+              dates <- d$x$data$x
+              vals <- d$x$data$y
+              data.frame(
+                date = as.Date(unlist(dates)) + 6, # end of week
+                value = as.integer(unlist(vals))) |>
+                dplyr::filter(.data$value != 0) |> # exclude future blank weeks
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
         "mortality" = {
           switch(
             fmt,
