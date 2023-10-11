@@ -185,6 +185,44 @@ process_qc <- function(uuid, val, fmt, ds,
             e_fmt()
           )
         },
+        "hosp_admissions" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::filter(
+                  .data$Regroupement == "R\u00E9gion" & # unicode
+                    .data$Croisement == "RSS99" & # all of Quebec
+                    # note that Hors QC has 0s for this value anyway
+                    .data$Date != "Date inconnue") |>
+                dplyr::transmute(
+                  date = as.Date(.data$Date),
+                  value = as.integer(.data$hos_quo_tot_pour_n)) |>
+                dplyr::filter(!is.na(.data$value)) |>
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
+        "icu_admissions" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::filter(
+                  .data$Regroupement == "R\u00E9gion" & # unicode
+                    .data$Croisement == "RSS99" & # all of Quebec
+                    # note that Hors QC has 0s for this value anyway
+                    .data$Date != "Date inconnue") |>
+                dplyr::transmute(
+                  date = as.Date(.data$Date),
+                  value = as.integer(.data$hos_quo_si_pour_n)) |>
+                dplyr::filter(!is.na(.data$value)) |>
+                helper_ts(loc = "prov", val, prov, convert_to_cum = TRUE)
+            },
+            e_fmt()
+          )
+        },
         e_val()
       )
     },
