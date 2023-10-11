@@ -75,6 +75,26 @@ process_on <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "75dd0545-f728-4af5-8185-4269596785ef" = {
+      switch(
+        val,
+        "mortality" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds %>%
+                dplyr::transmute(
+                  date = as.Date(.data$date),
+                  value = .data$cum_deaths_new_methodology
+                ) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     "a8b1be1a-561a-47f5-9456-c553ea5b2279" = {
       switch(
         val,

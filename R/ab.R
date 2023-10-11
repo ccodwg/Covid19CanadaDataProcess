@@ -409,7 +409,7 @@ process_ab <- function(uuid, val, fmt, ds,
                 region = dplyr::all_of(prov),
                 date = as.Date(unlist(dates)) + 6, # end of week
                 value_daily = as.integer(unlist(vals))) |>
-                dplyr::filter(.data$value_daily != 0) # exclude future blank weeks
+                dplyr::filter(!(.data$value_daily == 0 & .data$date > (date_current - months(2)))) # exclude future blank weeks
             },
             e_fmt()
           )
@@ -458,6 +458,78 @@ process_ab <- function(uuid, val, fmt, ds,
                 date = as.Date(unlist(dates)) + 6, # end of week
                 value_daily = as.integer(unlist(vals))
               )
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "e477791b-bced-4b20-b40b-f8d7629c9b69" = {
+      switch(
+        val,
+        "mortality" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              d <- ds |>
+                rvest::html_element(xpath = "//node()[contains(text(), 'Number of weekly hospital admissions (ICU and non-ICU) and deaths due to COVID-19')]/following::script[1]") |>
+                rvest::html_text2() |>
+                jsonlite::fromJSON()
+              dates <- d$x$data$x[[8]]
+              vals <- d$x$data$y[[8]]
+              # output daily data
+              data.frame(
+                name = dplyr::all_of(val),
+                region = dplyr::all_of(prov),
+                date = as.Date(unlist(dates)) + 6, # end of week
+                value_daily = as.integer(unlist(vals))
+              ) |>
+                dplyr::filter(date >= as.Date("2020-01-01")) # get rid of weird 2019 observation
+            },
+            e_fmt()
+          )
+        },
+        "hosp_admissions" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              d <- ds |>
+                rvest::html_element(xpath = "//node()[contains(text(), 'Number of weekly hospital admissions (ICU and non-ICU) and deaths due to COVID-19')]/following::script[1]") |>
+                rvest::html_text2() |>
+                jsonlite::fromJSON()
+              dates <- d$x$data$x[[1]]
+              vals <- d$x$data$y[[1]] + d$x$data$y[[2]]
+              # output daily data
+              data.frame(
+                name = dplyr::all_of(val),
+                region = dplyr::all_of(prov),
+                date = as.Date(unlist(dates)) + 6, # end of week
+                value_daily = as.integer(unlist(vals))
+              ) |>
+                dplyr::filter(!(.data$value_daily == 0 & .data$date > (date_current - months(2)))) # exclude future blank weeks
+            },
+            e_fmt()
+          )
+        },
+        "icu_admissions" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              d <- ds |>
+                rvest::html_element(xpath = "//node()[contains(text(), 'Number of weekly hospital admissions (ICU and non-ICU) and deaths due to COVID-19')]/following::script[1]") |>
+                rvest::html_text2() |>
+                jsonlite::fromJSON()
+              dates <- d$x$data$x[[1]]
+              vals <- d$x$data$y[[1]]
+              # output daily data
+              data.frame(
+                name = dplyr::all_of(val),
+                region = dplyr::all_of(prov),
+                date = as.Date(unlist(dates)) + 6, # end of week
+                value_daily = as.integer(unlist(vals))
+              ) |>
+                dplyr::filter(!(.data$value_daily == 0 & .data$date > (date_current - months(2)))) # exclude future blank weeks
             },
             e_fmt()
           )
