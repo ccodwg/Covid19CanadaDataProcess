@@ -61,6 +61,12 @@ process_qc <- function(uuid, val, fmt, ds,
                   date = .data$Date,
                   value = .data$dec_cum_tot_n
                 ) %>%
+                # deaths from most recent Sunday to Tuesday are not reported
+                # in data posted on Wednesday,
+                # so we need to remove last three rows from each RSS
+                dplyr::group_by(.data$sub_region_1) %>%
+                dplyr::slice(1:(dplyr::n() - 3)) %>%
+                dplyr::ungroup() %>%
                 helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
