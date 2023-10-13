@@ -379,7 +379,7 @@ process_can <- function(uuid, val, fmt, ds,
                     .data$region %in% c("Toronto") ~ "ON",
                     .data$region %in% c("Alberton", "City of Charlottetown & Town of Stratford", "Montague", "PEI", "Summerside", "Souris") ~ "PE",
                     .data$region %in% c("Montreal") ~ "QC",
-                    .data$region %in% c("Assiniboia", "Battleford", "Birch Hills", "Canora", "Estevan", "La Ronge", "Lumsden", "Meadow Lake", "Melvile", "Moose Jaw", "North Battleford", "Pasqua", "Prince Albert", "Regina", "Saskatoon", "Southey", "Swift Current", "Unity", "Weyburn", "Yorkton", "\u00cele-\u00e0-la-Crosse") ~ "SK",
+                    .data$region %in% c("Assiniboia", "Battleford", "Birch Hills", "Canora", "Estevan", "La Ronge", "Lumsden", "Maple Creek", "Meadow Lake", "Melvile", "Moose Jaw", "North Battleford", "Pasqua", "Prince Albert", "Regina", "Saskatoon", "Southey", "Swift Current", "Unity", "Watrous", "Weyburn", "Yorkton", "\u00cele-\u00e0-la-Crosse") ~ "SK",
                     .data$region %in% c("Haines Junction") ~ "YT"
                     ),
                   sub_region_2 = .data$Location,
