@@ -439,6 +439,28 @@ process_can <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "e41c63ec-ac54-47c9-8cf3-da2e1146aa75" = {
+      switch(
+        val,
+        "testing" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              # output daily data
+              ds |>
+                dplyr::transmute(
+                  name = dplyr::all_of(val),
+                  region = phac_prov(.data$prname, "from_phac"),
+                  date = as.Date(.data$date),
+                  value_daily = .data$numtests_weekly,
+                  .data$update)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
