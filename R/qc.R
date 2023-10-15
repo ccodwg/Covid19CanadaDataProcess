@@ -295,56 +295,6 @@ process_qc <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
-    "4e04442d-f372-4357-ba15-3b64f4e03fbe" = {
-      switch(
-        val,
-        "vaccine_total_doses" = {
-          switch(
-            fmt,
-            "prov_cum_current" = {
-              ds %>%
-                dplyr::slice_tail(n = 1) %>%
-                # dplyr::transmute(value = .data$RSS99_DOSES_Total_cumu) %>%
-                dplyr::transmute(value = .data$RSSAL_DOSES_Total_cumu) %>% # includes non-residents
-                helper_cum_current(loc = "prov", val, prov, date_current)
-            },
-            e_fmt()
-          )
-        },
-        "vaccine_dose_2" = {
-          switch(
-            fmt,
-            "prov_cum_current" = {
-              ds %>%
-                dplyr::slice_tail(n = 1) %>%
-                # dplyr::transmute(value = .data$RSS99_DOSE_Numero2_cumu) %>%
-                dplyr::transmute(value = .data$RSSAL_DOSE_Numero2_cumu) %>% # includes non-residents
-                helper_cum_current(loc = "prov", val, prov, date_current)
-            },
-            e_fmt()
-          )
-        },
-        "vaccine_additional_doses" = {
-          total <- ds %>%
-            dplyr::slice_tail(n = 1) %>%
-            # dplyr::transmute(value = .data$RSS99_DOSES_Total_cumu) %>%
-            dplyr::transmute(value = .data$RSSAL_DOSES_Total_cumu) # includes non-residents
-          dose_1 <- ds %>%
-            dplyr::slice_tail(n = 1) %>%
-            # dplyr::transmute(value = .data$RSS99_DOSE_Numero1_cumu) %>%
-            dplyr::transmute(value = .data$RSSAL_DOSE_Numero1_cumu) # includes non-residents
-          dose_2 <- ds %>%
-            dplyr::slice_tail(n = 1) %>%
-            # dplyr::transmute(value = .data$RSS99_DOSE_Numero2_cumu) %>%
-            dplyr::transmute(value = .data$RSSAL_DOSE_Numero2_cumu) # includes non-residents
-          data.frame(
-            value = total - dose_1 - dose_2
-          ) %>%
-            helper_cum_current(loc = "prov", val, prov, date_current)
-        },
-        e_val()
-      )
-    },
     "939189e0-b7bb-4e8c-b71a-b0b9311b7233" = {
       switch(
         val,
@@ -638,6 +588,90 @@ process_qc <- function(uuid, val, fmt, ds,
                   date = as.Date(.data$Date, "%d/%m/%Y"),
                   value = as.integer(.data$SI)) %>%
                 dplyr::filter(!is.na(.data$value)) %>%
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "4e04442d-f372-4357-ba15-3b64f4e03fbe" = {
+      switch(
+        val,
+        "vaccine_administration_total_doses" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::transmute(
+                  date = as.Date(.data$date),
+                  value = .data$RSS99_DOSES_Total_cumu) |>
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_1" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::transmute(
+                  date = as.Date(.data$date),
+                  value = .data$RSS99_DOSE_Numero1_cumu) |>
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_2" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::transmute(
+                  date = as.Date(.data$date),
+                  value = .data$RSS99_DOSE_Numero2_cumu) |>
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_3" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::transmute(
+                  date = as.Date(.data$date),
+                  value = .data$RSS99_DOSE_Numero3_cumu) |>
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_4" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::transmute(
+                  date = as.Date(.data$date),
+                  value = .data$RSS99_DOSE_Numero4_cumu) |>
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_5plus" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::transmute(
+                  date = as.Date(.data$date),
+                  value = .data$RSS99_DOSE5etplus_cumu) |>
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
