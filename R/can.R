@@ -461,6 +461,108 @@ process_can <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "194a0002-5ad1-4016-8788-e7a216216a92" = {
+      switch(
+        val,
+        "vaccine_administration_total_doses" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::filter(.data$vaccine_group == "Total") |>
+                dplyr::transmute(
+                  region = phac_prov(.data$prename, "from_phac"),
+                  date = as.Date(.data$week_end),
+                  value = .data$numtotal_totaldoses_admin) |>
+                dplyr::filter(!is.na(.data$value)) |>
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_1" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::filter(.data$vaccine_group == "Total") |>
+                dplyr::transmute(
+                  region = phac_prov(.data$prename, "from_phac"),
+                  date = as.Date(.data$week_end),
+                  value = .data$numtotal_dose1_admin) |>
+                dplyr::filter(!is.na(.data$value)) |>
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_2" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::filter(.data$vaccine_group == "Total") |>
+                dplyr::transmute(
+                  region = phac_prov(.data$prename, "from_phac"),
+                  date = as.Date(.data$week_end),
+                  value = .data$numtotal_dose2_admin) |>
+                dplyr::filter(!is.na(.data$value)) |>
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_3" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::filter(.data$vaccine_group == "Total") |>
+                dplyr::transmute(
+                  region = phac_prov(.data$prename, "from_phac"),
+                  date = as.Date(.data$week_end),
+                  value = .data$numtotal_dose3_admin) |>
+                dplyr::filter(!is.na(.data$value)) |>
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_4" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::filter(.data$vaccine_group == "Total") |>
+                dplyr::transmute(
+                  region = phac_prov(.data$prename, "from_phac"),
+                  date = as.Date(.data$week_end),
+                  value = .data$numtotal_dose4_admin) |>
+                dplyr::filter(!is.na(.data$value)) |>
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_5plus" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::filter(.data$vaccine_group == "Total") |>
+                dplyr::transmute(
+                  region = phac_prov(.data$prename, "from_phac"),
+                  date = as.Date(.data$week_end),
+                  value = .data$numtotal_dose5._admin) |>
+                dplyr::filter(!is.na(.data$value)) |>
+                helper_ts_can(val, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }

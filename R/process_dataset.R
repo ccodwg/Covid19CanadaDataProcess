@@ -24,7 +24,7 @@
 #'  \item vaccine_administration_dose_2
 #'  \item vaccine_administration_dose_3
 #'  \item vaccine_administration_dose_4
-#'  \item vaccine_administration_dose_5
+#'  \item vaccine_administration_dose_5plus
 #'  \item vaccine_administration_last_6_months
 #'  \item hospitalizations
 #'  \item hospitalizations_cum
@@ -61,7 +61,7 @@ process_dataset <- function(uuid,
                               "vaccine_administration_dose_2",
                               "vaccine_administration_dose_3",
                               "vaccine_administration_dose_4",
-                              "vaccine_administration_dose_5",
+                              "vaccine_administration_dose_5plus",
                               "vaccine_administration_last_6_months",
                               "vaccine_distribution_total_doses",
                               "hospitalizations",

@@ -12,7 +12,7 @@ process_dataset(
     "vaccine_coverage_last_6_months", "vaccine_administration_total_doses",
     "vaccine_administration_dose_1", "vaccine_administration_dose_2",
     "vaccine_administration_dose_3", "vaccine_administration_dose_4",
-    "vaccine_administration_dose_5", "vaccine_administration_last_6_months",
+    "vaccine_administration_dose_5plus", "vaccine_administration_last_6_months",
     "vaccine_distribution_total_doses", 
      "hospitalizations", "hospitalizations_cum",
     "hosp_admissions", "icu", "icu_admissions", "wastewater_copies_per_ml"),
@@ -62,7 +62,7 @@ The currently supported values are the following:
  \item vaccine_administration_dose_2
  \item vaccine_administration_dose_3
  \item vaccine_administration_dose_4
- \item vaccine_administration_dose_5
+ \item vaccine_administration_dose_5plus
  \item vaccine_administration_last_6_months
  \item hospitalizations
  \item hospitalizations_cum
