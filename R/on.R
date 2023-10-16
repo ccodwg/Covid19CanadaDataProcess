@@ -283,6 +283,59 @@ process_on <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "a7f839da-8c36-4569-bd99-1a07adc0700a" = {
+      # DO NOT USE FOR LATER TIME PERIODS
+      # PROCESSING CURRENTLY EXCLUDES THOSE UNDER 12
+      switch(
+        val,
+        "vaccine_administration_dose_1" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::filter(.data$Agegroup == "Ontario_12plus") |>
+                dplyr::transmute(
+                  date = as.Date(.data$Date),
+                  value = .data$At.least.one.dose_cumulative
+                ) |>
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_2" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::filter(.data$Agegroup == "Ontario_12plus") |>
+                dplyr::transmute(
+                  date = as.Date(.data$Date),
+                  value = .data$Second_dose_cumulative
+                ) |>
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        "vaccine_administration_dose_3" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds |>
+                dplyr::filter(.data$Agegroup == "Ontario_12plus") |>
+                dplyr::transmute(
+                  date = as.Date(.data$Date),
+                  value = .data$third_dose_cumulative
+                ) |>
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
