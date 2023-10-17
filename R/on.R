@@ -273,7 +273,7 @@ process_on <- function(uuid, val, fmt, ds,
               ds %>%
                 dplyr::select(.data$date, .data$icu_current_covid, .data$icu_former_covid) %>%
                 dplyr::group_by(.data$date) %>%
-                dplyr::summarize(value = sum(.data$icu_current_covid + .data$icu_former_covid),
+                dplyr::summarize(value = sum(.data$icu_current_covid, .data$icu_former_covid),
                                  .groups = "drop") %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
