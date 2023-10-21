@@ -537,6 +537,32 @@ process_ab <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "7724f4fe-6759-4c9c-be6f-91b29a76631d" = {
+      switch(
+        val,
+        "testing" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              d <- ds |>
+                rvest::html_element(xpath = "//node()[contains(text(), 'SARS-CoV-2 testing and positivity by week, 2019-2020 to 2023-2024')]/following::script[1]") |>
+                rvest::html_text2() |>
+                jsonlite::fromJSON()
+              dates <- d$x$data$x[[7]]
+              vals <- d$x$data$y[[7]]
+              # output daily data
+              data.frame(
+                name = dplyr::all_of(val),
+                region = dplyr::all_of(prov),
+                date = as.Date(unlist(dates)) + 6, # end of week
+                value_daily = as.integer(unlist(vals)))
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
