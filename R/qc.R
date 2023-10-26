@@ -106,49 +106,19 @@ process_qc <- function(uuid, val, fmt, ds,
           )
         },
         "testing" = {
-          match.arg(testing_type, c("n_people_tested", "n_eligible_tests_completed"), several.ok = FALSE)
           switch(
             fmt,
-            "hr_ts" = {
-              if (testing_type == "n_people_tested") {
-                ds %>%
-                  dplyr::filter(
-                    .data$Regroupement == "R\u00E9gion" & # unicode
-                      grepl("^RSS", .data$Croisement) & # gets rid of strange lines "Te" and "Un"
-                      .data$Croisement != "RSS99" & # all of Quebec
-                      .data$Date != "Date inconnue"
-                  ) %>%
-                  dplyr::select(.data$Nom, .data$Date, .data$psi_cum_tes_n) %>%
-                  # clean RSS names and convert dates
-                  dplyr::mutate(
-                    Nom = sub("\\d{2} - ", "", .data$Nom),
-                    Date = as.Date(.data$Date)) %>%
-                  dplyr::rename(
-                    sub_region_1 = .data$Nom,
-                    date = .data$Date,
-                    value = .data$psi_cum_tes_n
-                  ) %>%
-                  helper_ts(loc = "hr", val, prov, convert_to_cum = FALSE)
-              } else if (testing_type == "n_eligible_tests_completed") {
-                ds %>%
-                  dplyr::filter(
-                    .data$Regroupement == "R\u00E9gion" & # unicode
-                      grepl("^RSS", .data$Croisement) & # gets rid of strange lines "Te" and "Un"
-                      .data$Croisement != "RSS99" & # all of Quebec
-                      .data$Date != "Date inconnue"
-                  ) %>%
-                  dplyr::select(.data$Nom, .data$Date, .data$psi_quo_tes_n) %>%
-                  # clean RSS names and convert dates
-                  dplyr::mutate(
-                    Nom = sub("\\d{2} - ", "", .data$Nom),
-                    Date = as.Date(.data$Date)) %>%
-                  dplyr::rename(
-                    sub_region_1 = .data$Nom,
-                    date = .data$Date,
-                    value = .data$psi_quo_tes_n
-                  ) %>%
-                  helper_ts(loc = "hr", val, prov, convert_to_cum = TRUE)
-              }
+            "prov_ts" = {
+              ds |>
+                dplyr::filter(
+                  .data$Regroupement == "R\u00E9gion" & # unicode
+                    .data$Croisement == "RSS99" & # all of Quebec
+                    .data$Date != "Date inconnue"
+                ) |>
+                dplyr::transmute(
+                  date = as.Date(.data$Date),
+                  value = as.integer(.data$psi_cum_adm_n)) |>
+                helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
           )
