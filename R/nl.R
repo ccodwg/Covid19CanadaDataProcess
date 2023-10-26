@@ -310,67 +310,18 @@ process_nl <- function(uuid, val, fmt, ds,
     "34f45670-34ed-415c-86a6-e14d77fcf6db" = {
       switch(
         val,
-        "cases" = {
+        "mortality" = {
           switch(
             fmt,
             "hr_cum_current" = {
               ds$features$attributes %>%
                 dplyr::transmute(
                   sub_region_1 = .data$Name,
-                  value = .data$Total_Case
-                ) %>%
-                helper_cum_current(loc = "hr", val, prov, date_current)
+                  value = .data$New_Deaths + .data$Deaths_prev
+                ) |> helper_cum_current(loc = "hr", val, prov, date_current)
             },
             e_fmt()
           )
-        },
-        "mortality" = {
-          ds$features$attributes %>%
-            dplyr::transmute(
-              sub_region_1 = .data$Name,
-              value = .data$Deaths
-            ) %>%
-            helper_cum_current(loc = "hr", val, prov, date_current)
-        },
-        "recovered" = {
-          ds$features$attributes %>%
-            dplyr::transmute(
-              sub_region_1 = .data$Name,
-              value = .data$Recover
-            ) %>%
-            helper_cum_current(loc = "hr", val, prov, date_current)
-        },
-        "active" = {
-          ds$features$attributes %>%
-            dplyr::transmute(
-              sub_region_1 = .data$Name,
-              value = .data$Active_Case
-            ) %>%
-            helper_cum_current(loc = "hr", val, prov, date_current)
-        },
-        "testing" = {
-          ds$features$attributes %>%
-            dplyr::transmute(
-              sub_region_1 = .data$Name,
-              value = .data$Tests
-            ) %>%
-            helper_cum_current(loc = "hr", val, prov, date_current)
-        },
-        "hospitalizations" = {
-          ds$features$attributes %>%
-            dplyr::transmute(
-              sub_region_1 = .data$Name,
-              value = .data$Hospital
-            ) %>%
-            helper_cum_current(loc = "hr", val, prov, date_current)
-        },
-        "icu" = {
-          ds$features$attributes %>%
-            dplyr::transmute(
-              sub_region_1 = .data$Name,
-              value = .data$ICU
-            ) %>%
-            helper_cum_current(loc = "hr", val, prov, date_current)
         },
         e_val()
       )
