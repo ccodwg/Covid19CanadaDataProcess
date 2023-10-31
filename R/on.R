@@ -270,11 +270,16 @@ process_on <- function(uuid, val, fmt, ds,
               ds <- ds[!ds$date %in% bad_dates, ]
               # 2023-09-08 also seems to have some weird negative values for icu_former_covid but these get cancelled out
               # by values in icu_current_covid column
-              ds %>%
+              ds <- ds %>%
                 dplyr::select(.data$date, .data$icu_current_covid, .data$icu_former_covid) %>%
                 dplyr::group_by(.data$date) %>%
                 dplyr::summarize(value = sum(.data$icu_current_covid, .data$icu_former_covid),
-                                 .groups = "drop") %>%
+                                 .groups = "drop")
+              # if there is a false zero on 2020-07-03, censor it
+              if (ds[ds$date == as.Date("2020-07-03"), "value", drop = TRUE] == 0) {
+                ds[ds$date == as.Date("2020-07-03"), "value"] <- NA
+              }
+              ds %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
             e_fmt()
