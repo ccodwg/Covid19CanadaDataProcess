@@ -364,36 +364,44 @@ process_can <- function(uuid, val, fmt, ds,
             fmt,
             "subhr_ts" = {
               # process data
-              ds <- ds %>%
-                dplyr::transmute(
+              ds %>%
+                dplyr::mutate(
                   name = "wastewater_copies_per_ml",
                   date = as.Date(.data$Date),
                   sub_region_1 = .data$region,
                   region = dplyr::case_when(
-                    .data$region %in% c("Edmonton") ~ "AB",
-                    .data$region %in% c("Vancouver") ~ "BC",
-                    .data$region %in% c("Winnipeg", "Brandon") ~ "MB",
-                    .data$region %in% c("Bathurst", "Campbellton", "Edmundston", "Fredericton", "Miramichi", "Moncton", "Saint John") ~ "NB",
-                    .data$region %in% c("St. John's") ~ "NL",
-                    .data$region %in% c("Battery Point", "Bridgewater", "Central Colchester", "Dominion-Bridgeport", "Halifax", "Trenton", "Yarmouth") ~ "NS",
-                    .data$region %in% c("Toronto") ~ "ON",
-                    .data$region %in% c("Alberton", "City of Charlottetown & Town of Stratford", "Montague", "PEI", "Summerside", "Souris") ~ "PE",
-                    .data$region %in% c("Montreal") ~ "QC",
-                    .data$region %in% c("Assiniboia", "Battleford", "Birch Hills", "Canora", "Estevan", "La Ronge", "Lumsden", "Maple Creek", "Meadow Lake", "Melvile", "Moose Jaw", "North Battleford", "Pasqua", "Prince Albert", "Regina", "Saskatoon", "Southey", "Swift Current", "Unity", "Watrous", "Weyburn", "Yorkton", "\u00cele-\u00e0-la-Crosse") ~ "SK",
-                    .data$region %in% c("Haines Junction") ~ "YT"
+                    .data$pruid == 10 ~ "NL",
+                    .data$pruid == 11 ~ "PE",
+                    .data$pruid == 12 ~ "NS",
+                    .data$pruid == 13 ~ "NB",
+                    .data$pruid == 24 ~ "QC",
+                    .data$pruid == 35 ~ "ON",
+                    .data$pruid == 46 ~ "MB",
+                    .data$pruid == 47 ~ "SK",
+                    .data$pruid == 48 ~ "AB",
+                    .data$pruid == 59 ~ "BC",
+                    .data$pruid == 60 ~ "YT",
+                    .data$pruid == 61 ~ "NT",
+                    .data$pruid == 62 ~ "NU"
                     ),
                   sub_region_2 = .data$Location,
-                  value = .data$viral_load
+                  value = .data$viral_load,
+                  value_7_day_rolling_avg = .data$seven_day_rolling_avg,
+                  measure = .data$measureid,
+                  fraction = .data$fractionid,
                   ) %>%
-                dplyr::select("name", "date", "region", "sub_region_1", "sub_region_2", "value") %>%
-                dplyr::arrange(.data$name, .data$region, .data$sub_region_1, .data$sub_region_2, .data$date)
-              # throw error if a new location has been added and is not classified yet
-              if (sum(is.na(ds$region)) > 0) {
-                stop("Unrecognized region in wastewater data. Please update the function.")
-              } else {
-                # return data
-                ds
-              }
+                # calculate daily values
+                dplyr::arrange(.data$name, .data$region, .data$sub_region_1, .data$sub_region_2, .data$date) %>%
+                dplyr::group_by(
+                  .data$name, .data$region, .data$sub_region_1, .data$sub_region_2) %>%
+                dplyr::mutate(
+                  value_daily = c(NA, diff(.data$value)),
+                  value_7_day_rolling_avg_daily = c(NA, diff(.data$value_7_day_rolling_avg))) %>%
+                dplyr::select(
+                  "name", "region", "sub_region_1", "sub_region_2",
+                  "date", "measure", "fraction",
+                  "value", "value_daily",
+                  "value_7_day_rolling_avg", "value_7_day_rolling_avg_daily")
               },
             e_fmt()
           )
