@@ -249,7 +249,7 @@ process_on <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_ts" = {
-              ds$date <- as.Date(ds$date, format = "%m/%d/%Y")
+              ds$date <- as.Date(ds$date)
               ds %>%
                 dplyr::select(.data$date, .data$hospitalizations) %>%
                 dplyr::group_by(.data$date) %>%
@@ -263,11 +263,14 @@ process_on <- function(uuid, val, fmt, ds,
           switch(
             fmt,
             "prov_ts" = {
-              ds$date <- as.Date(ds$date, format = "%m/%d/%Y")
-              # drop dates where any region has negative or empty values for icu_former_covid
+              ds$date <- as.Date(ds$date)
+              # drop dates where any region has negative or empty values for icu_former_covid or icu_current_covid
               ds$icu_former_covid <- as.integer(ds$icu_former_covid)
               bad_dates <- unique(ds[is.na(ds$icu_former_covid), "date", drop = TRUE])
               ds <- ds[!ds$date %in% bad_dates, ]
+              ds$icu_current_covid <- as.integer(ds$icu_current_covid)
+              bad_dates_2 <- unique(ds[is.na(ds$icu_current_covid), "date", drop = TRUE])
+              ds <- ds[!ds$date %in% bad_dates_2, ]
               # 2023-09-08 also seems to have some weird negative values for icu_former_covid but these get cancelled out
               # by values in icu_current_covid column
               ds <- ds %>%
@@ -275,10 +278,6 @@ process_on <- function(uuid, val, fmt, ds,
                 dplyr::group_by(.data$date) %>%
                 dplyr::summarize(value = sum(.data$icu_current_covid, .data$icu_former_covid),
                                  .groups = "drop")
-              # if there is a false zero on 2020-07-03, censor it
-              if (ds[ds$date == as.Date("2020-07-03"), "value", drop = TRUE] == 0) {
-                ds[ds$date == as.Date("2020-07-03"), "value"] <- NA
-              }
               ds %>%
                 helper_ts(loc = "prov", val, prov, convert_to_cum = FALSE)
             },
