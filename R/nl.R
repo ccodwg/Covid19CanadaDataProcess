@@ -373,6 +373,86 @@ process_nl <- function(uuid, val, fmt, ds,
         e_val()
       )
     },
+    "4caa2c64-ad52-409c-853e-e2711de51669" = {
+      switch(
+        val,
+        "cases" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes |>
+                dplyr::transmute(
+                  name = "cases",
+                  region = "NL",
+                  date = lubridate::date(as.POSIXct(.data$Week_Starting / 1000, origin = "1970-01-01",
+                                                    tz = "America/St_Johns")) + lubridate::days(6),
+                  value_daily = as.integer(.data$F__of_Cases)
+                ) |>
+                dplyr::filter(!is.na(.data$value_daily))
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
+    "501a1171-247a-42be-ac1b-4f75a8a3232f" = {
+      switch(
+        val,
+        "mortality" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes |>
+                dplyr::transmute(
+                  name = "mortality",
+                  region = "NL",
+                  date = lubridate::date(as.POSIXct(.data$Week_Starting / 1000, origin = "1970-01-01",
+                                                    tz = "America/St_Johns")) + lubridate::days(6),
+                  value_daily = as.integer(.data$Deaths)
+                ) |>
+                dplyr::filter(!is.na(.data$value_daily))
+            },
+            e_fmt()
+          )
+        },
+        "hosp_admissions" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes |>
+                dplyr::transmute(
+                  name = "mortality",
+                  region = "NL",
+                  date = lubridate::date(as.POSIXct(.data$Week_Starting / 1000, origin = "1970-01-01",
+                                                    tz = "America/St_Johns")) + lubridate::days(6),
+                  value_daily = as.integer(.data$Non_Critical_Care) + as.integer(.data$Critical_Care)
+                ) |>
+                dplyr::filter(!is.na(.data$value_daily))
+            },
+            e_fmt()
+          )
+        },
+        "icu_admissions" = {
+          switch(
+            fmt,
+            "prov_ts" = {
+              ds$features$attributes |>
+                dplyr::transmute(
+                  name = "mortality",
+                  region = "NL",
+                  date = lubridate::date(as.POSIXct(.data$Week_Starting / 1000, origin = "1970-01-01",
+                                                    tz = "America/St_Johns")) + lubridate::days(6),
+                  value_daily = as.integer(.data$Critical_Care)
+                ) |>
+                dplyr::filter(!is.na(.data$value_daily))
+            },
+            e_fmt()
+          )
+        },
+        e_val()
+      )
+    },
     e_uuid()
   )
 }
