@@ -498,8 +498,16 @@ process_ab <- function(uuid, val, fmt, ds,
                 rvest::html_element(xpath = "//node()[contains(text(), 'Number of weekly hospital admissions (ICU and non-ICU) and deaths due to COVID-19')]/following::script[1]") |>
                 rvest::html_text2() |>
                 jsonlite::fromJSON()
+              # for some reason, ICU data may be padded with a 2019 date
               dates <- d$x$data$x[[1]]
-              vals <- d$x$data$y[[1]] + d$x$data$y[[2]]
+              vals_icu <- d$x$data$y[[1]]
+              vals_non_icu <- d$x$data$y[[2]]
+              bad_date <- max(which(as.Date(dates) + 6 < as.Date("2020-03-01")))
+              if (length(bad_date) > 0) {
+                dates <- dates[(bad_date + 1):length(dates)]
+                vals_icu <- vals_icu[(bad_date + 1):length(vals_icu)]
+              }
+              vals <- vals_icu + vals_non_icu
               # output daily data
               data.frame(
                 name = dplyr::all_of(val),
@@ -520,8 +528,14 @@ process_ab <- function(uuid, val, fmt, ds,
                 rvest::html_element(xpath = "//node()[contains(text(), 'Number of weekly hospital admissions (ICU and non-ICU) and deaths due to COVID-19')]/following::script[1]") |>
                 rvest::html_text2() |>
                 jsonlite::fromJSON()
+              # for some reason, ICU data may be padded with a 2019 date
               dates <- d$x$data$x[[1]]
               vals <- d$x$data$y[[1]]
+              bad_date <- max(which(as.Date(dates) + 6 < as.Date("2020-03-01")))
+              if (length(bad_date) > 0) {
+                dates <- dates[(bad_date + 1):length(dates)]
+                vals <- vals[(bad_date + 1):length(vals)]
+              }
               # output daily data
               data.frame(
                 name = dplyr::all_of(val),
