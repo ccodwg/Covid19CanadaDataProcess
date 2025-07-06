@@ -264,15 +264,17 @@ process_on <- function(uuid, val, fmt, ds,
             fmt,
             "prov_ts" = {
               ds$date <- as.Date(ds$date)
-              # drop dates where any region has negative or empty values for icu_former_covid or icu_current_covid
+              # drop dates where any region has negative values for icu_former_covid or icu_current_covid
               ds$icu_former_covid <- as.integer(ds$icu_former_covid)
               bad_dates <- unique(ds[is.na(ds$icu_former_covid), "date", drop = TRUE])
               ds <- ds[!ds$date %in% bad_dates, ]
               ds$icu_current_covid <- as.integer(ds$icu_current_covid)
               bad_dates_2 <- unique(ds[is.na(ds$icu_current_covid), "date", drop = TRUE])
               ds <- ds[!ds$date %in% bad_dates_2, ]
-              # 2023-09-08 also seems to have some weird negative values for icu_former_covid but these get cancelled out
-              # by values in icu_current_covid column
+              # drop 2020-07-03, which has 0 for ICU despite having ~70 on either side
+              ds <- ds[ds$date != as.Date("2020-07-03"), ]
+              # 2023-09-08 and 2023-12-09 have weird negative values for icu_former_covid
+              # but these get cancelled out by values in icu_current_covid column
               ds <- ds %>%
                 dplyr::select(.data$date, .data$icu_current_covid, .data$icu_former_covid) %>%
                 dplyr::group_by(.data$date) %>%
