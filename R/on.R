@@ -267,9 +267,16 @@ process_on <- function(uuid, val, fmt, ds,
               # drop dates where any region has negative values for icu_former_covid or icu_current_covid
               ds$icu_former_covid <- as.integer(ds$icu_former_covid)
               bad_dates <- unique(ds[is.na(ds$icu_former_covid), "date", drop = TRUE])
+              # don't drop 2021-07-17, which is missing for NORTH WEST
+              # but value is almost certainly 1 or 0
+              ds[ds$date == as.Date("2021-07-17") & (is.na(ds$icu_former_covid) | is.na(ds$icu_current_covid)),
+                 c("icu_former_covid", "icu_current_covid")] <- 0
+              bad_dates <- bad_dates[bad_dates != as.Date("2021-07-17")]
               ds <- ds[!ds$date %in% bad_dates, ]
               ds$icu_current_covid <- as.integer(ds$icu_current_covid)
               bad_dates_2 <- unique(ds[is.na(ds$icu_current_covid), "date", drop = TRUE])
+              # don't drop 2021-07-17
+              bad_dates_2 <- bad_dates_2[bad_dates_2 != as.Date("2021-07-17")]
               ds <- ds[!ds$date %in% bad_dates_2, ]
               # drop 2020-07-03, which has 0 for ICU despite having ~70 on either side
               ds <- ds[ds$date != as.Date("2020-07-03"), ]
